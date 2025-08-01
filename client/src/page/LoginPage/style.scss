@@ -1,0 +1,413 @@
+
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+
+.login-page {
+  min-height: 100vh;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  position: relative;
+  overflow-x: hidden;
+  direction: rtl;
+
+ 
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+      opacity: 0.2;
+    }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $spacing-lg;
+    @include flex-center;
+    min-height: 100vh;
+    gap: $spacing-xxl;
+
+    @include tablet {
+      flex-direction: column;
+      gap: $spacing-lg;
+      padding: $spacing-md;
+    }
+  }
+
+  // Hero section
+  .hero-section {
+    flex: 1;
+    text-align: center;
+    color: $text-white;
+    max-width: 500px;
+
+    h1 {
+      font-size: $font-4xl;
+      font-weight: $font-bold;
+      margin-bottom: $spacing-lg;
+      text-shadow: 0 2px 8px $shadow-dark;
+      color: $primary-color;
+      @include tablet {
+        font-size: $font-3xl;
+      }
+      
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+
+    p {
+      font-size: $font-lg;
+      line-height: 1.6;
+      opacity: 0.9;
+      text-shadow: 0 1px 4px $shadow-medium;
+      
+      @include tablet {
+        font-size: $font-base;
+      }
+    }
+
+    @include tablet {
+      margin-bottom: $spacing-lg;
+    }
+  }
+
+  // Login container
+  .login-container {
+    @include card;
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    @include tablet {
+      max-width: 500px;
+    }
+
+    @include mobile {
+      margin: 0;
+      border-radius: 0;
+      min-height: 100vh;
+      @include flex-column;
+      justify-content: center;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: $spacing-xl;
+
+      h2 {
+        font-size: $font-2xl;
+        font-weight: $font-bold;
+        color: $primary-color;
+        margin-bottom: $spacing-xs;
+        text-shadow: 0 2px 4px $shadow-light;
+      }
+
+      p {
+        color: $text-lighter;
+        font-size: $font-sm;
+      }
+    }
+
+    .login-form {
+      .error-message,
+      .success-message {
+        padding: $spacing-sm $spacing-md;
+        border-radius: $radius-md;
+        margin-bottom: $spacing-md;
+        font-size: $font-sm;
+        text-align: center;
+        font-weight: $font-medium;
+      }
+
+      .error-message {
+        background: rgba($error-color, 0.1);
+        color: $error-color;
+        border: 1px solid rgba($error-color, 0.2);
+      }
+
+      .success-message {
+        background: rgba($success-color, 0.1);
+        color: $success-color;
+        border: 1px solid rgba($success-color, 0.2);
+      }
+
+      // Password input special handling
+      .password-input-container {
+        position: relative;
+
+        .password-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: $font-base;
+          padding: 0;
+          @include transition(transform);
+
+          &:hover {
+            transform: scale(1.1);
+          }
+
+          &:focus {
+            outline: 2px solid $primary-color;
+            outline-offset: 2px;
+            border-radius: $radius-sm;
+          }
+        }
+      }
+
+      // Remember me and forgot password
+      .remember-forgot {
+        @include flex-between;
+        margin-bottom: $spacing-lg;
+        font-size: $font-sm;
+
+        .remember-me {
+          @include flex-center;
+          gap: $spacing-xs;
+
+          input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: $primary-color;
+            cursor: pointer;
+          }
+
+          label {
+            cursor: pointer;
+            color: $text-color;
+            @include transition(color);
+
+            &:hover {
+              color: $primary-color;
+            }
+          }
+        }
+
+        .forgot-password {
+          color: $primary-color;
+          text-decoration: none;
+          font-weight: $font-medium;
+          @include transition(color);
+
+          &:hover {
+            color: $primary-dark;
+            text-decoration: underline;
+          }
+        }
+
+        @include mobile {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: $spacing-sm;
+        }
+      }
+
+      // Login button
+      .login-btn {
+        @include button-primary;
+        width: 100%;
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: $spacing-lg;
+
+        .btn-text {
+          @include transition(opacity);
+        }
+
+        .spinner {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 20px;
+          height: 20px;
+          border: 2px solid transparent;
+          border-top: 2px solid $text-white;
+          border-radius: $radius-full;
+          animation: spin 1s linear infinite;
+          opacity: 0;
+          @include transition(opacity);
+        }
+
+        &.loading {
+          cursor: not-allowed;
+
+          .btn-text {
+            opacity: 0.7;
+          }
+
+          .spinner {
+            opacity: 1;
+          }
+
+          &:hover {
+            transform: none;
+            box-shadow: 0 4px 16px $shadow-medium;
+          }
+        }
+
+        @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+      }
+    }
+
+    // Divider
+    .divider {
+      position: relative;
+      text-align: center;
+      margin: $spacing-lg 0;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: $border-color;
+      }
+
+      span {
+        background: $bg-white;
+        padding: 0 $spacing-md;
+        color: $text-lighter;
+        font-size: $font-sm;
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    // Social login
+    .social-login {
+      @include flex-column;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-lg;
+
+      .social-btn {
+        @include button-secondary;
+        @include flex-center;
+        gap: $spacing-sm;
+        width: 100%;
+        padding: $spacing-sm $spacing-md;
+        font-weight: $font-medium;
+        @include transition(all);
+
+        .social-icon {
+          font-size: $font-lg;
+        }
+
+        &.google-btn {
+          border-color: #db4437;
+          color: #db4437;
+
+          &:hover {
+            background: #db4437;
+            color: $text-white;
+          }
+        }
+
+        &.facebook-btn {
+          border-color: #4267B2;
+          color: #4267B2;
+
+          &:hover {
+            background: #4267B2;
+            color: $text-white;
+          }
+        }
+      }
+
+      @include tablet {
+        flex-direction: row;
+        
+        .social-btn {
+          flex: 1;
+        }
+      }
+    }
+
+    // Register link
+    .register-link {
+      text-align: center;
+      color: $text-color;
+      font-size: $font-sm;
+
+      .register-link-btn {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: $font-semibold;
+        @include transition(color);
+
+        &:hover {
+          color: $primary-dark;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @include mobile {
+    .container {
+      padding: 0;
+    }
+
+    .hero-section {
+      padding: $spacing-lg;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 0 0 $spacing-lg $spacing-lg;
+    }
+
+    .login-container {
+      border-radius: 0;
+      box-shadow: none;
+      padding: $spacing-lg;
+    }
+  }
+
+  // Enhanced accessibility
+  
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .login-container {
+      border: 2px solid $text-color;
+      background: $bg-white;
+    }
+
+    .login-btn {
+      border: 2px solid $primary-color;
+    }
+  }
+
+  // Focus management
+  *:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  // Loading overlay (if needed)
+  &.page-loading {
+    &::after {
+      content: '';
+      @include fixed-full;
+      background: rgba(255, 255, 255, 0.9);
+      z-index: 9999;
+      @include flex-center;
+    }
+  }
+}

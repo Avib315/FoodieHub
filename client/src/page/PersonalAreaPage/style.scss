@@ -1,0 +1,628 @@
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
+
+.personal-area-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: $bg-lighter;
+  color: $text-color;
+  direction: rtl;
+  min-height: 100vh;
+
+  .container {
+    max-width: 414px;
+    margin: 0 auto;
+    background: $bg-white;
+    min-height: 100vh;
+    position: relative;
+    @include shadow(dark);
+
+    @include tablet-up {
+      max-width: 600px;
+      border-radius: $radius-xl;
+      margin: $spacing-lg auto;
+      min-height: calc(100vh - #{$spacing-xl});
+    }
+
+    @include laptop-up {
+      max-width: 800px;
+      margin: $spacing-xl auto;
+    }
+
+    @include desktop {
+      max-width: 1000px;
+    }
+  }
+
+  /* Header with Profile */
+  .profile-header {
+    background: linear-gradient(135deg, $secondary-color, $secondary-dark);
+    padding: 60px $spacing-lg 30px $spacing-lg;
+    color: $text-white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    @include tablet-up {
+      padding: 80px $spacing-xl 40px $spacing-xl;
+      border-radius: $radius-xl $radius-xl 0 0;
+    }
+
+    @include laptop-up {
+      padding: 100px $spacing-xxl 50px $spacing-xxl;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 20s infinite linear;
+    }
+
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: $radius-full;
+      background: linear-gradient(135deg, $bg-white, $bg-lighter);
+      color: $secondary-color;
+      @include flex-center;
+      font-size: 36px;
+      font-weight: $font-bold;
+      margin: 0 auto $spacing-md auto;
+      @include shadow(medium);
+      position: relative;
+      z-index: 2;
+      border: 4px solid rgba(255,255,255,0.3);
+
+      @include tablet-up {
+        width: 120px;
+        height: 120px;
+        font-size: 42px;
+        margin-bottom: $spacing-lg;
+      }
+
+      @include laptop-up {
+        width: 140px;
+        height: 140px;
+        font-size: 48px;
+      }
+    }
+
+    .profile-name {
+      font-size: $font-2xl;
+      font-weight: $font-bold;
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 2;
+
+      @include tablet-up {
+        font-size: $font-3xl;
+        margin-bottom: $spacing-sm;
+      }
+
+      @include laptop-up {
+        font-size: $font-4xl;
+      }
+    }
+
+    .profile-subtitle {
+      font-size: $font-sm;
+      opacity: 0.9;
+      position: relative;
+      z-index: 2;
+
+      @include tablet-up {
+        font-size: $font-base;
+      }
+
+      @include laptop-up {
+        font-size: $font-lg;
+      }
+    }
+
+    .stats-container {
+      @include flex-center;
+      gap: 30px;
+      margin-top: $spacing-lg;
+      position: relative;
+      z-index: 2;
+
+      @include tablet-up {
+        gap: 40px;
+        margin-top: $spacing-xl;
+      }
+
+      @include laptop-up {
+        gap: 50px;
+      }
+
+      @include mobile {
+        gap: $spacing-lg;
+      }
+    }
+
+    .stat-item {
+      text-align: center;
+
+      .stat-number {
+        font-size: $font-xl;
+        font-weight: $font-bold;
+        display: block;
+
+        @include tablet-up {
+          font-size: $font-2xl;
+        }
+
+        @include laptop-up {
+          font-size: $font-3xl;
+        }
+      }
+
+      .stat-label {
+        font-size: $font-xs;
+        opacity: 0.8;
+
+        @include tablet-up {
+          font-size: $font-sm;
+        }
+
+        @include laptop-up {
+          font-size: $font-base;
+        }
+      }
+    }
+  }
+
+  /* Quick Actions */
+  .quick-actions {
+    padding: $spacing-lg;
+    background: $bg-white;
+
+    @include tablet-up {
+      padding: $spacing-xl;
+    }
+
+    @include laptop-up {
+      padding: $spacing-xl $spacing-xxl;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-md;
+
+      @include tablet-up {
+        gap: $spacing-lg;
+      }
+
+      @include laptop-up {
+        grid-template-columns: repeat(4, 1fr);
+        gap: $spacing-xl;
+      }
+
+      @include mobile {
+        gap: $spacing-sm;
+      }
+    }
+
+    .quick-action {
+      background: $bg-white;
+      border: 2px solid $border-color;
+      border-radius: $radius-2xl;
+      padding: $spacing-lg;
+      text-align: center;
+      cursor: pointer;
+      @include transition();
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
+
+      @include tablet-up {
+        padding: $spacing-xl;
+      }
+
+      @include mobile {
+        padding: $spacing-md;
+      }
+
+      &::before {
+        content: '';
+        @include fixed-full;
+        position: absolute;
+        background: linear-gradient(135deg, transparent 0%, rgba(108, 92, 231, 0.05) 100%);
+        @include transition();
+      }
+
+      &:hover {
+        transform: translateY(-5px);
+        border-color: $secondary-color;
+        @include shadow(primary);
+
+        &::before {
+          background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(108, 92, 231, 0.15) 100%);
+        }
+      }
+
+      &:nth-child(1) { animation-delay: 0.1s; }
+      &:nth-child(2) { animation-delay: 0.2s; }
+      &:nth-child(3) { animation-delay: 0.3s; }
+      &:nth-child(4) { animation-delay: 0.4s; }
+
+      .quick-action-icon {
+        font-size: 32px;
+        margin-bottom: $spacing-sm;
+        color: $secondary-color;
+        position: relative;
+        z-index: 2;
+
+        @include tablet-up {
+          font-size: 40px;
+          margin-bottom: $spacing-md;
+        }
+
+        @include mobile {
+          font-size: 28px;
+        }
+      }
+
+      .quick-action-title {
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        color: $text-color;
+        margin-bottom: 5px;
+        position: relative;
+        z-index: 2;
+
+        @include tablet-up {
+          font-size: $font-lg;
+          margin-bottom: $spacing-sm;
+        }
+      }
+
+      .quick-action-subtitle {
+        font-size: $font-xs;
+        color: $text-light;
+        position: relative;
+        z-index: 2;
+
+        @include tablet-up {
+          font-size: $font-sm;
+        }
+      }
+    }
+  }
+
+  /* Menu Items */
+  .menu-section {
+    padding: $spacing-lg;
+    padding-bottom: $spacing-xl;
+
+    @include tablet-up {
+      padding: $spacing-xl;
+      padding-bottom: $spacing-xxl;
+    }
+
+    @include laptop-up {
+      padding: $spacing-xl $spacing-xxl $spacing-xxl;
+    }
+
+    .section-title {
+      font-size: $font-xl;
+      font-weight: $font-semibold;
+      color: $text-color;
+      margin-bottom: $spacing-lg;
+      @include flex-center;
+      gap: $spacing-sm;
+      justify-content: flex-start;
+
+      @include tablet-up {
+        font-size: $font-2xl;
+        margin-bottom: $spacing-xl;
+        gap: $spacing-md;
+      }
+
+      i {
+        color: $secondary-color;
+
+        @include tablet-up {
+          font-size: $font-2xl;
+        }
+      }
+    }
+
+    .menu-item {
+      background: $bg-white;
+      border-radius: $radius-lg;
+      padding: $spacing-lg;
+      margin-bottom: $spacing-sm;
+      @include shadow(light);
+      @include flex-between;
+      cursor: pointer;
+      @include transition();
+      border: 1px solid rgba(0,0,0,0.05);
+      animation: slideInRight 0.6s ease forwards;
+      opacity: 0;
+      transform: translateX(50px);
+
+      @include tablet-up {
+        padding: $spacing-xl;
+        margin-bottom: $spacing-md;
+      }
+
+      &:nth-child(2) { animation-delay: 0.1s; }
+      &:nth-child(3) { animation-delay: 0.2s; }
+      &:nth-child(4) { animation-delay: 0.3s; }
+      &:nth-child(5) { animation-delay: 0.4s; }
+      &:nth-child(6) { animation-delay: 0.5s; }
+
+      &:hover {
+        transform: translateX(-5px);
+        @include shadow(medium);
+        border-color: $secondary-color;
+      }
+
+      .menu-item-left {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+
+        @include tablet-up {
+          gap: $spacing-lg;
+        }
+      }
+
+      .menu-item-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: $radius-lg;
+        @include flex-center;
+        font-size: $font-lg;
+        color: $text-white;
+        background: linear-gradient(135deg, $secondary-color, $secondary-dark);
+        @include shadow(primary);
+
+        @include tablet-up {
+          width: 55px;
+          height: 55px;
+          font-size: $font-xl;
+        }
+      }
+
+      .menu-item-info {
+        flex: 1;
+
+        .menu-item-title {
+          font-size: $font-base;
+          font-weight: $font-semibold;
+          color: $text-color;
+          margin-bottom: 3px;
+
+          @include tablet-up {
+            font-size: $font-lg;
+            margin-bottom: $spacing-xs;
+          }
+        }
+
+        .menu-item-subtitle {
+          font-size: $font-xs;
+          color: $text-light;
+
+          @include tablet-up {
+            font-size: $font-sm;
+          }
+        }
+      }
+
+      .menu-item-badge {
+        background: $badge-color;
+        color: $text-white;
+        border-radius: $radius-lg;
+        padding: 4px $spacing-sm;
+        font-size: 11px;
+        font-weight: $font-bold;
+
+        @include tablet-up {
+          padding: $spacing-xs $spacing-sm;
+          font-size: $font-xs;
+        }
+      }
+
+      .menu-item-arrow {
+        color: $border-medium;
+        font-size: $font-sm;
+
+        @include tablet-up {
+          font-size: $font-base;
+        }
+      }
+
+      // Special Menu Items
+      &.recipes {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(238, 90, 36, 0.1));
+        border-color: rgba(255, 107, 107, 0.2);
+
+        .menu-item-icon {
+          @include gradient-bg($primary-color, $primary-dark);
+        }
+      }
+
+      &.shopping {
+        background: linear-gradient(135deg, rgba(78, 205, 196, 0.1), rgba(38, 208, 206, 0.1));
+        border-color: rgba(78, 205, 196, 0.2);
+
+        .menu-item-icon {
+          background: linear-gradient(135deg, #4ecdc4, #26d0ce);
+        }
+      }
+
+      &.settings {
+        background: linear-gradient(135deg, rgba(149, 165, 166, 0.1), rgba(127, 140, 141, 0.1));
+        border-color: rgba(149, 165, 166, 0.2);
+
+        .menu-item-icon {
+          background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+      }
+    }
+  }
+
+  /* Floating Action Button */
+  .floating-edit {
+    position: fixed;
+    bottom: 90px;
+    right: $spacing-lg;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, $secondary-color, $secondary-dark);
+    border-radius: $radius-full;
+    @include flex-center;
+    color: $text-white;
+    font-size: $font-2xl;
+    @include shadow(primary);
+    cursor: pointer;
+    @include transition();
+    border: none;
+    z-index: $z-sticky;
+
+    @include tablet-up {
+      width: 70px;
+      height: 70px;
+      font-size: 28px;
+      bottom: 100px;
+      right: $spacing-xl;
+    }
+
+    @include laptop-up {
+      display: none; // Hide on desktop - not needed
+    }
+
+    &:hover {
+      transform: scale(1.1);
+      @include shadow(dark);
+    }
+  }
+
+  /* Modal */
+  .modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: $z-modal;
+    backdrop-filter: blur(5px);
+    @include flex-center;
+
+    .modal-content {
+      background: $bg-white;
+      border-radius: $radius-2xl;
+      padding: 30px;
+      width: 90%;
+      max-width: 350px;
+      @include shadow(dark);
+      position: relative;
+      animation: modalSlideIn 0.3s ease forwards;
+
+      @include tablet-up {
+        max-width: 400px;
+        padding: $spacing-xxl;
+      }
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: $spacing-lg;
+
+      .modal-icon {
+        font-size: 48px;
+        color: $secondary-color;
+        margin-bottom: $spacing-md;
+
+        @include tablet-up {
+          font-size: 56px;
+          margin-bottom: $spacing-lg;
+        }
+      }
+
+      .modal-title {
+        font-size: $font-xl;
+        font-weight: $font-semibold;
+        color: $text-color;
+        margin-bottom: $spacing-sm;
+
+        @include tablet-up {
+          font-size: $font-2xl;
+        }
+      }
+
+      .modal-subtitle {
+        font-size: $font-sm;
+        color: $text-light;
+
+        @include tablet-up {
+          font-size: $font-base;
+        }
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: $spacing-md;
+      right: $spacing-md;
+      background: none;
+      border: none;
+      font-size: $font-2xl;
+      color: $border-medium;
+      cursor: pointer;
+      @include transition();
+
+      @include tablet-up {
+        top: $spacing-lg;
+        right: $spacing-lg;
+      }
+
+      &:hover {
+        color: $text-color;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-100px); }
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+}

@@ -1,0 +1,504 @@
+// ===================================
+// Signup Page Styles
+// ===================================
+
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.signup-page {
+  min-height: 100vh;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  position: relative;
+  overflow-x: hidden;
+  direction: rtl;
+
+
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: $spacing-lg;
+    @include flex-center;
+    min-height: 100vh;
+    gap: $spacing-xxl;
+
+    @include laptop {
+      flex-direction: column;
+      gap: $spacing-lg;
+    }
+
+    @include tablet {
+      padding: $spacing-md;
+    }
+  }
+
+  // Hero section
+  .hero-section {
+    flex: 1;
+    max-width: 500px;
+    color: $text-white;
+    text-align: center;
+
+    @include laptop {
+      max-width: 600px;
+    }
+
+    h1 {
+      font-size: $font-4xl;
+      font-weight: $font-bold;
+      margin-bottom: $spacing-lg;
+      text-shadow: 0 2px 8px $shadow-dark;
+        color: $primary-color;
+      @include tablet {
+        font-size: $font-3xl;
+      }
+      
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+
+    > p {
+      font-size: $font-lg;
+      line-height: 1.6;
+      opacity: 0.9;
+      text-shadow: 0 1px 4px $shadow-medium;
+      margin-bottom: $spacing-xl;
+      
+      @include tablet {
+        font-size: $font-base;
+        margin-bottom: $spacing-lg;
+      }
+    }
+
+    .features-list {
+      @include flex-column;
+      gap: $spacing-sm;
+      align-items: center;
+
+      .feature {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: $spacing-sm $spacing-md;
+        border-radius: $radius-lg;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-weight: $font-medium;
+        @include transition(all);
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.25);
+          transform: translateY(-2px);
+        }
+
+        @include mobile {
+          font-size: $font-sm;
+          padding: $spacing-xs $spacing-sm;
+        }
+      }
+    }
+  }
+
+  // Signup container
+  .signup-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: $radius-2xl;
+    padding: $spacing-xxl;
+    @include shadow(dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    max-width: 500px;
+
+    @include tablet {
+      max-width: 600px;
+      padding: $spacing-xl;
+    }
+
+    @include mobile {
+      padding: $spacing-lg;
+      border-radius: $radius-lg;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: $spacing-xl;
+
+      h2 {
+        font-size: $font-2xl;
+        font-weight: $font-bold;
+        color: $primary-color;
+        margin-bottom: $spacing-xs;
+        text-shadow: 0 2px 4px $shadow-light;
+      }
+
+      p {
+        color: $text-lighter;
+        font-size: $font-sm;
+        margin: 0;
+      }
+    }
+
+    .signup-form {
+      .error-message {
+        background: rgba($error-color, 0.1);
+        color: $error-color;
+        border: 1px solid rgba($error-color, 0.2);
+        border-radius: $radius-md;
+        padding: $spacing-sm $spacing-md;
+        margin-bottom: $spacing-md;
+        font-size: $font-sm;
+        text-align: center;
+        font-weight: $font-medium;
+        animation: errorShake 0.5s ease-in-out;
+      }
+
+      @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      // Name fields grid
+      .name-fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-md;
+        margin-bottom: $spacing-md;
+
+        @include mobile {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+      }
+
+      // Password containers
+      .password-input-container {
+        position: relative;
+        margin-bottom: $spacing-md;
+
+        .password-toggle {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: $font-base;
+          padding: 0;
+          @include transition(transform);
+
+          &:hover {
+            transform: scale(1.1);
+          }
+
+          &:focus {
+            outline: 2px solid $primary-color;
+            outline-offset: 2px;
+            border-radius: $radius-sm;
+          }
+        }
+
+        // Password strength indicator
+        .password-strength {
+          margin-top: $spacing-xs;
+          @include flex-between;
+          align-items: center;
+
+          .strength-bar {
+            flex: 1;
+            height: 4px;
+            background: $border-light;
+            border-radius: $radius-full;
+            overflow: hidden;
+            margin-left: $spacing-sm;
+
+            .strength-fill {
+              height: 100%;
+              width: 0%;
+              @include transition(all, 0.3s);
+              border-radius: $radius-full;
+            }
+          }
+
+          .strength-text {
+            font-size: $font-xs;
+            font-weight: $font-medium;
+            min-width: 50px;
+          }
+
+          &.weak {
+            .strength-fill {
+              width: 33%;
+              background: $error-color;
+            }
+            .strength-text {
+              color: $error-color;
+            }
+          }
+
+          &.medium {
+            .strength-fill {
+              width: 66%;
+              background: $warning-color;
+            }
+            .strength-text {
+              color: $warning-color;
+            }
+          }
+
+          &.strong {
+            .strength-fill {
+              width: 100%;
+              background: $success-color;
+            }
+            .strength-text {
+              color: $success-color;
+            }
+          }
+        }
+      }
+
+      // Checkboxes
+      .checkboxes {
+        margin-bottom: $spacing-lg;
+
+        .checkbox-group {
+          @include flex-center;
+          align-items: flex-start;
+          gap: $spacing-sm;
+          margin-bottom: $spacing-md;
+          text-align: right;
+
+          input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: $primary-color;
+            cursor: pointer;
+            margin-top: 2px;
+          }
+
+          label {
+            flex: 1;
+            cursor: pointer;
+            font-size: $font-sm;
+            line-height: 1.5;
+            color: $text-color;
+
+            a {
+              color: $primary-color;
+              text-decoration: none;
+              font-weight: $font-medium;
+
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .checkbox-error {
+            display: block;
+            width: 100%;
+            color: $error-color;
+            font-size: $font-xs;
+            margin-top: $spacing-xs;
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+
+      // Submit button
+      .signup-btn {
+        @include button-primary;
+        width: 100%;
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: $spacing-lg;
+
+        .btn-text {
+          @include transition(opacity);
+        }
+
+        .spinner {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 20px;
+          height: 20px;
+          border: 2px solid transparent;
+          border-top: 2px solid $text-white;
+          border-radius: $radius-full;
+          animation: spin 1s linear infinite;
+          opacity: 0;
+          @include transition(opacity);
+        }
+
+        &.loading {
+          cursor: not-allowed;
+
+          .btn-text {
+            opacity: 0.7;
+          }
+
+          .spinner {
+            opacity: 1;
+          }
+
+          &:hover {
+            transform: none;
+            box-shadow: 0 4px 16px $shadow-medium;
+          }
+        }
+
+        @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+      }
+    }
+
+    // Divider
+    .divider {
+      position: relative;
+      text-align: center;
+      margin: $spacing-lg 0;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: $border-color;
+      }
+
+      span {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0 $spacing-md;
+        color: $text-lighter;
+        font-size: $font-sm;
+        position: relative;
+        z-index: 1;
+      }
+    }
+
+    // Social signup
+    .social-signup {
+      @include flex-column;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-lg;
+
+      .social-btn {
+        @include button-secondary;
+        @include flex-center;
+        gap: $spacing-sm;
+        width: 100%;
+        padding: $spacing-sm $spacing-md;
+        font-weight: $font-medium;
+        @include transition(all);
+
+        .social-icon {
+          font-size: $font-lg;
+        }
+
+        &.google-btn {
+          border-color: #db4437;
+          color: #db4437;
+
+          &:hover {
+            background: #db4437;
+            color: $text-white;
+          }
+        }
+
+        &.facebook-btn {
+          border-color: #4267B2;
+          color: #4267B2;
+
+          &:hover {
+            background: #4267B2;
+            color: $text-white;
+          }
+        }
+      }
+
+      @include tablet {
+        flex-direction: row;
+        
+        .social-btn {
+          flex: 1;
+        }
+      }
+    }
+
+    // Login link
+    .login-link {
+      text-align: center;
+      color: $text-color;
+      font-size: $font-sm;
+
+      .login-link-btn {
+        color: $primary-color;
+        text-decoration: none;
+        font-weight: $font-semibold;
+        @include transition(color);
+
+        &:hover {
+          color: $primary-dark;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @include mobile {
+    .container {
+      padding: $spacing-md;
+    }
+
+    .hero-section {
+      margin-bottom: $spacing-lg;
+    }
+
+    .signup-container {
+      margin: 0;
+    }
+  }
+
+  // Enhanced accessibility
+  @media (prefers-reduced-motion: reduce) {
+    .floating-element {
+      animation: none;
+    }
+
+    .signup-btn .spinner {
+      animation: none;
+    }
+
+    .error-message {
+      animation: none;
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .signup-container {
+      border: 2px solid $text-color;
+      background: $bg-white;
+    }
+
+    .signup-btn {
+      border: 2px solid $primary-color;
+    }
+  }
+
+  // Dark mode support
+ 
+}

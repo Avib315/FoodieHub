@@ -1,0 +1,546 @@
+@use '../../styles/variables.scss' as *;
+@use '../../styles/mixins.scss' as *;
+
+.notification-page {
+  width: 100%;
+  max-width: 414px;
+  margin: 0 auto;
+  background: $bg-white;
+  min-height: 100vh;
+  position: relative;
+
+  @include tablet-up {
+    max-width: 600px;
+    @include shadow(medium);
+    border-radius: $radius-xl;
+    margin: $spacing-lg auto;
+    min-height: calc(100vh - #{$spacing-xl});
+    overflow: hidden;
+  }
+
+  @include laptop-up {
+    max-width: 800px;
+    margin: $spacing-xl auto;
+  }
+
+  @include desktop {
+    max-width: 1000px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 0;
+    min-height: calc(100vh - #{$spacing-xxl * 2});
+  }
+
+  /* Header */
+  .header {
+    @include gradient-bg(#4ecdc4, #26d0ce);
+    padding: 60px $spacing-lg 25px $spacing-lg;
+    color: $text-white;
+    position: relative;
+    overflow: hidden;
+
+    @include tablet-up {
+      padding: $spacing-xxl $spacing-xl $spacing-lg $spacing-xl;
+    }
+
+    @include desktop {
+      grid-column: 1 / -1;
+      padding: $spacing-xxl;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-100px); }
+    }
+
+    .header-content {
+      @include flex-between;
+      position: relative;
+      z-index: 2;
+
+      @include mobile {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: $spacing-md;
+      }
+    }
+
+    .header-title {
+      flex: 1;
+
+      h1 {
+        font-size: $font-3xl;
+        font-weight: $font-bold;
+        margin-bottom: $spacing-sm;
+        margin: 0;
+
+        @include tablet-up {
+          font-size: $font-4xl;
+        }
+      }
+
+      p {
+        font-size: $font-base;
+        opacity: 0.9;
+        margin: 0;
+
+        @include tablet-up {
+          font-size: $font-lg;
+        }
+      }
+    }
+
+    .mark-all-read {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: $text-white;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $radius-2xl;
+      font-size: $font-sm;
+      cursor: pointer;
+      @include transition();
+      white-space: nowrap;
+
+      @include tablet-up {
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+      }
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  /* Filter Tabs */
+  .filter-tabs {
+    background: $bg-white;
+    border-bottom: 1px solid $border-color;
+    padding: $spacing-lg;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    @include tablet-up {
+      padding: $spacing-lg $spacing-xl;
+    }
+
+    @include desktop {
+      grid-column: 1;
+      border-right: 1px solid $border-color;
+      border-bottom: none;
+      position: static;
+      padding: $spacing-xl $spacing-lg;
+      background: $bg-lighter;
+    }
+
+    .filter-tabs-wrapper {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      @include tablet-up {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: $spacing-md;
+      }
+
+      @include desktop {
+        flex-direction: column;
+        gap: $spacing-sm;
+        overflow-x: visible;
+      }
+    }
+
+    .filter-tab {
+      background: $bg-lighter;
+      border: none;
+      padding: 10px $spacing-md;
+      border-radius: $radius-2xl;
+      font-size: $font-sm;
+      white-space: nowrap;
+      cursor: pointer;
+      @include transition();
+      color: $text-light;
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: max-content;
+
+      @include tablet-up {
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+      }
+
+      @include desktop {
+        justify-content: flex-start;
+        padding: $spacing-md;
+        border-radius: $radius-lg;
+        width: 100%;
+      }
+
+      &.active {
+        background: #4ecdc4;
+        color: $text-white;
+        @include shadow(medium);
+        transform: translateY(-2px);
+
+        @include desktop {
+          transform: translateX(5px);
+        }
+
+        .count {
+          background: rgba(255, 255, 255, 0.4);
+        }
+      }
+
+      .count {
+        background: rgba(255, 255, 255, 0.3);
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: $font-xs;
+        margin-right: $spacing-sm;
+        min-width: 20px;
+        text-align: center;
+
+        @include tablet-up {
+          padding: $spacing-xs $spacing-sm;
+          font-size: $font-sm;
+        }
+      }
+
+      .tab-text {
+        @include mobile {
+          display: none;
+        }
+
+        @include tablet-up {
+          display: inline;
+        }
+      }
+    }
+  }
+
+  /* Notifications Container */
+  .notifications-container {
+    padding: $spacing-lg;
+    padding-bottom: $spacing-xxl * 3;
+
+    @include tablet-up {
+      padding: $spacing-xl;
+      padding-bottom: $spacing-xxl * 2;
+    }
+
+    @include desktop {
+      grid-column: 2;
+      padding: $spacing-xl $spacing-lg;
+      overflow-y: auto;
+      max-height: calc(100vh - 200px);
+    }
+
+    .notification-item {
+      background: $bg-white;
+      border-radius: 15px;
+      padding: $spacing-lg;
+      margin-bottom: 12px;
+      @include shadow(light);
+      @include transition();
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      position: relative;
+      animation: fadeInUp 0.6s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
+
+      @include tablet-up {
+        padding: $spacing-xl;
+        margin-bottom: $spacing-md;
+        border-radius: $spacing-lg;
+      }
+
+      @include laptop-up {
+        &:hover {
+          transform: translateY(-5px);
+          @include shadow(medium);
+        }
+      }
+
+      @include mobile {
+        &:hover {
+          transform: none;
+        }
+      }
+
+      &.unread {
+        border-left-color: #4ecdc4;
+        background: #f8ffff;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: $spacing-lg;
+          left: $spacing-lg;
+          width: 8px;
+          height: 8px;
+          background: #4ecdc4;
+          border-radius: $radius-full;
+
+          @include tablet-up {
+            top: $spacing-xl;
+            left: $spacing-xl;
+            width: 10px;
+            height: 10px;
+          }
+        }
+      }
+
+      .notification-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 12px;
+
+        @include tablet-up {
+          gap: $spacing-lg;
+          margin-bottom: $spacing-md;
+        }
+      }
+
+      .notification-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: $radius-full;
+        @include flex-center;
+        font-size: $font-lg;
+        color: $text-white;
+        flex-shrink: 0;
+
+        @include tablet-up {
+          width: 55px;
+          height: 55px;
+          font-size: $font-xl;
+        }
+
+        &.likes {
+          @include gradient-bg(#ff6b6b, #ff5252);
+        }
+
+        &.follows {
+          @include gradient-bg(#4ecdc4, #26d0ce);
+        }
+
+        &.recipes {
+          @include gradient-bg(#ffa726, #ff9800);
+        }
+
+        &.comments {
+          @include gradient-bg(#9c27b0, #8e24aa);
+        }
+
+        &.system {
+          @include gradient-bg(#607d8b, #546e7a);
+        }
+      }
+
+      .notification-content {
+        flex: 1;
+        min-width: 0; // Prevent text overflow
+
+        .notification-title {
+          font-size: $font-base;
+          font-weight: $font-semibold;
+          color: $text-color;
+          margin-bottom: 6px;
+          line-height: 1.4;
+
+          @include tablet-up {
+            font-size: $font-lg;
+            margin-bottom: $spacing-sm;
+          }
+        }
+
+        .notification-message {
+          font-size: $font-sm;
+          color: $text-light;
+          line-height: 1.5;
+          margin-bottom: $spacing-sm;
+          @include text-clamp(2);
+
+          @include tablet-up {
+            font-size: $font-base;
+            @include text-clamp(3);
+          }
+        }
+
+        .notification-meta {
+          @include flex-between;
+          font-size: $font-xs;
+          color: $text-lighter;
+
+          @include tablet-up {
+            font-size: $font-sm;
+          }
+
+          .notification-time {
+            display: flex;
+            align-items: center;
+            gap: $spacing-xs;
+          }
+
+          .notification-actions {
+            display: flex;
+            gap: $spacing-sm;
+
+            .action-btn {
+              background: none;
+              border: none;
+              font-size: $font-sm;
+              color: #4ecdc4;
+              cursor: pointer;
+              padding: $spacing-xs $spacing-sm;
+              border-radius: $radius-md;
+              @include transition();
+
+              @include tablet-up {
+                font-size: $font-base;
+                padding: $spacing-sm;
+              }
+
+              &:hover {
+                background: rgba(78, 205, 196, 0.1);
+                transform: scale(1.1);
+              }
+            }
+          }
+        }
+      }
+
+      .recipe-preview {
+        background: $bg-lighter;
+        border-radius: 10px;
+        padding: 12px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        @include tablet-up {
+          padding: $spacing-md;
+          margin-top: $spacing-md;
+          gap: $spacing-md;
+          border-radius: $radius-lg;
+        }
+
+        .recipe-image {
+          width: 40px;
+          height: 40px;
+          @include gradient-bg(#4ecdc4, #26d0ce);
+          border-radius: $radius-md;
+          @include flex-center;
+          color: $text-white;
+          font-size: $font-base;
+
+          @include tablet-up {
+            width: 50px;
+            height: 50px;
+            font-size: $font-lg;
+          }
+        }
+
+        .recipe-info {
+          flex: 1;
+          min-width: 0;
+
+          .recipe-name {
+            font-size: $font-sm;
+            font-weight: $font-semibold;
+            color: $text-color;
+            margin-bottom: 2px;
+            @include text-truncate;
+
+            @include tablet-up {
+              font-size: $font-base;
+            }
+          }
+
+          .recipe-stats {
+            font-size: $font-xs;
+            color: $text-lighter;
+
+            @include tablet-up {
+              font-size: $font-sm;
+            }
+          }
+        }
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px $spacing-lg;
+      color: $text-lighter;
+
+      @include tablet-up {
+        padding: $spacing-xxl * 2 $spacing-xl;
+      }
+
+      .empty-icon {
+        font-size: 64px;
+        color: $border-medium;
+        margin-bottom: $spacing-lg;
+
+        @include tablet-up {
+          font-size: 80px;
+          margin-bottom: $spacing-xl;
+        }
+      }
+
+      h3 {
+        font-size: $font-xl;
+        margin-bottom: 10px;
+        color: $text-light;
+
+        @include tablet-up {
+          font-size: $font-2xl;
+          margin-bottom: $spacing-md;
+        }
+      }
+
+      p {
+        font-size: $font-sm;
+        line-height: 1.5;
+
+        @include tablet-up {
+          font-size: $font-base;
+        }
+      }
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

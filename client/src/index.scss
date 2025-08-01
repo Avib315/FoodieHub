@@ -1,0 +1,291 @@
+@use './styles/variables.scss' as *;
+@use './styles/mixins.scss' as *;
+
+// Font imports
+@font-face {
+  font-family: "Rubik";
+  src: url(./assets/font/static/Rubik-Light.ttf) format('truetype');
+  font-weight: $font-light;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url(./assets/font/static/Rubik-Regular.ttf) format('truetype');
+  font-weight: $font-normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url(./assets/font/static/Rubik-Medium.ttf) format('truetype');
+  font-weight: $font-medium;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url(./assets/font/static/Rubik-SemiBold.ttf) format('truetype');
+  font-weight: $font-semibold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url(./assets/font/static/Rubik-Bold.ttf) format('truetype');
+  font-weight: $font-bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+// CSS Reset and Base Styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// Root element configuration
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+// HTML base
+html {
+  font-size: 16px; // Base font size for rem calculations
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  @include mobile {
+    font-size: 14px;
+  }
+}
+
+// Body base styles
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $bg-white;
+  color: $text-color;
+  font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", 
+               "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", 
+               "Helvetica Neue", sans-serif;
+  font-size: $font-base;
+  font-weight: $font-normal;
+  line-height: 1.6;
+  direction: rtl;
+  text-align: right;
+  min-height: 100vh;
+  
+  // Prevent horizontal scroll
+  overflow-x: hidden;
+  
+  // Better text rendering
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+// Typography base styles
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 $spacing-md 0;
+  font-weight: $font-bold;
+  line-height: 1.2;
+  color: $text-color;
+}
+
+h1 {
+  font-size: $font-4xl;
+  @include tablet {
+    font-size: $font-3xl;
+  }
+  @include mobile {
+    font-size: $font-2xl;
+  }
+}
+
+h2 {
+  font-size: $font-3xl;
+  @include tablet {
+    font-size: $font-2xl;
+  }
+  @include mobile {
+    font-size: $font-xl;
+  }
+}
+
+h3 {
+  font-size: $font-2xl;
+  @include tablet {
+    font-size: $font-xl;
+  }
+  @include mobile {
+    font-size: $font-lg;
+  }
+}
+
+h4 {
+  font-size: $font-xl;
+  @include mobile {
+    font-size: $font-lg;
+  }
+}
+
+h5 {
+  font-size: $font-lg;
+  @include mobile {
+    font-size: $font-base;
+  }
+}
+
+h6 {
+  font-size: $font-base;
+  font-weight: $font-semibold;
+}
+
+// Paragraph and text elements
+p {
+  margin: 0 0 $spacing-md 0;
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+small {
+  font-size: $font-sm;
+  color: $text-lighter;
+}
+
+strong, b {
+  font-weight: $font-bold;
+}
+
+em, i {
+  font-style: italic;
+}
+
+// Links
+a {
+  color: $primary-color;
+  text-decoration: none;
+  @include transition(color);
+  
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+  
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+    border-radius: $radius-sm;
+  }
+  
+  &:active {
+    color: $primary-dark;
+  }
+}
+
+// Lists
+ul, ol {
+  margin: 0 0 $spacing-md 0;
+  padding-right: $spacing-lg;
+  
+  li {
+    margin-bottom: $spacing-xs;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+ul {
+  list-style-type: disc;
+}
+
+ol {
+  list-style-type: decimal;
+}
+
+// Remove list styles for navigation
+nav ul,
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// Images and media
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+figure {
+  margin: 0 0 $spacing-md 0;
+  
+  img {
+    margin-bottom: $spacing-xs;
+  }
+  
+  figcaption {
+    font-size: $font-sm;
+    color: $text-lighter;
+    text-align: center;
+  }
+}
+
+// Form elements base
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+  direction: rtl;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+// Tables
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: $spacing-md;
+  
+  th, td {
+    padding: $spacing-sm $spacing-md;
+    text-align: right;
+    border-bottom: 1px solid $border-color;
+  }
+  
+  th {
+    font-weight: $font-semibold;
+    background-color: $bg-light;
+    color: $text-color;
+  }
+  
+  tr:hover {
+    background-color: $bg-lighter;
+  }
+}

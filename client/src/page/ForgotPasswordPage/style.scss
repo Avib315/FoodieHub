@@ -1,0 +1,517 @@
+// ===================================
+// Forgot Password Page Styles
+// ===================================
+
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.forgot-password-page {
+  min-height: 100vh;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  @include flex-center;
+  padding: $spacing-lg;
+  direction: rtl;
+  position: relative;
+  overflow: hidden;
+
+  // Floating email elements
+  &::before {
+    content: '📧';
+    position: absolute;
+    top: 15%;
+    right: 10%;
+    font-size: $font-4xl;
+    opacity: 0.1;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  &::after {
+    content: '🔐';
+    position: absolute;
+    bottom: 20%;
+    left: 15%;
+    font-size: $font-3xl;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite reverse;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translateY(-20px) rotate(5deg);
+      opacity: 0.2;
+    }
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 450px;
+
+    @include mobile {
+      max-width: 100%;
+      padding: 0 $spacing-md;
+    }
+  }
+
+  // Form container
+  .forgot-password-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: $radius-2xl;
+    padding: $spacing-xxl;
+    @include shadow(dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    position: relative;
+
+    @include tablet {
+      padding: $spacing-xl;
+    }
+
+    @include mobile {
+      padding: $spacing-lg;
+      border-radius: $radius-lg;
+    }
+
+    // Decorative top element
+    &::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, $primary-color, $secondary-color);
+      border-radius: $radius-full;
+    }
+
+    // Lock icon decoration
+    &::after {
+      content: '🔓';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: $font-2xl;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: $radius-full;
+      padding: $spacing-xs;
+      @include shadow(light);
+    }
+
+    h1 {
+      font-size: $font-3xl;
+      color: $text-color;
+      margin-bottom: $spacing-md;
+      font-weight: $font-bold;
+
+      @include tablet {
+        font-size: $font-2xl;
+      }
+
+      @include mobile {
+        font-size: $font-xl;
+        margin-bottom: $spacing-sm;
+      }
+    }
+
+    > p {
+      font-size: $font-base;
+      color: $text-light;
+      margin-bottom: $spacing-xl;
+      line-height: 1.6;
+
+      @include mobile {
+        font-size: $font-sm;
+        margin-bottom: $spacing-lg;
+      }
+    }
+
+    form {
+      margin-bottom: $spacing-lg;
+
+      .error-message {
+        background: rgba($error-color, 0.1);
+        color: $error-color;
+        border: 1px solid rgba($error-color, 0.2);
+        border-radius: $radius-md;
+        padding: $spacing-sm $spacing-md;
+        margin-bottom: $spacing-md;
+        font-size: $font-sm;
+        text-align: center;
+        font-weight: $font-medium;
+        animation: errorShake 0.5s ease-in-out;
+      }
+
+      @keyframes errorShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+
+      // Input field styling
+      .input-field {
+        margin-bottom: $spacing-lg;
+
+        .input-element {
+          font-size: $font-base;
+          padding: $spacing-md $spacing-lg;
+          border-radius: $radius-lg;
+          text-align: center;
+
+          &:focus {
+            @include shadow(primary);
+          }
+
+          &::placeholder {
+            text-align: center;
+          }
+        }
+      }
+
+      // Submit button
+      .btn {
+        @include button-primary;
+        width: 100%;
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        border-radius: $radius-lg;
+        position: relative;
+        overflow: hidden;
+
+        // Loading state
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+          
+          &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid $text-white;
+            border-radius: $radius-full;
+            animation: spin 1s linear infinite;
+          }
+        }
+
+        @keyframes spin {
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        &:not(:disabled):hover {
+          transform: translateY(-3px);
+          @include shadow(primary);
+        }
+      }
+    }
+
+    // Auth links
+    .auth-links {
+      @include flex-column;
+      gap: $spacing-sm;
+      align-items: center;
+
+      a {
+        color: $primary-color;
+        text-decoration: none;
+        font-size: $font-sm;
+        font-weight: $font-medium;
+        @include transition(color);
+        padding: $spacing-xs $spacing-sm;
+        border-radius: $radius-sm;
+
+        &:hover {
+          color: $primary-dark;
+          background: rgba($primary-color, 0.1);
+        }
+
+        &:focus {
+          outline: 2px solid $primary-color;
+          outline-offset: 2px;
+        }
+      }
+
+      @include mobile {
+        gap: $spacing-xs;
+
+        a {
+          font-size: $font-xs;
+        }
+      }
+    }
+  }
+
+  // Success message container
+  .success-message {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: $radius-2xl;
+    padding: $spacing-xxl;
+    @include shadow(dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    position: relative;
+    animation: successSlideIn 0.6s ease-out;
+
+    @include tablet {
+      padding: $spacing-xl;
+    }
+
+    @include mobile {
+      padding: $spacing-lg;
+      border-radius: $radius-lg;
+    }
+
+    @keyframes successSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    // Success icon decoration
+    &::before {
+      content: '✅';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: $font-2xl;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: $radius-full;
+      padding: $spacing-xs;
+      @include shadow(light);
+      animation: successBounce 1s ease-out;
+    }
+
+    @keyframes successBounce {
+      0% {
+        transform: translateX(-50%) scale(0);
+      }
+      50% {
+        transform: translateX(-50%) scale(1.2);
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+      }
+    }
+
+    // Decorative top element
+    &::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, $success-color, darken($success-color, 10%));
+      border-radius: $radius-full;
+    }
+
+    h1 {
+      font-size: $font-2xl;
+      color: $success-color;
+      margin-bottom: $spacing-md;
+      font-weight: $font-bold;
+
+      @include mobile {
+        font-size: $font-xl;
+        margin-bottom: $spacing-sm;
+      }
+    }
+
+    p {
+      font-size: $font-base;
+      color: $text-light;
+      margin-bottom: $spacing-xl;
+      line-height: 1.6;
+
+      @include mobile {
+        font-size: $font-sm;
+        margin-bottom: $spacing-lg;
+      }
+    }
+
+    .btn {
+      @include button-primary;
+      padding: $spacing-md $spacing-lg;
+      font-size: $font-base;
+      font-weight: $font-semibold;
+      border-radius: $radius-lg;
+      min-width: 200px;
+
+      &:hover {
+        transform: translateY(-3px);
+        @include shadow(primary);
+      }
+
+      @include mobile {
+        width: 100%;
+        min-width: auto;
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @include mobile {
+    padding: $spacing-md;
+    min-height: 100vh;
+  }
+
+  // Enhanced accessibility
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &::after {
+      animation: none;
+    }
+
+    .forgot-password-form,
+    .success-message {
+      animation: none;
+
+      &::before {
+        animation: none;
+      }
+    }
+
+    .btn {
+      &:hover {
+        transform: none;
+      }
+    }
+
+    .error-message {
+      animation: none;
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    background: $bg-white;
+
+    .forgot-password-form,
+    .success-message {
+      background: $bg-white;
+      border: 2px solid $text-color;
+
+      h1 {
+        color: $text-color;
+      }
+
+      .btn {
+        border: 2px solid $primary-color;
+      }
+    }
+
+    .success-message {
+      h1 {
+        color: $success-color;
+      }
+    }
+  }
+
+  // Dark mode support
+  @media (prefers-color-scheme: dark) {
+    .forgot-password-form,
+    .success-message {
+      background: rgba(51, 51, 51, 0.95);
+      border-color: rgba(255, 255, 255, 0.2);
+
+      h1 {
+        color: $text-white;
+      }
+
+      > p {
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .auth-links a {
+        color: lighten($primary-color, 20%);
+
+        &:hover {
+          color: lighten($primary-color, 30%);
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+
+    .success-message {
+      h1 {
+        color: lighten($success-color, 20%);
+      }
+    }
+  }
+
+  // Email validation animation
+  .input-field {
+    &.validating {
+      .input-element {
+        border-color: $warning-color;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: $spacing-sm;
+          transform: translateY(-50%);
+          width: 16px;
+          height: 16px;
+          border: 2px solid $warning-color;
+          border-top: 2px solid transparent;
+          border-radius: $radius-full;
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+
+    &.valid {
+      .input-element {
+        border-color: $success-color;
+        
+        &::after {
+          content: '✓';
+          position: absolute;
+          top: 50%;
+          left: $spacing-sm;
+          transform: translateY(-50%);
+          color: $success-color;
+          font-weight: bold;
+        }
+      }
+    }
+
+    &.invalid {
+      .input-element {
+        border-color: $error-color;
+        
+        &::after {
+          content: '✗';
+          position: absolute;
+          top: 50%;
+          left: $spacing-sm;
+          transform: translateY(-50%);
+          color: $error-color;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}

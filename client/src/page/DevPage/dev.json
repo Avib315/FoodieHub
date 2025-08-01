@@ -1,0 +1,122 @@
+[
+ {
+   "name": "Login Page",
+   "path": "/login",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Signup Page",
+   "path": "/signup",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Recipes Page",
+   "path": "/recipes",
+   "logic": false,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Personal Area Page",
+   "path": "/personal-area",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Notifications Page",
+   "path": "/notifications",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Settings Page",
+   "path": "/settings",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "New Recipe Page",
+   "path": "/new-recipe",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Edit Recipe Page",
+   "path": "/edit-recipe/1",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Favorites Page",
+   "path": "/favorites",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Recipe Detail Page",
+   "path": "/recipe/1",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Not Found Page",
+   "path": "/not-found",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Loading Page",
+   "path": "/loading",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Dev Page",
+   "path": "/dev",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Home Page",
+   "path": "/",
+   "logic": false,
+   "html": false,
+   "service": false,
+   "note": "הערה"
+ },
+ {
+   "name": "Auth Forgot Password Page",
+   "path": "/forgot-password",
+   "logic": true,
+   "html": true,
+   "service": false,
+   "note": "הערה"
+ }
+]

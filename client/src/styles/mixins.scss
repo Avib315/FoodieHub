@@ -1,0 +1,190 @@
+// ===================================
+// _mixins.scss - Updated for modern Sass
+// ===================================
+
+@use 'variables' as *;
+
+// Gradient Background
+@mixin gradient-bg($color1: $primary-color, $color2: $primary-dark, $direction: 135deg) {
+  background: linear-gradient($direction, $color1, $color2);
+}
+
+// Transitions
+@mixin transition($property: all, $duration: $transition-base, $easing: ease) {
+  transition: $property $duration $easing;
+}
+
+// Box Shadows
+@mixin shadow($type: medium) {
+  @if $type == light {
+    box-shadow: 0 2px 8px $shadow-light;
+  } @else if $type == medium {
+    box-shadow: 0 4px 16px $shadow-medium;
+  } @else if $type == dark {
+    box-shadow: 0 8px 32px $shadow-dark;
+  } @else if $type == primary {
+    box-shadow: 0 8px 20px $shadow-primary;
+  }
+}
+
+// Flexbox utilities
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Media Queries
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (max-width: $laptop) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin mobile-up {
+  @media (min-width: $mobile) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $tablet ) {
+    @content;
+  }
+}
+
+@mixin laptop-up {
+  @media (min-width: $laptop ) {
+    @content;
+  }
+}
+
+// Button Styles
+@mixin button-base {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  font-weight: $font-medium;
+  cursor: pointer;
+  @include transition();
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@mixin button-primary {
+  @include button-base;
+  @include gradient-bg();
+  color: $text-white;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    @include shadow(primary);
+  }
+}
+
+@mixin button-secondary {
+  @include button-base;
+  background: $bg-white;
+  color: $primary-color;
+  border: 2px solid $primary-color;
+  
+  &:hover:not(:disabled) {
+    background: $primary-color;
+    color: $text-white;
+  }
+}
+
+// Card Styles
+@mixin card {
+  background: $bg-white;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  @include shadow(light);
+  @include transition();
+  
+  &:hover {
+    @include shadow(medium);
+    transform: translateY(-2px);
+  }
+}
+
+// Input Styles
+@mixin input-base {
+  padding: $spacing-sm $spacing-md;
+  border: 2px solid $border-color;
+  border-radius: $radius-md;
+  font-size: $font-base;
+  @include transition();
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include shadow(light);
+  }
+  
+  &::placeholder {
+    color: $text-lighter;
+  }
+}
+
+// Text utilities
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Position utilities
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin fixed-full {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

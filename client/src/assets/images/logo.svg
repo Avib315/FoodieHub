@@ -1,0 +1,72 @@
+<svg width="200" height="80" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle for the hub concept -->
+  <circle cx="40" cy="40" r="35" fill="white" stroke="black" stroke-width="2"/>
+  
+  <!-- Chef hat -->
+  <ellipse cx="40" cy="25" rx="15" ry="12" fill="white" stroke="black" stroke-width="2"/>
+  <rect x="25" y="30" width="30" height="8" fill="white" stroke="black" stroke-width="2" rx="4"/>
+  
+  <!-- Fun food items around the circle -->
+  <!-- Pizza slice -->
+  <g transform="translate(15, 15)">
+    <path d="M5 5 L15 5 L10 15 Z" fill="white" stroke="black" stroke-width="1.5"/>
+    <circle cx="8" cy="8" r="1" fill="black"/>
+    <circle cx="11" cy="10" r="1" fill="black"/>
+  </g>
+  
+  <!-- Burger -->
+  <g transform="translate(55, 20)">
+    <ellipse cx="5" cy="3" rx="6" ry="2" fill="black"/>
+    <rect x="-1" y="5" width="12" height="3" fill="white" stroke="black" stroke-width="1"/>
+    <rect x="0" y="8" width="10" height="2" fill="black"/>
+    <ellipse cx="5" cy="12" rx="6" ry="2" fill="white" stroke="black" stroke-width="1"/>
+  </g>
+  
+  <!-- Utensils -->
+  <g transform="translate(20, 55)">
+    <!-- Fork -->
+    <line x1="0" y1="0" x2="0" y2="12" stroke="black" stroke-width="2"/>
+    <line x1="-2" y1="0" x2="-2" y2="6" stroke="black" stroke-width="1"/>
+    <line x1="2" y1="0" x2="2" y2="6" stroke="black" stroke-width="1"/>
+    <!-- Knife -->
+    <line x1="6" y1="0" x2="6" y2="12" stroke="black" stroke-width="2"/>
+    <path d="M4 0 L6 0 L6 4 L4 2 Z" fill="black"/>
+  </g>
+  
+  <!-- Spoon -->
+  <g transform="translate(55, 55)">
+    <line x1="0" y1="6" x2="0" y2="12" stroke="black" stroke-width="2"/>
+    <ellipse cx="0" cy="3" rx="3" ry="4" fill="white" stroke="black" stroke-width="2"/>
+  </g>
+  
+  <!-- Text "FoodieHub" -->
+  <text x="85" y="30" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="black">
+    Foodie
+  </text>
+  <text x="85" y="55" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="black">
+    Hub
+  </text>
+  
+  <!-- Fun decorative elements -->
+  <!-- Stars for fun -->
+  <g fill="black">
+    <path d="M75 15 L76 17 L78 17 L76.5 18.5 L77 21 L75 19.5 L73 21 L73.5 18.5 L72 17 L74 17 Z"/>
+    <path d="M165 25 L166 27 L168 27 L166.5 28.5 L167 31 L165 29.5 L163 31 L163.5 28.5 L162 27 L164 27 Z"/>
+  </g>
+  
+  <!-- Small hearts -->
+  <g fill="black">
+    <path d="M180 45 C180 43, 182 43, 182 45 C182 43, 184 43, 184 45 C184 47, 182 49, 182 49 C182 49, 180 47, 180 45"/>
+    <path d="M90 65 C90 63, 92 63, 92 65 C92 63, 94 63, 94 65 C94 67, 92 69, 92 69 C92 69, 90 67, 90 65"/>
+  </g>
+  
+  <!-- Dotted circle pattern for texture -->
+  <g fill="black" opacity="0.3">
+    <circle cx="150" cy="15" r="1"/>
+    <circle cx="155" cy="20" r="1"/>
+    <circle cx="145" cy="25" r="1"/>
+    <circle cx="170" cy="35" r="1"/>
+    <circle cx="175" cy="55" r="1"/>
+    <circle cx="160" cy="65" r="1"/>
+  </g>
+</svg>

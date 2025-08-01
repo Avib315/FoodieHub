@@ -1,0 +1,310 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+
+.input-field {
+  position: relative;
+  margin-bottom: $spacing-md;
+  width: 100%;
+
+  .input-label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-size: $font-sm;
+    font-weight: $font-medium;
+    color: $text-color;
+    @include transition(color);
+
+    // RTL support for Hebrew
+    direction: rtl;
+    text-align: right;
+
+    // Required indicator
+    &[data-required="true"]::after {
+      content: ' *';
+      color: $error-color;
+    }
+  }
+
+  .input-element {
+    @include input-base;
+    width: 100%;
+    background: $bg-white;
+    color: $text-color;
+    position: relative;
+    
+    // RTL support for Hebrew placeholder
+    direction: rtl;
+    text-align: right;
+
+    // Enhanced focus state
+    &:focus {
+      border-color: $primary-color;
+      @include shadow(light);
+      
+      + .input-focus-ring {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    // Hover state
+    &:hover:not(:disabled):not(:focus) {
+      border-color: $border-medium;
+    }
+
+    // Disabled state
+    &:disabled {
+      background: $bg-light;
+      color: $text-lighter;
+      cursor: not-allowed;
+      border-color: $border-light;
+
+      &::placeholder {
+        color: $text-lighter;
+      }
+    }
+
+    // Error state
+    &.error {
+      border-color: $error-color;
+      
+      &:focus {
+        border-color: $error-color;
+        box-shadow: 0 0 0 3px rgba($error-color, 0.1);
+      }
+    }
+
+    // Success state  
+    &.success {
+      border-color: $success-color;
+      
+      &:focus {
+        border-color: $success-color;
+        box-shadow: 0 0 0 3px rgba($success-color, 0.1);
+      }
+    }
+
+    // Different sizes
+    &.input-sm {
+      padding: $spacing-xs $spacing-sm;
+      font-size: $font-sm;
+    }
+
+    &.input-lg {
+      padding: $spacing-md $spacing-lg;
+      font-size: $font-lg;
+    }
+
+    // Input types styling
+
+
+    &[type="number"] {
+      direction: ltr;
+      text-align: right;
+    }
+
+    &[type="search"] {
+      padding-right: $spacing-xl;
+    }
+
+    &[type="password"] {
+      letter-spacing: 2px;
+      
+      &::placeholder {
+        font-family: inherit;
+        letter-spacing: normal;
+      }
+    }
+  }
+
+  // Floating label variant
+  &.floating-label {
+    position: relative;
+    margin-top: $spacing-md;
+
+    .input-label {
+      position: absolute;
+      top: 50%;
+      right: $spacing-md;
+      transform: translateY(-50%);
+      background: $bg-white;
+      padding: 0 $spacing-xs;
+      margin-bottom: 0;
+      pointer-events: none;
+      @include transition(all, $transition-fast);
+      z-index: 1;
+    }
+
+    .input-element:focus + .input-label,
+    .input-element:not(:placeholder-shown) + .input-label,
+    .input-element.has-value + .input-label {
+      top: 0;
+      font-size: $font-xs;
+      color: $primary-color;
+      transform: translateY(-50%);
+    }
+  }
+
+  // Icon support
+  &.has-icon-left {
+    .input-element {
+      padding-left: $spacing-xl;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: $spacing-sm;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-lighter;
+      z-index: 2;
+      pointer-events: none;
+      @include transition(color);
+    }
+
+    .input-element:focus ~ .input-icon {
+      color: $primary-color;
+    }
+  }
+
+  &.has-icon-right {
+    .input-element {
+      padding-right: $spacing-xl;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: $spacing-sm;
+      top: 50%;
+      transform: translateY(-50%);
+      color: $text-lighter;
+      z-index: 2;
+      pointer-events: none;
+      @include transition(color);
+    }
+
+    .input-element:focus ~ .input-icon {
+      color: $primary-color;
+    }
+  }
+
+  // Error message
+  .input-error {
+    display: block;
+    margin-top: $spacing-xs;
+    font-size: $font-xs;
+    color: $error-color;
+    direction: rtl;
+    text-align: right;
+  }
+
+  // Help text
+  .input-help {
+    display: block;
+    margin-top: $spacing-xs;
+    font-size: $font-xs;
+    color: $text-lighter;
+    direction: rtl;
+    text-align: right;
+  }
+
+  // Loading state
+  &.loading {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: $spacing-sm;
+      width: 16px;
+      height: 16px;
+      border: 2px solid $border-light;
+      border-top: 2px solid $primary-color;
+      border-radius: $radius-full;
+      animation: spin 1s linear infinite;
+      transform: translateY(-50%);
+    }
+
+    .input-element {
+      padding-left: $spacing-xl;
+    }
+  }
+
+  // Animation keyframes
+  @keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  // Focus ring for better accessibility
+  .input-focus-ring {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border: 2px solid transparent;
+    border-radius: calc(#{$radius-md} + 2px);
+    opacity: 0;
+    transform: scale(0.95);
+    @include transition(all, $transition-fast);
+    pointer-events: none;
+  }
+
+  // Responsive adjustments
+  @include mobile {
+    .input-element {
+      font-size: $font-base;
+      padding: $spacing-sm $spacing-md;
+    }
+
+    &.input-lg .input-element {
+      padding: $spacing-md $spacing-lg;
+    }
+  }
+
+  // Dark mode support (if needed)
+ 
+}
+
+// Utility classes for different variants
+.input-outlined {
+  .input-element {
+    background: transparent;
+    border: 2px solid $border-color;
+
+    &:focus {
+      background: $bg-white;
+    }
+  }
+}
+
+.input-filled {
+  .input-element {
+    background: $bg-light;
+    border: 2px solid transparent;
+
+    &:focus {
+      background: $bg-white;
+      border-color: $primary-color;
+    }
+  }
+}
+
+.input-underlined {
+  .input-element {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid $border-color;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 0;
+
+    &:focus {
+      border-bottom-color: $primary-color;
+      box-shadow: none;
+    }
+  }
+}

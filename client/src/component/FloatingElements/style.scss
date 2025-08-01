@@ -1,0 +1,428 @@
+// ===================================
+// FloatingElements Component Styles
+// ===================================
+
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.floating-elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+
+  .floating-element {
+    position: absolute;
+    font-size: $font-3xl;
+    opacity: 0.1;
+    animation: float var(--animation-duration, 8s) ease-in-out infinite;
+    animation-delay: var(--animation-delay, 0s);
+    user-select: none;
+    @include transition(opacity, 2s);
+
+    @include tablet {
+      font-size: $font-2xl;
+    }
+
+    @include mobile {
+      font-size: $font-xl;
+    }
+
+    // Default positioning for 6 elements
+    &.element-1 {
+      top: 10%;
+      right: 10%;
+      --animation-duration: 8s;
+      --animation-delay: 0s;
+    }
+    
+    &.element-2 {
+      top: 20%;
+      left: 15%;
+      --animation-duration: 7s;
+      --animation-delay: -2s;
+    }
+    
+    &.element-3 {
+      top: 70%;
+      right: 20%;
+      --animation-duration: 9s;
+      --animation-delay: -4s;
+    }
+    
+    &.element-4 {
+      top: 60%;
+      left: 8%;
+      --animation-duration: 6s;
+      --animation-delay: -1s;
+    }
+    
+    &.element-5 {
+      top: 40%;
+      right: 5%;
+      --animation-duration: 10s;
+      --animation-delay: -3s;
+    }
+    
+    &.element-6 {
+      top: 80%;
+      left: 25%;
+      --animation-duration: 7.5s;
+      --animation-delay: -5s;
+    }
+
+    // Additional positions for more elements
+    &.element-7 {
+      top: 30%;
+      right: 35%;
+      --animation-duration: 8.5s;
+      --animation-delay: -6s;
+    }
+
+    &.element-8 {
+      top: 85%;
+      right: 45%;
+      --animation-duration: 6.5s;
+      --animation-delay: -7s;
+    }
+
+    &.element-9 {
+      top: 15%;
+      left: 40%;
+      --animation-duration: 9.5s;
+      --animation-delay: -8s;
+    }
+
+    &.element-10 {
+      top: 55%;
+      right: 60%;
+      --animation-duration: 7.8s;
+      --animation-delay: -9s;
+    }
+  }
+
+  // Base float animation
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translateY(-20px) rotate(180deg);
+      opacity: 0.2;
+    }
+  }
+
+  // Theme-specific animations and styling
+  &.theme-cooking {
+    .floating-element {
+      animation-name: cookingFloat;
+    }
+  }
+
+  @keyframes cookingFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg) scale(1);
+      opacity: 0.1;
+    }
+    25% {
+      transform: translateY(-15px) rotate(90deg) scale(1.1);
+      opacity: 0.15;
+    }
+    75% {
+      transform: translateY(-5px) rotate(270deg) scale(0.9);
+      opacity: 0.2;
+    }
+  }
+
+  &.theme-signup {
+    .floating-element {
+      animation-name: signupFloat;
+      
+      &.element-1,
+      &.element-3,
+      &.element-5 {
+        animation-direction: reverse;
+      }
+    }
+  }
+
+  @keyframes signupFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.12;
+    }
+    33% {
+      transform: translateY(-25px) rotate(120deg);
+      opacity: 0.18;
+    }
+    66% {
+      transform: translateY(-10px) rotate(240deg);
+      opacity: 0.22;
+    }
+  }
+
+  &.theme-auth {
+    .floating-element {
+      animation-name: authFloat;
+      opacity: 0.08;
+      
+      &:nth-child(even) {
+        animation-delay: calc(var(--animation-delay) - 1s);
+      }
+    }
+  }
+
+  @keyframes authFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg) scale(1);
+      opacity: 0.08;
+    }
+    50% {
+      transform: translateY(-30px) rotate(180deg) scale(1.2);
+      opacity: 0.15;
+    }
+  }
+
+  &.theme-search {
+    .floating-element {
+      animation-name: searchFloat;
+      
+      &.element-1 {
+        animation-name: searchPulse;
+      }
+    }
+  }
+
+  @keyframes searchFloat {
+    0%, 100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+      opacity: 0.1;
+    }
+    25% {
+      transform: translateY(-10px) translateX(5px) rotate(90deg);
+      opacity: 0.15;
+    }
+    75% {
+      transform: translateY(-20px) translateX(-5px) rotate(270deg);
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes searchPulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.1;
+    }
+    50% {
+      transform: scale(1.3);
+      opacity: 0.25;
+    }
+  }
+
+  &.theme-recipe {
+    .floating-element {
+      animation-name: recipeFloat;
+    }
+  }
+
+  @keyframes recipeFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+      opacity: 0.12;
+    }
+    50% {
+      transform: translateY(-15px) rotate(180deg);
+      opacity: 0.18;
+    }
+  }
+
+  &.theme-loading {
+    .floating-element {
+      animation-name: loadingFloat;
+    }
+  }
+
+  @keyframes loadingFloat {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10%, 90% {
+      opacity: 0.15;
+    }
+    100% {
+      transform: translateY(-100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  &.theme-error {
+    .floating-element {
+      animation-name: errorFloat;
+      
+      &:nth-child(odd) {
+        animation-direction: reverse;
+      }
+    }
+  }
+
+  @keyframes errorFloat {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg) scale(1);
+      opacity: 0.1;
+    }
+    25% {
+      transform: translateY(-20px) rotate(-10deg) scale(1.1);
+      opacity: 0.15;
+    }
+    75% {
+      transform: translateY(-10px) rotate(10deg) scale(0.9);
+      opacity: 0.2;
+    }
+  }
+
+  // Interactive hover effects (when parent allows pointer events)
+  .floating-elements-interactive & {
+    pointer-events: auto;
+    
+    .floating-element {
+      cursor: pointer;
+      @include transition(all, 0.3s);
+      
+      &:hover {
+        opacity: 0.4;
+        transform: scale(1.2) rotate(45deg);
+        animation-play-state: paused;
+      }
+    }
+  }
+
+  // High density variant (more elements, smaller)
+  &.density-high {
+    .floating-element {
+      font-size: $font-lg;
+      opacity: 0.08;
+      
+      @include tablet {
+        font-size: $font-base;
+      }
+      
+      @include mobile {
+        font-size: $font-sm;
+      }
+    }
+  }
+
+  // Low density variant (fewer elements, larger)
+  &.density-low {
+    .floating-element {
+      font-size: $font-4xl;
+      opacity: 0.15;
+      
+      @include tablet {
+        font-size: $font-3xl;
+      }
+      
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+  }
+
+  // Speed variants
+  &.speed-slow {
+    .floating-element {
+      --animation-duration: 12s;
+    }
+  }
+
+  &.speed-fast {
+    .floating-element {
+      --animation-duration: 4s;
+    }
+  }
+
+  // Accessibility: Respect reduced motion
+  @media (prefers-reduced-motion: reduce) {
+    .floating-element {
+      animation: none;
+      opacity: 0.05;
+      
+      // Show static positions
+      &.element-1 { top: 15%; right: 15%; }
+      &.element-2 { top: 25%; left: 20%; }
+      &.element-3 { top: 65%; right: 25%; }
+      &.element-4 { top: 55%; left: 12%; }
+      &.element-5 { top: 35%; right: 8%; }
+      &.element-6 { top: 75%; left: 30%; }
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .floating-element {
+      opacity: 0.3;
+      filter: contrast(200%);
+    }
+  }
+
+  // Print: Hide floating elements
+  @media print {
+    display: none;
+  }
+
+  // Mobile specific adjustments
+  @include mobile {
+    // Reduce number of visible elements on mobile
+    .floating-element {
+      &.element-4,
+      &.element-5,
+      &.element-6 {
+        display: none;
+      }
+    }
+    
+    &.mobile-full {
+      .floating-element {
+        display: block;
+      }
+    }
+  }
+
+  // Custom positioning classes
+  &.position-corners {
+    .floating-element {
+      &.element-1 { top: 5%; right: 5%; }
+      &.element-2 { top: 5%; left: 5%; }
+      &.element-3 { bottom: 5%; right: 5%; }
+      &.element-4 { bottom: 5%; left: 5%; }
+      &.element-5 { top: 50%; right: 5%; }
+      &.element-6 { top: 50%; left: 5%; }
+    }
+  }
+
+  &.position-center {
+    .floating-element {
+      &.element-1 { top: 30%; left: 30%; }
+      &.element-2 { top: 30%; right: 30%; }
+      &.element-3 { top: 70%; left: 30%; }
+      &.element-4 { top: 70%; right: 30%; }
+      &.element-5 { top: 50%; left: 50%; }
+      &.element-6 { top: 20%; left: 50%; }
+    }
+  }
+
+  // Z-index management
+  &.z-behind {
+    z-index: -1;
+  }
+
+  &.z-front {
+    z-index: 10;
+  }
+}

@@ -1,0 +1,348 @@
+// ===================================
+// NotFound Page Styles
+// ===================================
+
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.not-found-page {
+  min-height: 100vh;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  @include flex-center;
+  padding: $spacing-lg;
+  direction: rtl;
+  position: relative;
+  overflow: hidden;
+
+  // Animated background elements
+ 
+
+  .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 800px;
+  }
+
+  .not-found-content {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: $radius-2xl;
+    padding: $spacing-xxl;
+    text-align: center;
+    @include shadow(medium);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+
+    @include tablet {
+      padding: $spacing-xl;
+    }
+
+    @include mobile {
+      padding: $spacing-lg;
+      border-radius: $radius-lg;
+    }
+
+    // Decorative elements
+   
+
+    .error-code {
+      font-size: clamp(80px, 15vw, 180px);
+      font-weight: $font-bold;
+      color: transparent;
+      background: linear-gradient(135deg, $primary-color, $secondary-color, $primary-dark);
+      background-clip: text;
+      -webkit-background-clip: text;
+      margin-bottom: $spacing-md;
+      text-shadow: 0 4px 8px rgba($primary-color, 0.3);
+      animation: pulse 2s ease-in-out infinite;
+      line-height: 1;
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @include mobile {
+        margin-bottom: $spacing-sm;
+      }
+    }
+
+    h1 {
+      font-size: $font-3xl;
+      color: $text-color;
+      margin-bottom: $spacing-md;
+      font-weight: $font-bold;
+
+      @include tablet {
+        font-size: $font-2xl;
+      }
+
+      @include mobile {
+        font-size: $font-xl;
+        margin-bottom: $spacing-sm;
+      }
+    }
+
+    > p {
+      font-size: $font-lg;
+      color: $text-light;
+      margin-bottom: $spacing-xl;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+
+      @include tablet {
+        font-size: $font-base;
+        margin-bottom: $spacing-lg;
+      }
+
+      @include mobile {
+        font-size: $font-sm;
+        margin-bottom: $spacing-md;
+      }
+    }
+
+    .error-actions {
+      @include flex-center;
+      gap: $spacing-md;
+      margin-bottom: $spacing-xl;
+      flex-wrap: wrap;
+
+      @include mobile {
+        @include flex-column;
+        gap: $spacing-sm;
+        margin-bottom: $spacing-lg;
+      }
+
+      .btn {
+        @include button-base;
+        padding: $spacing-md $spacing-lg;
+        font-size: $font-base;
+        font-weight: $font-semibold;
+        border-radius: $radius-lg;
+        min-width: 160px;
+        @include transition(all, $transition-base);
+
+        @include mobile {
+          width: 100%;
+          min-width: auto;
+        }
+
+        &.btn-primary {
+          @include gradient-bg($primary-color, $primary-dark);
+          color: $text-white;
+          border: 2px solid transparent;
+
+          &:hover {
+            transform: translateY(-3px);
+            @include shadow(primary);
+          }
+
+          &:active {
+            transform: translateY(-1px);
+          }
+        }
+
+        &.btn-secondary {
+          background: transparent;
+          color: $primary-color;
+          border: 2px solid $primary-color;
+
+          &:hover {
+            background: $primary-color;
+            color: $text-white;
+            transform: translateY(-3px);
+            @include shadow(medium);
+          }
+
+          &:active {
+            transform: translateY(-1px);
+          }
+        }
+      }
+    }
+
+    .suggestions {
+      background: rgba($bg-light, 0.5);
+      border-radius: $radius-lg;
+      padding: $spacing-lg;
+      border: 1px solid $border-light;
+
+      @include mobile {
+        padding: $spacing-md;
+      }
+
+      h3 {
+        font-size: $font-lg;
+        color: $text-color;
+        margin-bottom: $spacing-md;
+        font-weight: $font-semibold;
+
+        @include mobile {
+          font-size: $font-base;
+          margin-bottom: $spacing-sm;
+        }
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: $spacing-sm;
+
+        @include mobile {
+          grid-template-columns: 1fr;
+        }
+
+        li {
+          margin: 0;
+
+          a {
+            display: block;
+            padding: $spacing-sm $spacing-md;
+            background: $bg-white;
+            color: $text-color;
+            text-decoration: none;
+            border-radius: $radius-md;
+            @include transition(all, $transition-base);
+            border: 1px solid $border-color;
+            font-weight: $font-medium;
+
+            &:hover {
+              background: $primary-color;
+              color: $text-white;
+              transform: translateY(-2px);
+              @include shadow(light);
+              border-color: $primary-color;
+            }
+
+            &:focus {
+              outline: 2px solid $primary-color;
+              outline-offset: 2px;
+            }
+
+            &:active {
+              transform: translateY(0px);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @include mobile {
+    padding: $spacing-md;
+    min-height: 100vh;
+    align-items: flex-start;
+    padding-top: $spacing-xl;
+  }
+
+  // Enhanced accessibility
+  @media (prefers-reduced-motion: reduce) {
+    &::before,
+    &::after {
+      animation: none;
+    }
+
+    .error-code {
+      animation: none;
+    }
+
+    .btn {
+      &:hover {
+        transform: none;
+      }
+    }
+
+    .suggestions ul li a {
+      &:hover {
+        transform: none;
+      }
+    }
+  }
+
+  // High contrast mode
+  @media (prefers-contrast: high) {
+    .not-found-content {
+      background: $bg-white;
+      border: 2px solid $text-color;
+    }
+
+    .error-code {
+      color: $primary-color;
+      background: none;
+    }
+
+    .btn {
+      border-width: 2px;
+
+      &.btn-primary {
+        background: $primary-color;
+        border-color: $primary-color;
+      }
+    }
+
+    .suggestions {
+      background: $bg-light;
+      border: 1px solid $text-color;
+
+      ul li a {
+        border: 1px solid $text-color;
+
+        &:hover {
+          background: $text-color;
+          color: $bg-white;
+        }
+      }
+    }
+  }
+
+  // Dark mode support
+
+  // Loading animation for page transition
+  &.page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  &.page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all $transition-base ease-out;
+  }
+
+  // Print styles
+  @media print {
+    background: white !important;
+    color: black !important;
+
+    .not-found-content {
+      background: white !important;
+      box-shadow: none !important;
+      border: 1px solid black !important;
+    }
+
+    .error-code {
+      color: black !important;
+      background: none !important;
+    }
+
+    .btn {
+      display: none !important;
+    }
+
+    &::before,
+    &::after {
+      display: none !important;
+    }
+  }
+}
