@@ -14,7 +14,7 @@ export default function NavBar() {
   const navArr = [
     { name: 'Home', path: '/', icon: <AiFillHome />, label: 'בית' },
     { name: 'Personal Area', path: '/personal-area', icon: <AiOutlineUser />, label: 'איזור אישי' },
-    { name: 'Shopping List', path: '/shopping-list', icon: <AiOutlineShoppingCart />, label: 'קניות' },
+    // { name: 'Shopping List', path: '/shopping-list', icon: <AiOutlineShoppingCart />, label: 'קניות' },
     { name: 'Notifications', path: '/notifications', icon: <AiOutlineBell />, label: 'התראות', badge: 3 },
     { name: 'New Recipe', path: '/new-recipe', icon: <AiOutlinePlusCircle />, label: 'הוסף מתכון' },
     { name: 'Settings', path: '/settings', icon: <AiOutlineSetting />, label: 'הגדרות' }
