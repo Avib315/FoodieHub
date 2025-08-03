@@ -15,6 +15,10 @@ async function getRecipes(request) {
     return recipes;
 }
 async function getRecipeById(id) {
+    if (!id) return { success: false, message: ApiMessages.errorMessages.forbidden };
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return { success: false, message: ApiMessages.errorMessages.invalidId };
+    }
     const recipe = await recipeController.readOne({ _id: id });
     return recipe;
 }
