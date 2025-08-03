@@ -1,6 +1,8 @@
-const categoriesController = require("../DL/controllers/categories.controller");
+const categoriesController = require("../DL/controllers/category.controller");
 
-async function getCategories (){
-
-}  
-module.exports = {getCategories}
+async function getAllCategories() {
+    const recipe = await categoriesController.read();
+    console.log(recipe)
+    return {success: true, data: recipe};
+}
+module.exports = {getAllCategories}
