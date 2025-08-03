@@ -12,15 +12,19 @@ async function getRecipes(request) {
     if (freeSearch) query.freeSearch = { $regex: freeSearch, $options: 'i' };
     if (userId) query.userId = userId;
     const recipes = await recipeController.read(query);
-    return recipes;
+    return {success: true, data: recipe};
 }
 async function getRecipeById(id) {
+    if (!id) return { success: false, message: ApiMessages.errorMessages.forbidden };
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        return { success: false, message: ApiMessages.errorMessages.invalidId };
+    }
     const recipe = await recipeController.readOne({ _id: id });
-    return recipe;
+    return {success: true, data: recipe};
 }
 async function getAllRecipes() {
     const recipe = await recipeController.read();
     console.log(recipe)
-    return recipe;
+    return {success: true, data: recipe};
 }
 module.exports = { getRecipes, getRecipeById, getAllRecipes };
