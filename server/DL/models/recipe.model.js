@@ -29,10 +29,9 @@ const recipeSchema = new mongoose.Schema({
     imageUrl: { type: String, default: null }
   }],
   ingredients: [{
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true
+    name: {
+      type: String,
+      required: true,
     },
     quantity: {
       type: Number,
@@ -93,13 +92,7 @@ const recipeSchema = new mongoose.Schema({
     enum: ['active', 'pending', 'rejected', 'draft'],
     default: 'draft'
   },
-  nutrition: {
-    calories: { type: Number, min: 0 },
-    protein: { type: Number, min: 0 },
-    carbs: { type: Number, min: 0 },
-    fat: { type: Number, min: 0 },
-    fiber: { type: Number, min: 0 }
-  },
+
   viewCount: {
     type: Number,
     default: 0

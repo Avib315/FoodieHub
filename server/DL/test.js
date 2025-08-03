@@ -5,11 +5,9 @@ const bcrypt = require('bcrypt');
 const userController = require("../DL/controllers/user.controller");
 const categoryController = require("../DL/controllers/category.controller");
 const recipeController = require("../DL/controllers/recipe.controller");
-const productController = require("../DL/controllers/product.controller");
 const ratingController = require("../DL/controllers/rating.controller");
 const commentController = require("../DL/controllers/comment.controller");
 const savedRecipeController = require("../DL/controllers/savedRecipe.controller");
-const shoppingListController = require("../DL/controllers/shoppingList.controller");
 const reportController = require("../DL/controllers/report.controller");
 const adminLogController = require("../DL/controllers/adminLog.controller");
 const notificationController = require("../DL/controllers/notification.controller");
@@ -80,7 +78,7 @@ const insertCategories = async () => {
         
         const categories = [
             {
-                name: "עיקריות",
+                name: "מנות עיקריות",
                 description: "מנות עיקריות לארוחה",
                 iconUrl: "https://urimalka.co.il/wp-content/uploads/2019/08/WhatsApp-Image-2019-08-29-at-11.33.16.jpeg",
                 sortOrder: 1,
@@ -141,83 +139,10 @@ const insertCategories = async () => {
         throw error;
     }
 };
-// Test data insertion for products
-const insertProducts = async () => {
-    try {
-        console.log("========================= PRODUCTS TEST BEGIN =========================");
-        
-        const products = [
-            {
-                name: "עגבניות",
-                alternativeNames: ["עגבנייה", "עגבניה"],
-                category: "פירות וירקות",
-                defaultUnit: "קילוגרם",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/tomatoes.jpg"
-            },
-            {
-                name: "בצל",
-                alternativeNames: ["בצלים"],
-                category: "פירות וירקות",
-                defaultUnit: "יחידה",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/onion.jpg"
-            },
-            {
-                name: "שום",
-                alternativeNames: ["שן שום"],
-                category: "פירות וירקות",
-                defaultUnit: "יחידה",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/garlic.jpg"
-            },
-            {
-                name: "שמן זית",
-                alternativeNames: ["שמן זית בתולי"],
-                category: "שמנים",
-                defaultUnit: "כף",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/olive-oil.jpg"
-            },
-            {
-                name: "קמח",
-                alternativeNames: ["קמח לבן", "קמח רגיל"],
-                category: "מוצרי מאפייה",
-                defaultUnit: "כוס",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/flour.jpg"
-            },
-            {
-                name: "ביצים",
-                alternativeNames: ["ביצה"],
-                category: "חלב וביצים",
-                defaultUnit: "יחידה",
-                isGlobal: true,
-                userId: null,
-                imageUrl: "https://example.com/products/eggs.jpg"
-            }
-        ];
-        
-        for (const product of products) {
-            const result = await productController.create(product);
-            console.log("Product created:", result.name);
-        }
-        
-        console.log("========================= PRODUCTS TEST END =========================\n");
-        return products;
-    } catch (error) {
-        console.error("Products error:", error);
-        throw error;
-    }
-};
+
 
 // Test data insertion for recipes
-const insertRecipes = async (users, categories, products) => {
+const insertRecipes = async (users, categories) => {
     try {
         console.log("========================= RECIPES TEST BEGIN =========================");
         
@@ -225,6 +150,7 @@ const insertRecipes = async (users, categories, products) => {
         const saladCategory = categories.find(cat => cat.name === "סלטים");
         const user1 = users[0];
         const user2 = users[1];
+
         
         const recipes = [
             {
@@ -251,19 +177,19 @@ const insertRecipes = async (users, categories, products) => {
                 ],
                 ingredients: [
                     {
-                        productId: products.find(p => p.name === "עגבניות")._id,
+                        name:"עגבניות",
                         quantity: 500,
                         unit: "גרם",
                         notes: "עגבניות בשלות"
                     },
                     {
-                        productId: products.find(p => p.name === "בצל")._id,
+                        name:"בצל",
                         quantity: 1,
                         unit: "יחידה",
                         notes: "בצל אדום עדיף"
                     },
                     {
-                        productId: products.find(p => p.name === "שמן זית")._id,
+                        name:"שמן זית",
                         quantity: 2,
                         unit: "כף",
                         notes: null
@@ -284,13 +210,6 @@ const insertRecipes = async (users, categories, products) => {
                 tags: ["סלט", "טבעוני", "קל", "מהיר"],
                 isPublic: true,
                 status: "active",
-                nutrition: {
-                    calories: 85,
-                    protein: 2,
-                    carbs: 8,
-                    fat: 6,
-                    fiber: 3
-                },
                 viewCount: 142,
                 averageRating: 4.2,
                 ratingsCount: 15
@@ -319,13 +238,13 @@ const insertRecipes = async (users, categories, products) => {
                 ],
                 ingredients: [
                     {
-                        productId: products.find(p => p.name === "שום")._id,
+                        name:"שום",
                         quantity: 4,
                         unit: "יחידה",
                         notes: "שיני שום טריות"
                     },
                     {
-                        productId: products.find(p => p.name === "שמן זית")._id,
+                        name:"שמן זית",
                         quantity: 4,
                         unit: "כף",
                         notes: "שמן זית איכותי"
@@ -346,13 +265,6 @@ const insertRecipes = async (users, categories, products) => {
                 tags: ["פסטה", "איטלקי", "מהיר", "צמחוני"],
                 isPublic: true,
                 status: "active",
-                nutrition: {
-                    calories: 420,
-                    protein: 12,
-                    carbs: 65,
-                    fat: 14,
-                    fiber: 3
-                },
                 viewCount: 89,
                 averageRating: 4.7,
                 ratingsCount: 8
@@ -451,84 +363,6 @@ const insertSavedRecipes = async (users, recipes) => {
 };
 
 // Test data insertion for shopping lists
-const insertShoppingLists = async (users, products, recipes) => {
-    try {
-        console.log("========================= SHOPPING LISTS TEST BEGIN =========================");
-        
-        const shoppingLists = [
-            {
-                userId: users[0]._id,
-                name: "רשימת קניות לשבת",
-                items: [
-                    {
-                        productId: products.find(p => p.name === "עגבניות")._id,
-                        quantity: 1,
-                        unit: "קילוגרם",
-                        isPurchased: false,
-                        notes: "עגבניות בשלות וטריות",
-                        addedFrom: "manual",
-                        recipeId: null
-                    },
-                    {
-                        productId: products.find(p => p.name === "בצל")._id,
-                        quantity: 2,
-                        unit: "יחידה",
-                        isPurchased: true,
-                        notes: null,
-                        addedFrom: "recipe",
-                        recipeId: recipes[0]._id
-                    },
-                    {
-                        productId: products.find(p => p.name === "ביצים")._id,
-                        quantity: 12,
-                        unit: "יחידה",
-                        isPurchased: false,
-                        notes: "ביצים גדולות",
-                        addedFrom: "manual",
-                        recipeId: null
-                    }
-                ],
-                isActive: true,
-                sharedWith: [
-                    {
-                        userId: users[1]._id,
-                        permission: "edit"
-                    }
-                ],
-                completedAt: null
-            },
-            {
-                userId: users[1]._id,
-                name: "קניות חירום",
-                items: [
-                    {
-                        productId: products.find(p => p.name === "קמח")._id,
-                        quantity: 1,
-                        unit: "קילוגרם",
-                        isPurchased: true,
-                        notes: null,
-                        addedFrom: "manual",
-                        recipeId: null
-                    }
-                ],
-                isActive: false,
-                sharedWith: [],
-                completedAt: new Date(Date.now() - 86400000) // Yesterday
-            }
-        ];
-        
-        for (const shoppingList of shoppingLists) {
-            const result = await shoppingListController.create(shoppingList);
-            console.log("Shopping list created:", result.name);
-        }
-        
-        console.log("========================= SHOPPING LISTS TEST END =========================\n");
-        return shoppingLists;
-    } catch (error) {
-        console.error("Shopping lists error:", error);
-        throw error;
-    }
-};
 
 // Test data insertion for notifications
 const insertNotifications = async (users, recipes) => {
@@ -680,13 +514,14 @@ const runCompleteTest = async () => {
         console.log("🚀 Starting complete database test based on schema...\n");
         
         // Insert data in correct order (dependencies)
-        const users = await insertUsers();
-        const categories = await insertCategories();
-        const products = await insertProducts();
-        const recipes = await insertRecipes(users, categories, products);
+        const users1 = await insertUsers();
+        const categories1 = await insertCategories();
+        const users = await userController.read({})
+        const categories = await categoryController.read({})        
+        const recipes1 = await insertRecipes(users, categories);
+        const recipes = await recipeController.read({})
         const ratings = await insertRatings(users, recipes);
         const savedRecipes = await insertSavedRecipes(users, recipes);
-        const shoppingLists = await insertShoppingLists(users, products, recipes);
         const notifications = await insertNotifications(users, recipes);
         const reports = await insertReports(users, recipes);
         const adminLogs = await insertAdminLogs(users, recipes);
