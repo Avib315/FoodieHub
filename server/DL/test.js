@@ -73,6 +73,74 @@ const insertUsers = async () => {
     }
 };
 
+// Test data insertion for categories
+const insertCategories = async () => {
+    try {
+        console.log("========================= CATEGORIES TEST BEGIN =========================");
+        
+        const categories = [
+            {
+                name: "עיקריות",
+                description: "מנות עיקריות לארוחה",
+                iconUrl: "https://urimalka.co.il/wp-content/uploads/2019/08/WhatsApp-Image-2019-08-29-at-11.33.16.jpeg",
+                sortOrder: 1,
+                isActive: true,
+                recipeCount: 0
+            },
+            {
+                name: "מתאבנים",
+                description: "מתאבנים וכניסות",
+                iconUrl: "https://cdn.babamail.co.il/images/recipes_source/ba530703-bbb5-492e-b921-ce5223d2d1d9.jpg",
+                sortOrder: 2,
+                isActive: true,
+                recipeCount: 0
+            },
+            {
+                name: "קינוחים",
+                description: "קינוחים וממתקים",
+                iconUrl: "https://www.metukimsheli.com/wp-content/uploads/2023/07/%D7%91%D7%95%D7%9E%D7%91-%D7%A9%D7%95%D7%A7%D7%95%D7%9C%D7%93-%D7%9E%D7%99%D7%9C%D7%A7%D7%948-1000x1400.jpg",
+                sortOrder: 3,
+                isActive: true,
+                recipeCount: 0
+            },
+            {
+                name: "מרקים",
+                description: "מרקים חמים וקרים",
+                iconUrl: "https://www.shfayimcenter.co.il/wp-content/uploads/2019/11/%D7%A7%D7%A8%D7%95%D7%A1%D7%9C%D7%AA-%D7%9E%D7%A8%D7%A7%D7%99%D7%9D4.jpg",
+                sortOrder: 4,
+                isActive: true,
+                recipeCount: 0
+            },
+            {
+                name: "סלטים",
+                description: "סלטים טריים ובריאים",
+                iconUrl: "https://veg-new.b-cdn.net/wp-content/uploads/salads.jpg",
+                sortOrder: 5,
+                isActive: true,
+                recipeCount: 0
+            },
+            {
+                name: "משקאות",
+                description: "משקאות חמים וקרים",
+                iconUrl: "https://www.paskovich.co.il/Warehouse/content/pics/pic_1220_A.jpg",
+                sortOrder: 6,
+                isActive: true,
+                recipeCount: 0
+            }
+        ];
+        
+        for (const category of categories) {
+            const result = await categoryController.create(category);
+            console.log("Category created:", result.name);
+        }
+        
+        console.log("========================= CATEGORIES TEST END =========================\n");
+        return categories;
+    } catch (error) {
+        console.error("Categories error:", error);
+        throw error;
+    }
+};
 // Test data insertion for products
 const insertProducts = async () => {
     try {
