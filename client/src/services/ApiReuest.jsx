@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 // Get base URL from environment variables
 const API_BASE_URL = import.meta.env.VITE_API || 'http://localhost:3001/api';
 
-const useAxiosRequest = (url, options = {}) => {
+const useAxiosRequest = ({url, options = {}}) => {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);

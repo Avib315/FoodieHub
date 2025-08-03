@@ -1,1617 +1,1372 @@
-@use '../../styles/variables.scss' as *;
-@use '../../styles/mixins.scss' as *;
+// Import Font Awesome for icons
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
-.recipe-detail-page {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: $bg-lighter;
-  color: $text-color;
-  direction: rtl;
+// ===================================
+// Variables (inline for completeness)
+// ===================================
+
+// Brand Colors
+$primary-color: #ff6b6b;
+$primary-dark: #ee5a24;
+$secondary-color: #667eea;
+$secondary-dark: #764ba2;
+
+// Text Colors
+$text-color: #333;
+$text-light: #666;
+$text-lighter: #888;
+$text-white: #fff;
+
+// Background Colors
+$bg-white: #fff;
+$bg-light: #f5f5f5;
+$bg-lighter: #fafafa;
+$bg-dark: #333;
+
+// Border Colors
+$border-color: #f0f0f0;
+$border-light: #e5e5e5;
+$border-medium: #ddd;
+
+// Shadow Colors
+$shadow-light: rgba(0, 0, 0, 0.1);
+$shadow-medium: rgba(0, 0, 0, 0.15);
+$shadow-dark: rgba(0, 0, 0, 0.3);
+$shadow-primary: rgba(255, 107, 107, 0.3);
+
+// Status Colors
+$success-color: #2ecc71;
+$warning-color: #f39c12;
+$error-color: #e74c3c;
+$info-color: #3498db;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+// Font Sizes
+$font-xs: 12px;
+$font-sm: 14px;
+$font-base: 16px;
+$font-lg: 18px;
+$font-xl: 20px;
+$font-2xl: 24px;
+$font-3xl: 32px;
+
+// Font Weights
+$font-light: 300;
+$font-normal: 400;
+$font-medium: 500;
+$font-semibold: 600;
+$font-bold: 700;
+
+// Border Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+$radius-2xl: 20px;
+$radius-full: 50%;
+
+// Breakpoints
+$mobile: 480px;
+$tablet: 768px;
+$laptop: 1024px;
+$desktop: 1200px;
+
+// Z-index layers
+$z-sticky: 1020;
+$z-fixed: 1030;
+$z-modal: 1050;
+
+// Transition Durations
+$transition-fast: 0.15s;
+$transition-base: 0.3s;
+$transition-slow: 0.5s;
+
+// ===================================
+// Mixins (inline for completeness)
+// ===================================
+
+@mixin gradient-bg($color1: $primary-color, $color2: $primary-dark, $direction: 135deg) {
+  background: linear-gradient($direction, $color1, $color2);
+}
+
+@mixin transition($property: all, $duration: $transition-base, $easing: ease) {
+  transition: $property $duration $easing;
+}
+
+@mixin shadow($type: medium) {
+  @if $type == light {
+    box-shadow: 0 2px 8px $shadow-light;
+  } @else if $type == medium {
+    box-shadow: 0 4px 16px $shadow-medium;
+  } @else if $type == dark {
+    box-shadow: 0 8px 32px $shadow-dark;
+  } @else if $type == primary {
+    box-shadow: 0 8px 20px $shadow-primary;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin mobile {
+  @media (max-width: $mobile) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (max-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin laptop {
+  @media (max-width: $laptop) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin mobile-up {
+  @media (min-width: $mobile ) {
+    @content;
+  }
+}
+
+@mixin tablet-up {
+  @media (min-width: $tablet ) {
+    @content;
+  }
+}
+
+// ===================================
+// Base Styles
+// ===================================
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
+  color: $text-color;
+  background: $bg-lighter;
+  direction: rtl;
+  text-align: right;
+}
+
+// ===================================
+// Container
+// ===================================
+
+.container {
+  max-width: 414px;
+  margin: 0 auto;
+  background: $bg-white;
   min-height: 100vh;
+  position: relative;
+  @include shadow(light);
 
-  .container {
-    max-width: 414px;
-    margin: 0 auto;
-    background: $bg-white;
-    min-height: 100vh;
-    position: relative;
-
-    // Mobile first, then scale up
-    @include mobile {
-      max-width: 100%;
-      padding: 0;
-    }
-
-    // Tablet improvements
-    @include tablet-up {
-      max-width: 768px;
-      border-radius: $radius-xl;
-      margin: $spacing-lg auto;
-      min-height: calc(100vh - #{$spacing-xl});
-      @include shadow(medium);
-    }
-
-    // Laptop: Switch to two-column layout with nav space
-    @include laptop-up {
-      max-width: calc(100vw - 250px); // Leave 250px for right nav
-      margin: $spacing-xl auto $spacing-xl 0; // Align left to leave nav space
-      padding: $spacing-xl;
-      display: block;
-    }
-
-    // Desktop: Maximum width with better spacing and nav space
-    @include desktop {
-      max-width: calc(100vw - 300px); // Leave 300px for right nav
-      padding: $spacing-xl;
-    }
-
-    // Ultra-wide screens
-    @media (min-width: 1600px) {
-      max-width: calc(100vw - 350px); // Leave 350px for right nav
-      padding: $spacing-xl;
-    }
+  @include tablet-up {
+    max-width: 600px;
+    border-radius: $radius-lg;
+    margin: $spacing-lg auto;
+    min-height: calc(100vh - #{$spacing-xl});
   }
 
-  /* Loading and Error States */
-  .loading, .error {
-    @include flex-center;
-    height: 100vh;
-    font-size: $font-lg;
-    color: $text-light;
+  @include desktop {
+    max-width: 800px;
+  }
+}
 
-    @include tablet-up {
+// ===================================
+// Header Image
+// ===================================
+
+.recipe-header {
+  position: relative;
+  height: 250px;
+  @include gradient-bg($primary-color, $primary-dark, 45deg);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+
+  @include mobile-up {
+    height: 300px;
+  }
+
+  @include tablet-up {
+    height: 350px;
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  // Decorative pattern overlay
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 30% 40%, rgba(255,255,255,0.2) 20px, transparent 20px),
+      radial-gradient(circle at 70% 80%, rgba(255,255,255,0.1) 30px, transparent 30px),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 25px, transparent 25px);
+    z-index: 1;
+  }
+}
+
+.header-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 50%, rgba(0,0,0,0.7));
+  z-index: 2;
+}
+
+.header-controls {
+  position: absolute;
+  top: $spacing-lg;
+  left: 0;
+  right: 0;
+  @include flex-between;
+  padding: 0 $spacing-lg;
+  z-index: 3;
+
+  @include mobile {
+    top: $spacing-md;
+    padding: 0 $spacing-md;
+  }
+}
+
+.header-controls-right {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.control-btn {
+  width: 45px;
+  height: 45px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  border-radius: $radius-full;
+  color: $text-white;
+  font-size: $font-lg;
+  cursor: pointer;
+  @include transition();
+  backdrop-filter: blur(10px);
+  @include flex-center;
+
+  @include mobile {
+    width: 40px;
+    height: 40px;
+    font-size: $font-base;
+  }
+
+  &:hover {
+    background: rgba(0,0,0,0.8);
+    transform: scale(1.1);
+  }
+
+  &.saved {
+    background: rgba($primary-color, 0.9);
+    color: $text-white;
+  }
+}
+
+.recipe-title-overlay {
+  position: absolute;
+  bottom: $spacing-lg;
+  left: $spacing-lg;
+  right: $spacing-lg;
+  color: $text-white;
+  z-index: 3;
+
+  @include mobile {
+    bottom: $spacing-md;
+    left: $spacing-md;
+    right: $spacing-md;
+  }
+
+  h1 {
+    font-size: $font-2xl;
+    font-weight: $font-bold;
+    margin-bottom: $spacing-sm;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
+    @include mobile {
       font-size: $font-xl;
     }
 
-    @include laptop-up {
-      font-size: $font-2xl;
+    @include tablet-up {
+      font-size: $font-3xl;
     }
   }
+}
 
-  .error {
-    color: $error-color;
+.recipe-meta-header {
+  display: flex;
+  gap: $spacing-lg;
+  opacity: 0.9;
+  flex-wrap: wrap;
+
+  @include mobile {
+    gap: $spacing-md;
+  }
+}
+
+.meta-item-header {
+  @include flex-center;
+  gap: $spacing-sm;
+  font-size: $font-sm;
+
+  @include mobile {
+    font-size: $font-xs;
   }
 
-  /* Header Image - Fully Responsive */
-  .recipe-header {
-    position: relative;
-    height: 250px;
-    @include gradient-bg();
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
+  i {
+    font-size: $font-base;
 
     @include mobile {
-      height: 280px;
+      font-size: $font-sm;
     }
+  }
+}
 
-    @include tablet-up {
-      height: 400px;
-      border-radius: $radius-xl $radius-xl 0 0;
-    }
+// ===================================
+// Content
+// ===================================
 
-    @include laptop-up {
-      height: 450px;
-      border-radius: $radius-xl;
-      margin-bottom: $spacing-xl;
-    }
+.recipe-content {
+  padding: 0 0 100px 0;
+  animation: slideUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
 
-    @include desktop {
-      height: 500px;
-    }
+  @include tablet-up {
+    padding: 0 0 120px 0;
+  }
+}
 
-    @media (min-width: 1600px) {
-      height: 550px;
-    }
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    .header-overlay {
-      @include fixed-full;
-      position: absolute;
-      background: linear-gradient(transparent 40%, rgba(0,0,0,0.3), rgba(0,0,0,0.8));
+// ===================================
+// User Section
+// ===================================
 
-      @include tablet-up {
-        background: linear-gradient(transparent 50%, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
-      }
+.user-section {
+  padding: $spacing-lg;
+  border-bottom: 1px solid $border-color;
 
-      @include laptop-up {
-        background: linear-gradient(transparent 60%, rgba(0,0,0,0.5), rgba(0,0,0,0.7));
-      }
-    }
+  @include mobile {
+    padding: $spacing-md;
+  }
+}
 
-    .header-controls {
-      position: absolute;
-      top: 40px;
-      left: 0;
-      right: 0;
-      @include flex-between;
-      padding: 0 $spacing-lg;
-      z-index: $z-fixed;
+.user-header {
+  @include flex-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+  margin-bottom: $spacing-md;
+}
 
-      @include mobile {
-        top: 50px;
-      }
+.user-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: $radius-full;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  @include flex-center;
+  color: $text-white;
+  font-weight: $font-bold;
+  font-size: $font-xl;
+  @include shadow(light);
+  flex-shrink: 0;
 
-      @include tablet-up {
-        top: $spacing-xl;
-        padding: 0 $spacing-xl;
-      }
+  @include mobile {
+    width: 48px;
+    height: 48px;
+    font-size: $font-lg;
+  }
+}
 
-      @include laptop-up {
-        top: $spacing-xxl;
-        padding: 0 $spacing-xxl;
-      }
+.user-info {
+  flex: 1;
+  min-width: 0;
 
-      .control-btn {
-        width: 40px;
-        height: 40px;
-        background: rgba(0,0,0,0.6);
-        border: none;
-        border-radius: $radius-full;
-        color: $text-white;
-        font-size: $font-base;
-        cursor: pointer;
-        @include transition();
-        backdrop-filter: blur(10px);
-        @include flex-center;
+  h3 {
+    font-size: $font-lg;
+    color: $text-color;
+    margin-bottom: $spacing-xs;
+    font-weight: $font-semibold;
 
-        @include tablet-up {
-          width: 50px;
-          height: 50px;
-          font-size: $font-lg;
-        }
-
-        @include laptop-up {
-          width: 55px;
-          height: 55px;
-          font-size: $font-xl;
-        }
-
-        &:hover {
-          background: rgba(0,0,0,0.8);
-          transform: scale(1.1);
-        }
-
-        &.saved {
-          color: $primary-color;
-          animation: pulse 0.6s ease;
-        }
-      }
-    }
-
-    .recipe-title-overlay {
-      position: absolute;
-      bottom: $spacing-lg;
-      left: $spacing-lg;
-      right: $spacing-lg;
-      color: $text-white;
-      z-index: $z-dropdown;
-
-      @include tablet-up {
-        bottom: $spacing-xl;
-        left: $spacing-xl;
-        right: $spacing-xl;
-      }
-
-      @include laptop-up {
-        bottom: $spacing-xxl;
-        left: $spacing-xxl;
-        right: $spacing-xxl;
-      }
-
-      h1 {
-        font-size: $font-lg;
-        font-weight: $font-bold;
-        margin-bottom: $spacing-sm;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-        line-height: 1.2;
-
-        @include tablet-up {
-          font-size: $font-2xl;
-          margin-bottom: $spacing-md;
-        }
-
-        @include laptop-up {
-          font-size: $font-3xl;
-          margin-bottom: $spacing-lg;
-        }
-
-        @include desktop {
-          font-size: 2.5rem;
-        }
-      }
-
-      .recipe-meta-header {
-        display: flex;
-        gap: $spacing-md;
-        opacity: 0.9;
-        flex-wrap: wrap;
-
-        @include tablet-up {
-          gap: $spacing-lg;
-        }
-
-        @include laptop-up {
-          gap: $spacing-xl;
-        }
-
-        .meta-item-header {
-          @include flex-center;
-          gap: 6px;
-          font-size: $font-sm;
-          background: rgba(0,0,0,0.3);
-          padding: $spacing-xs $spacing-sm;
-          border-radius: $spacing-lg;
-          backdrop-filter: blur(10px);
-
-          @include tablet-up {
-            font-size: $font-base;
-            gap: $spacing-sm;
-            padding: $spacing-sm $spacing-md;
-          }
-
-          @include laptop-up {
-            font-size: $font-lg;
-            padding: $spacing-sm $spacing-lg;
-          }
-
-          i {
-            @include tablet-up {
-              font-size: $font-lg;
-            }
-
-            @include laptop-up {
-              font-size: $font-xl;
-            }
-          }
-        }
-      }
+    @include mobile {
+      font-size: $font-base;
     }
   }
 
-  /* Content Layout - Advanced Responsive Grid */
-  .recipe-content {
-    padding: 0 0 $spacing-xl 0;
-    animation: slideUp 0.6s ease forwards;
-    opacity: 0;
-    transform: translateY(20px);
+  .user-stats {
+    font-size: $font-xs;
+    color: $text-light;
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
 
-    @include tablet-up {
-      padding: 0;
+    @include mobile {
+      gap: $spacing-sm;
+      font-size: 11px;
     }
+  }
+}
 
-    @include laptop-up {
-      padding: 0;
+.follow-btn {
+  @include gradient-bg();
+  color: $text-white;
+  border: none;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-2xl;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  @include transition();
+  flex-shrink: 0;
+
+  @include mobile {
+    padding: $spacing-sm $spacing-md;
+    font-size: $font-xs;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    @include shadow(primary);
+  }
+
+  &.following {
+    background: $success-color;
+  }
+}
+
+.recipe-description {
+  color: $text-light;
+  font-size: $font-sm;
+  line-height: 1.6;
+
+  @include mobile {
+    font-size: $font-xs;
+  }
+}
+
+// ===================================
+// Actions Bar
+// ===================================
+
+.actions-bar {
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid $border-color;
+  @include flex-between;
+
+  @include mobile {
+    padding: $spacing-sm $spacing-md;
+  }
+}
+
+.actions-left {
+  display: flex;
+  gap: $spacing-lg;
+
+  @include mobile {
+    gap: $spacing-md;
+  }
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  @include flex-center;
+  gap: $spacing-sm;
+  cursor: pointer;
+  @include transition();
+  font-size: $font-sm;
+  color: $text-light;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-2xl;
+
+  @include mobile {
+    font-size: $font-xs;
+    padding: $spacing-xs $spacing-sm;
+    gap: $spacing-xs;
+  }
+
+  &:hover {
+    background: rgba($primary-color, 0.1);
+    transform: translateY(-1px);
+  }
+
+  &.liked {
+    color: $primary-color;
+
+    i {
+      color: $primary-color;
     }
   }
 
-  .recipe-main-content {
-    // Mobile and tablet: single column
+  i {
+    font-size: $font-base;
+    @include transition();
+
+    @include mobile {
+      font-size: $font-sm;
+    }
+  }
+}
+
+.save-btn {
+  background: none;
+  border: none;
+  font-size: $font-2xl;
+  color: $border-medium;
+  cursor: pointer;
+  @include transition();
+  padding: $spacing-sm;
+  border-radius: $radius-full;
+
+  @include mobile {
+    font-size: $font-xl;
+  }
+
+  &:hover {
+    background: rgba($primary-color, 0.1);
+    transform: scale(1.1);
+  }
+
+  &.saved {
+    color: $primary-color;
+    animation: pulse 0.6s ease;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+// ===================================
+// Recipe Details
+// ===================================
+
+.recipe-section {
+  padding: $spacing-xl $spacing-lg;
+  border-bottom: 8px solid $bg-light;
+
+  @include mobile {
+    padding: $spacing-lg $spacing-md;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.section-title {
+  font-size: $font-xl;
+  font-weight: $font-semibold;
+  color: $text-color;
+  margin-bottom: $spacing-lg;
+  @include flex-center;
+  justify-content: flex-start;
+  gap: $spacing-sm;
+
+  @include mobile {
+    font-size: $font-lg;
+    margin-bottom: $spacing-md;
+  }
+
+  i {
+    color: $primary-color;
+    font-size: $font-2xl;
+
+    @include mobile {
+      font-size: $font-xl;
+    }
+  }
+}
+
+.recipe-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+
+  @include mobile {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+  }
+
+  @include tablet-up {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.meta-card {
+  background: $bg-light;
+  padding: $spacing-md;
+  border-radius: $radius-lg;
+  text-align: center;
+  border: 1px solid rgba($border-color, 0.5);
+  @include transition();
+
+  @include mobile {
+    padding: $spacing-sm;
+  }
+
+  &:hover {
+    @include shadow(light);
+    transform: translateY(-2px);
+  }
+
+  i {
+    font-size: $font-xl;
+    color: $primary-color;
+    margin-bottom: $spacing-sm;
     display: block;
 
-    // Laptop and up: two-column layout
-    @include laptop-up {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: $spacing-xl;
-      align-items: start;
-    }
-
-    @include desktop {
-      grid-template-columns: 1fr 350px;
-      gap: $spacing-xl;
-    }
-
-    @media (min-width: 1600px) {
-      grid-template-columns: 1fr 380px;
-      gap: $spacing-xxl;
-    }
-
-    .left-column {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-
-      @include laptop-up {
-        gap: $spacing-lg;
-      }
-
-      @include desktop {
-        gap: $spacing-xl;
-      }
-    }
-
-    .right-column {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-
-      @include laptop-up {
-        position: sticky;
-        top: $spacing-xl;
-        gap: $spacing-lg;
-      }
-
-      @include desktop {
-        gap: $spacing-xl;
-      }
+    @include mobile {
+      font-size: $font-lg;
+      margin-bottom: $spacing-xs;
     }
   }
+}
 
-  /* User Section */
-  .user-section {
-    padding: $spacing-lg;
-    border-bottom: 1px solid $border-color;
+.meta-value {
+  font-size: $font-base;
+  font-weight: $font-semibold;
+  color: $text-color;
+  margin-bottom: $spacing-xs;
 
-    @include tablet-up {
-      padding: $spacing-xl;
-    }
+  @include mobile {
+    font-size: $font-sm;
+  }
+}
 
-    @include laptop-up {
-      padding: $spacing-lg $spacing-xl;
-      background: $bg-white;
-      border-radius: $radius-lg;
-      @include shadow(light);
-      border: none;
-      margin-bottom: 0;
-    }
+.meta-label {
+  font-size: $font-xs;
+  color: $text-light;
 
-    .user-header {
-      display: flex;
-      align-items: center;
-      gap: $spacing-md;
-      margin-bottom: $spacing-md;
+  @include mobile {
+    font-size: 10px;
+  }
+}
 
-      @include tablet-up {
-        gap: $spacing-lg;
-        margin-bottom: $spacing-lg;
-      }
+// ===================================
+// Ingredients
+// ===================================
 
-      .user-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: $radius-full;
-        @include gradient-bg($secondary-color, $secondary-dark);
-        @include flex-center;
-        color: $text-white;
-        font-weight: $font-bold;
-        font-size: $font-lg;
-        @include shadow(light);
-        flex-shrink: 0;
+.ingredients-list {
+  list-style: none;
+}
 
-        @include tablet-up {
-          width: 70px;
-          height: 70px;
-          font-size: $font-2xl;
-        }
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md 0;
+  border-bottom: 1px solid $border-color;
+  cursor: pointer;
+  @include transition();
 
-        @include laptop-up {
-          width: 80px;
-          height: 80px;
-          font-size: $font-3xl;
-        }
-      }
-
-      .user-info {
-        flex: 1;
-        min-width: 0; // Prevent overflow
-
-        h3 {
-          font-size: $font-base;
-          color: $text-color;
-          margin-bottom: 4px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-
-          @include tablet-up {
-            font-size: $font-lg;
-            margin-bottom: $spacing-sm;
-          }
-
-          @include laptop-up {
-            font-size: $font-lg;
-            white-space: normal;
-          }
-        }
-
-        .user-stats {
-          font-size: $font-xs;
-          color: $text-light;
-          display: flex;
-          gap: $spacing-sm;
-          flex-wrap: wrap;
-
-          @include tablet-up {
-            font-size: $font-sm;
-            gap: $spacing-md;
-          }
-
-          @include laptop-up {
-            font-size: $font-sm;
-            gap: $spacing-md;
-          }
-        }
-      }
-
-      .follow-btn {
-        @include button-primary;
-        padding: $spacing-sm $spacing-md;
-        border-radius: $spacing-lg;
-        font-size: $font-sm;
-        flex-shrink: 0;
-
-        @include tablet-up {
-          padding: $spacing-md $spacing-lg;
-          font-size: $font-base;
-        }
-
-        @include laptop-up {
-          padding: $spacing-md $spacing-xl;
-        }
-
-        &.following {
-          background: $success-color;
-        }
-      }
-    }
-
-    .recipe-description {
-      color: $text-light;
-      font-size: $font-sm;
-      line-height: 1.6;
-
-      @include tablet-up {
-        font-size: $font-base;
-        line-height: 1.7;
-      }
-
-      @include laptop-up {
-        font-size: $font-base;
-        line-height: 1.7;
-      }
-    }
+  @include mobile {
+    gap: $spacing-sm;
+    padding: $spacing-sm 0;
   }
 
-  /* Actions Bar */
-  .actions-bar {
+  &:hover {
+    background: $bg-light;
+    margin: 0 (-$spacing-lg);
     padding: $spacing-md $spacing-lg;
-    border-bottom: 1px solid $border-color;
-    @include flex-between;
+    border-radius: $radius-md;
 
-    @include tablet-up {
-      padding: $spacing-lg $spacing-xl;
-    }
-
-    @include laptop-up {
-      background: $bg-white;
-      border-radius: $radius-lg;
-      @include shadow(light);
-      border: none;
-      padding: $spacing-lg $spacing-xl;
-    }
-
-    .actions-left {
-      display: flex;
-      gap: $spacing-md;
-
-      @include tablet-up {
-        gap: $spacing-lg;
-      }
-
-      @include laptop-up {
-        gap: $spacing-xl;
-      }
-    }
-
-    .action-btn {
-      background: none;
-      border: none;
-      @include flex-center;
-      gap: $spacing-sm;
-      cursor: pointer;
-      @include transition();
-      font-size: $font-sm;
-      color: $text-light;
-      padding: $spacing-sm;
-      border-radius: $spacing-lg;
-
-      @include tablet-up {
-        font-size: $font-base;
-        padding: $spacing-sm $spacing-md;
-      }
-
-      @include laptop-up {
-        font-size: $font-lg;
-        padding: $spacing-md $spacing-lg;
-      }
-
-      &:hover {
-        background: $bg-lighter;
-        transform: translateY(-1px);
-      }
-
-      &.liked {
-        color: $primary-color;
-
-        i {
-          color: $primary-color;
-        }
-      }
-
-      i {
-        font-size: $font-base;
-        @include transition();
-
-        @include tablet-up {
-          font-size: $font-lg;
-        }
-
-        @include laptop-up {
-          font-size: $font-xl;
-        }
-      }
-    }
-
-    .save-btn {
-      background: none;
-      border: none;
-      font-size: $font-xl;
-      color: $border-medium;
-      cursor: pointer;
-      @include transition();
-      padding: $spacing-sm;
-      border-radius: $radius-full;
-
-      @include tablet-up {
-        font-size: $font-2xl;
-      }
-
-      @include laptop-up {
-        font-size: $font-3xl;
-      }
-
-      &:hover {
-        background: rgba(255, 107, 107, 0.1);
-        transform: scale(1.1);
-      }
-
-      &.saved {
-        color: $primary-color;
-        animation: pulse 0.6s ease;
-      }
-    }
-  }
-
-  /* Recipe Section - Universal Container */
-  .recipe-section {
-    padding: $spacing-lg;
-    border-bottom: 8px solid $bg-lighter;
-
-    @include tablet-up {
-      padding: $spacing-xl;
-    }
-
-    @include laptop-up {
-      background: $bg-white;
-      border-radius: $radius-lg;
-      @include shadow(light);
-      border: none;
-      margin-bottom: 0;
-      padding: $spacing-xl;
-    }
-
-    @include desktop {
-      padding: $spacing-xxl;
-    }
-
-    .section-title {
-      font-size: $font-base;
-      font-weight: $font-semibold;
-      color: $text-color;
-      margin-bottom: $spacing-lg;
-      @include flex-center;
-      gap: $spacing-sm;
-      justify-content: flex-start;
-
-      @include tablet-up {
-        font-size: $font-lg;
-        margin-bottom: $spacing-xl;
-        gap: $spacing-md;
-      }
-
-      @include laptop-up {
-        font-size: $font-lg;
-        margin-bottom: $spacing-lg;
-      }
-
-      @include desktop {
-        font-size: $font-xl;
-        margin-bottom: $spacing-xl;
-      }
-
-      i {
-        color: $primary-color;
-        font-size: $font-base;
-
-        @include tablet-up {
-          font-size: $font-lg;
-        }
-
-        @include laptop-up {
-          font-size: $font-lg;
-        }
-
-        @include desktop {
-          font-size: $font-xl;
-        }
-      }
-    }
-  }
-
-  /* Recipe Meta Cards */
-  .recipe-meta {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: $spacing-md;
-    margin-bottom: $spacing-xl;
-
-    @include tablet-up {
-      grid-template-columns: repeat(4, 1fr);
-      gap: $spacing-lg;
-    }
-
-    @include laptop-up {
-      grid-template-columns: repeat(2, 1fr);
-      gap: $spacing-md;
-    }
-
-    @include desktop {
-      gap: $spacing-lg;
-    }
-
-    .meta-card {
-      background: $bg-lighter;
-      padding: $spacing-md;
-      border-radius: $radius-lg;
-      text-align: center;
-      border: 1px solid $border-light;
-      @include transition();
-
-      @include tablet-up {
-        padding: $spacing-lg;
-      }
-
-      @include laptop-up {
-        padding: $spacing-lg $spacing-md;
-      }
-
-      @include desktop {
-        padding: $spacing-xl;
-      }
-
-      &:hover {
-        @include shadow(light);
-        transform: translateY(-2px);
-      }
-
-      i {
-        font-size: $font-base;
-        color: $primary-color;
-        margin-bottom: $spacing-sm;
-        display: block;
-
-        @include tablet-up {
-          font-size: $font-lg;
-          margin-bottom: $spacing-md;
-        }
-
-        @include laptop-up {
-          font-size: $font-lg;
-        }
-      }
-
-      .meta-value {
-        font-size: $font-sm;
-        font-weight: $font-semibold;
-        color: $text-color;
-        margin-bottom: 4px;
-
-        @include tablet-up {
-          font-size: $font-base;
-          margin-bottom: $spacing-sm;
-        }
-
-        @include laptop-up {
-          font-size: $font-base;
-        }
-      }
-
-      .meta-label {
-        font-size: $font-xs;
-        color: $text-light;
-
-        @include tablet-up {
-          font-size: $font-xs;
-        }
-
-        @include laptop-up {
-          font-size: $font-sm;
-        }
-      }
-    }
-  }
-
-  /* Ingredients List */
-  .ingredients-list {
-    list-style: none;
-
-    .ingredient-item {
-      display: flex;
-      align-items: center;
-      gap: $spacing-sm;
-      padding: $spacing-sm 0;
-      border-bottom: 1px solid $border-color;
-      cursor: pointer;
-      @include transition();
-
-      @include tablet-up {
-        gap: $spacing-md;
-        padding: $spacing-md 0;
-      }
-
-      @include laptop-up {
-        padding: $spacing-lg 0;
-      }
-
-      &:hover {
-        background: $bg-lighter;
-        margin: 0 (-$spacing-lg);
-        padding: $spacing-sm $spacing-lg;
-        border-radius: $radius-sm;
-
-        @include tablet-up {
-          margin: 0 (-$spacing-xl);
-          padding: $spacing-md $spacing-xl;
-        }
-
-        @include laptop-up {
-          margin: 0 (-$spacing-xl);
-          padding: $spacing-lg $spacing-xl;
-        }
-      }
-
-      &:last-child {
-        border-bottom: none;
-      }
-
-      &.checked {
-        .ingredient-text {
-          text-decoration: line-through;
-          opacity: 0.6;
-        }
-      }
-
-      .ingredient-checkbox {
-        width: 18px;
-        height: 18px;
-        border: 2px solid $border-medium;
-        border-radius: $radius-full;
-        @include flex-center;
-        @include transition();
-        cursor: pointer;
-        flex-shrink: 0;
-
-        @include tablet-up {
-          width: 22px;
-          height: 22px;
-        }
-
-        @include laptop-up {
-          width: 24px;
-          height: 24px;
-        }
-
-        &.checked {
-          background: $success-color;
-          border-color: $success-color;
-          color: $text-white;
-        }
-      }
-
-      .ingredient-text {
-        flex: 1;
-        font-size: $font-sm;
-        @include transition();
-
-        @include tablet-up {
-          font-size: $font-sm;
-          line-height: 1.5;
-        }
-
-        @include laptop-up {
-          font-size: $font-base;
-          line-height: 1.6;
-        }
-      }
-    }
-  }
-
-  /* Instructions List */
-  .instructions-list {
-    list-style: none;
-
-    .instruction-item {
-      display: flex;
-      gap: $spacing-md;
-      margin-bottom: $spacing-lg;
-      padding: $spacing-md;
-      background: $bg-lighter;
-      border-radius: $radius-lg;
-      border: 1px solid $border-light;
-      @include transition();
-
-      @include tablet-up {
-        gap: $spacing-lg;
-        margin-bottom: $spacing-xl;
-        padding: $spacing-lg;
-      }
-
-      @include laptop-up {
-        padding: $spacing-xl;
-        gap: $spacing-xl;
-      }
-
-      @include desktop {
-        padding: $spacing-xxl;
-      }
-
-      &:hover {
-        background: $bg-white;
-        @include shadow(light);
-        transform: translateY(-2px);
-      }
-
-      .step-number {
-        width: 28px;
-        height: 28px;
-        @include gradient-bg();
-        color: $text-white;
-        border-radius: $radius-full;
-        @include flex-center;
-        font-weight: $font-semibold;
-        font-size: $font-sm;
-        flex-shrink: 0;
-
-        @include tablet-up {
-          width: 35px;
-          height: 35px;
-          font-size: $font-base;
-        }
-
-        @include laptop-up {
-          width: 40px;
-          height: 40px;
-          font-size: $font-lg;
-        }
-
-        @include desktop {
-          width: 45px;
-          height: 45px;
-          font-size: $font-xl;
-        }
-      }
-
-      .step-content {
-        flex: 1;
-        font-size: $font-sm;
-        line-height: 1.6;
-
-        @include tablet-up {
-          font-size: $font-sm;
-          line-height: 1.7;
-        }
-
-        @include laptop-up {
-          font-size: $font-base;
-          line-height: 1.7;
-        }
-
-        @include desktop {
-          font-size: $font-base;
-        }
-      }
-    }
-  }
-
-  /* Rating Section */
-  .rating-section {
-    text-align: center;
-
-    .current-rating {
-      margin-bottom: $spacing-lg;
-
-      @include tablet-up {
-        margin-bottom: $spacing-xl;
-      }
-
-      .rating-stars {
-        @include flex-center;
-        gap: 4px;
-        margin-bottom: $spacing-sm;
-
-        @include tablet-up {
-          gap: $spacing-sm;
-          margin-bottom: $spacing-md;
-        }
-
-        @include laptop-up {
-          gap: $spacing-md;
-        }
-
-        .star {
-          font-size: $font-base;
-          color: #ffd700;
-
-          @include tablet-up {
-            font-size: $font-lg;
-          }
-
-          @include laptop-up {
-            font-size: $font-lg;
-          }
-
-          &.empty {
-            color: $border-medium;
-          }
-        }
-      }
-
-      .rating-text {
-        font-size: $font-sm;
-        color: $text-light;
-
-        @include tablet-up {
-          font-size: $font-base;
-        }
-
-        @include laptop-up {
-          font-size: $font-base;
-        }
-      }
-    }
-
-    .your-rating {
-      margin-top: $spacing-lg;
-      padding-top: $spacing-lg;
-      border-top: 1px solid $border-light;
-
-      @include tablet-up {
-        margin-top: $spacing-xl;
-        padding-top: $spacing-xl;
-      }
-
-      h4 {
-        margin-bottom: $spacing-md;
-        color: $text-color;
-
-        @include tablet-up {
-          font-size: $font-base;
-          margin-bottom: $spacing-lg;
-        }
-
-        @include laptop-up {
-          font-size: $font-base;
-        }
-      }
-
-      .rating-input {
-        @include flex-center;
-        gap: 4px;
-        margin-bottom: $spacing-md;
-
-        @include tablet-up {
-          gap: $spacing-sm;
-          margin-bottom: $spacing-lg;
-        }
-
-        @include laptop-up {
-          gap: $spacing-md;
-        }
-
-        .rating-star {
-          font-size: $font-base;
-          color: $border-medium;
-          cursor: pointer;
-          @include transition();
-
-          @include tablet-up {
-            font-size: $font-lg;
-          }
-
-          @include laptop-up {
-            font-size: $font-lg;
-          }
-
-          &:hover,
-          &.active {
-            color: #ffd700;
-            transform: scale(1.1);
-          }
-        }
-      }
-
-      .rating-submit {
-        @include button-primary;
-        padding: $spacing-sm $spacing-lg;
-        border-radius: $spacing-lg;
-
-        @include tablet-up {
-          padding: $spacing-sm $spacing-xl;
-          font-size: $font-sm;
-        }
-
-        @include laptop-up {
-          padding: $spacing-sm $spacing-xl;
-          font-size: $font-sm;
-        }
-      }
-    }
-  }
-
-  /* Comments Section */
-  .comments-header {
-    @include flex-between;
-    margin-bottom: $spacing-lg;
-    align-items: center;
-
-    @include tablet-up {
-      margin-bottom: $spacing-xl;
-    }
-
-    .sort-btn {
-      background: $bg-lighter;
-      border: 1px solid $border-light;
+    @include mobile {
+      margin: 0 (-$spacing-md);
       padding: $spacing-sm $spacing-md;
-      border-radius: $spacing-lg;
-      font-size: $font-xs;
-      cursor: pointer;
-      @include transition();
-
-      @include tablet-up {
-        padding: $spacing-sm $spacing-lg;
-        font-size: $font-sm;
-      }
-
-      @include laptop-up {
-        padding: $spacing-md $spacing-xl;
-        font-size: $font-base;
-      }
-
-      &:hover {
-        background: $border-light;
-      }
     }
   }
 
-  .comment-form {
-    background: $bg-lighter;
-    border-radius: $radius-lg;
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &.checked .ingredient-text {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+}
+
+.ingredient-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid $border-medium;
+  border-radius: $radius-full;
+  @include flex-center;
+  @include transition();
+  cursor: pointer;
+  flex-shrink: 0;
+
+  @include mobile {
+    width: 18px;
+    height: 18px;
+  }
+
+  &.checked {
+    background: $success-color;
+    border-color: $success-color;
+    color: $text-white;
+  }
+
+  i {
+    font-size: $font-xs;
+  }
+}
+
+.ingredient-text {
+  flex: 1;
+  font-size: $font-sm;
+  @include transition();
+
+  @include mobile {
+    font-size: $font-xs;
+  }
+}
+
+// ===================================
+// Instructions
+// ===================================
+
+.instructions-list {
+  list-style: none;
+}
+
+.instruction-item {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+  padding: $spacing-lg;
+  background: $bg-light;
+  border-radius: $radius-lg;
+  border: 1px solid rgba($border-color, 0.5);
+  @include transition();
+
+  @include mobile {
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
     padding: $spacing-md;
-    margin-bottom: $spacing-lg;
-    border: 1px solid $border-light;
+  }
 
-    @include tablet-up {
-      padding: $spacing-lg;
-      margin-bottom: $spacing-xl;
-    }
+  &:hover {
+    background: $bg-white;
+    @include shadow(light);
+    transform: translateY(-2px);
+  }
 
-    @include laptop-up {
-      padding: $spacing-xl;
-    }
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
 
-    .comment-input {
-      width: 100%;
-      border: none;
-      background: $bg-white;
-      padding: $spacing-sm $spacing-md;
-      border-radius: 25px;
+.step-number {
+  width: 30px;
+  height: 30px;
+  @include gradient-bg();
+  color: $text-white;
+  border-radius: $radius-full;
+  @include flex-center;
+  font-weight: $font-semibold;
+  font-size: $font-sm;
+  flex-shrink: 0;
+
+  @include mobile {
+    width: 25px;
+    height: 25px;
+    font-size: $font-xs;
+  }
+}
+
+.step-content {
+  flex: 1;
+  font-size: $font-sm;
+  line-height: 1.6;
+
+  @include mobile {
+    font-size: $font-xs;
+  }
+}
+
+// ===================================
+// Rating Section
+// ===================================
+
+.rating-section {
+  text-align: center;
+}
+
+.current-rating {
+  margin-bottom: $spacing-lg;
+}
+
+.rating-stars {
+  @include flex-center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+  justify-content: center;
+}
+
+.star {
+  font-size: $font-2xl;
+  color: #ffd700;
+
+  @include mobile {
+    font-size: $font-xl;
+  }
+
+  &.empty {
+    color: $border-medium;
+  }
+}
+
+.rating-text {
+  font-size: $font-base;
+  color: $text-light;
+
+  @include mobile {
+    font-size: $font-sm;
+  }
+}
+
+.your-rating {
+  margin-top: $spacing-lg;
+  padding-top: $spacing-lg;
+  border-top: 1px solid rgba($border-color, 0.8);
+
+  h4 {
+    margin-bottom: $spacing-md;
+    color: $text-color;
+    font-size: $font-base;
+
+    @include mobile {
       font-size: $font-sm;
-      resize: none;
-      min-height: 40px;
-      max-height: 120px;
-      @include transition();
-      border: 2px solid transparent;
-
-      @include tablet-up {
-        padding: $spacing-md $spacing-lg;
-        font-size: $font-base;
-        min-height: 50px;
-        max-height: 150px;
-      }
-
-      @include laptop-up {
-        padding: $spacing-lg $spacing-xl;
-        font-size: $font-lg;
-        min-height: 60px;
-        max-height: 200px;
-      }
-
-      &:focus {
-        outline: none;
-        border-color: $primary-color;
-        @include shadow(light);
-      }
     }
+  }
+}
 
-    .comment-actions {
-      @include flex-between;
-      margin-top: $spacing-sm;
-      opacity: 0;
-      @include transition(opacity);
+.rating-input {
+  @include flex-center;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+  justify-content: center;
+}
 
-      @include tablet-up {
-        margin-top: $spacing-md;
-      }
+.rating-star {
+  font-size: $font-3xl;
+  color: $border-medium;
+  cursor: pointer;
+  @include transition();
 
-      .comment-tools {
-        display: flex;
-        gap: $spacing-sm;
+  @include mobile {
+    font-size: $font-2xl;
+  }
 
-        @include tablet-up {
-          gap: $spacing-md;
-        }
+  &:hover,
+  &.active {
+    color: #ffd700;
+    transform: scale(1.1);
+  }
+}
 
-        .comment-tool {
-          background: none;
-          border: none;
-          color: $text-light;
-          font-size: $font-base;
-          cursor: pointer;
-          padding: 5px;
-          border-radius: $radius-full;
-          @include transition();
+.rating-submit {
+  @include gradient-bg();
+  color: $text-white;
+  border: none;
+  padding: $spacing-sm $spacing-xl;
+  border-radius: $radius-2xl;
+  cursor: pointer;
+  font-weight: $font-semibold;
+  @include transition();
+  font-size: $font-sm;
 
-          @include tablet-up {
-            font-size: $font-lg;
-            padding: $spacing-sm;
-          }
+  @include mobile {
+    padding: $spacing-sm $spacing-lg;
+    font-size: $font-xs;
+  }
 
-          @include laptop-up {
-            font-size: $font-xl;
-          }
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    @include shadow(primary);
+  }
 
-          &:hover {
-            background: $border-light;
-            color: $primary-color;
-          }
-        }
-      }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
 
-      .comment-submit {
-        @include button-primary;
-        padding: $spacing-sm $spacing-lg;
-        border-radius: $spacing-lg;
-        font-size: $font-sm;
+// ===================================
+// Comments
+// ===================================
 
-        @include tablet-up {
-          padding: $spacing-sm $spacing-xl;
-          font-size: $font-base;
-        }
+.comments-header {
+  @include flex-between;
+  margin-bottom: $spacing-lg;
+  align-items: flex-start;
 
-        @include laptop-up {
-          padding: $spacing-md $spacing-xxl;
-          font-size: $font-lg;
-        }
-      }
+  @include mobile {
+    margin-bottom: $spacing-md;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+}
+
+.sort-btn {
+  background: $bg-light;
+  border: 1px solid rgba($border-color, 0.8);
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-2xl;
+  font-size: $font-xs;
+  cursor: pointer;
+  @include transition();
+
+  &:hover {
+    background: rgba($border-color, 0.3);
+  }
+}
+
+.comment-form {
+  background: $bg-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+  border: 1px solid rgba($border-color, 0.8);
+
+  @include mobile {
+    padding: $spacing-sm;
+    margin-bottom: $spacing-md;
+  }
+
+  &.active .comment-actions {
+    opacity: 1;
+  }
+}
+
+.comment-input {
+  width: 100%;
+  border: none;
+  background: $bg-white;
+  padding: $spacing-md $spacing-md;
+  border-radius: $radius-2xl;
+  font-size: $font-sm;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  @include transition();
+  border: 2px solid transparent;
+  font-family: inherit;
+
+  @include mobile {
+    font-size: $font-xs;
+    padding: $spacing-sm $spacing-md;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    @include shadow(light);
+  }
+
+  &::placeholder {
+    color: $text-lighter;
+  }
+}
+
+.comment-actions {
+  @include flex-between;
+  margin-top: $spacing-sm;
+  opacity: 0;
+  @include transition(opacity);
+}
+
+.comment-tools {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.comment-tool {
+  background: none;
+  border: none;
+  color: $text-light;
+  font-size: $font-base;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: $radius-full;
+  @include transition();
+
+  @include mobile {
+    font-size: $font-sm;
+  }
+
+  &:hover {
+    background: rgba($border-color, 0.3);
+    color: $primary-color;
+  }
+}
+
+.comment-submit {
+  @include gradient-bg();
+  color: $text-white;
+  border: none;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $radius-2xl;
+  font-size: $font-sm;
+  font-weight: $font-semibold;
+  cursor: pointer;
+  @include transition();
+
+  @include mobile {
+    padding: $spacing-xs $spacing-md;
+    font-size: $font-xs;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    @include shadow(light);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.comments-list {
+  margin-top: $spacing-lg;
+
+  @include mobile {
+    margin-top: $spacing-md;
+  }
+}
+
+.comment {
+  border-bottom: 1px solid $border-color;
+  padding-bottom: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  @include mobile {
+    padding-bottom: $spacing-sm;
+    margin-bottom: $spacing-sm;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.comment-header {
+  @include flex-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+  margin-bottom: $spacing-sm;
+
+  @include mobile {
+    gap: $spacing-sm;
+  }
+}
+
+.comment-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-full;
+  @include gradient-bg($secondary-color, $secondary-dark);
+  @include flex-center;
+  color: $text-white;
+  font-weight: $font-bold;
+  font-size: $font-base;
+  flex-shrink: 0;
+
+  @include mobile {
+    width: 35px;
+    height: 35px;
+    font-size: $font-sm;
+  }
+}
+
+.comment-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-author {
+  font-weight: $font-semibold;
+  font-size: $font-sm;
+  color: $text-color;
+
+  @include mobile {
+    font-size: $font-xs;
+  }
+}
+
+.comment-time {
+  font-size: $font-xs;
+  color: $text-light;
+
+  @include mobile {
+    font-size: 10px;
+  }
+}
+
+.comment-rating {
+  display: flex;
+  gap: 2px;
+
+  .star {
+    font-size: $font-xs;
+
+    @include mobile {
+      font-size: 10px;
     }
+  }
+}
 
-    &.active .comment-actions {
-      opacity: 1;
+.comment-text {
+  font-size: $font-sm;
+  line-height: 1.5;
+  margin-bottom: $spacing-sm;
+  color: $text-color;
+
+  @include mobile {
+    font-size: $font-xs;
+  }
+}
+
+.comment-actions {
+  display: flex;
+  gap: $spacing-md;
+
+  @include mobile {
+    gap: $spacing-sm;
+  }
+}
+
+.comment-action {
+  background: none;
+  border: none;
+  color: $text-light;
+  font-size: $font-xs;
+  cursor: pointer;
+  @include flex-center;
+  gap: $spacing-xs;
+  @include transition();
+
+  @include mobile {
+    font-size: 10px;
+  }
+
+  &:hover {
+    color: $primary-color;
+  }
+
+  &.liked {
+    color: $primary-color;
+  }
+}
+
+// ===================================
+// Bottom Navigation
+// ===================================
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 414px;
+  background: $bg-white;
+  display: flex;
+  justify-content: space-around;
+  padding: $spacing-md 0 $spacing-xl 0;
+  @include shadow(medium);
+  border-top: 1px solid $border-color;
+  backdrop-filter: blur(10px);
+  z-index: $z-fixed;
+
+  @include tablet-up {
+    max-width: 600px;
+    border-radius: $radius-lg $radius-lg 0 0;
+    padding: $spacing-lg 0 $spacing-xl 0;
+  }
+
+  @include desktop {
+    max-width: 800px;
+  }
+
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    padding-bottom: calc(#{$spacing-xl} + env(safe-area-inset-bottom));
+  }
+}
+
+.nav-item {
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  @include transition();
+  padding: $spacing-sm;
+  border-radius: $radius-lg;
+  position: relative;
+  min-width: 50px;
+
+  @include mobile {
+    min-width: 45px;
+  }
+
+  &:hover {
+    background: rgba($primary-color, 0.1);
+    transform: translateY(-2px);
+  }
+
+  i {
+    font-size: $font-2xl;
+    @include transition();
+    color: $text-light;
+
+    @include mobile {
+      font-size: $font-xl;
     }
   }
 
-  .comments-list {
-    margin-top: $spacing-lg;
+  span {
+    font-size: 11px;
+    font-weight: $font-medium;
+    color: $text-light;
 
-    @include tablet-up {
-      margin-top: $spacing-xl;
-    }
-
-    .comment {
-      border-bottom: 1px solid $border-color;
-      padding-bottom: $spacing-md;
-      margin-bottom: $spacing-md;
-
-      @include tablet-up {
-        padding-bottom: $spacing-lg;
-        margin-bottom: $spacing-lg;
-      }
-
-      @include laptop-up {
-        padding-bottom: $spacing-xl;
-        margin-bottom: $spacing-xl;
-      }
-
-      &:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-        padding-bottom: 0;
-      }
-
-      .comment-header {
-        display: flex;
-        align-items: center;
-        gap: $spacing-sm;
-        margin-bottom: $spacing-sm;
-
-        @include tablet-up {
-          gap: $spacing-md;
-          margin-bottom: $spacing-md;
-        }
-
-        @include laptop-up {
-          gap: $spacing-lg;
-          margin-bottom: $spacing-lg;
-        }
-
-        .comment-avatar {
-          width: 35px;
-          height: 35px;
-          border-radius: $radius-full;
-          @include gradient-bg($secondary-color, $secondary-dark);
-          @include flex-center;
-          color: $text-white;
-          font-weight: $font-bold;
-          font-size: $font-sm;
-          flex-shrink: 0;
-
-          @include tablet-up {
-            width: 45px;
-            height: 45px;
-            font-size: $font-base;
-          }
-
-          @include laptop-up {
-            width: 55px;
-            height: 55px;
-            font-size: $font-lg;
-          }
-        }
-
-        .comment-info {
-          flex: 1;
-          min-width: 0;
-
-          .comment-author {
-            font-weight: $font-semibold;
-            font-size: $font-sm;
-            color: $text-color;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            @include tablet-up {
-              font-size: $font-base;
-            }
-
-            @include laptop-up {
-              font-size: $font-lg;
-              white-space: normal;
-            }
-          }
-
-          .comment-time {
-            font-size: $font-xs;
-            color: $text-light;
-
-            @include tablet-up {
-              font-size: $font-sm;
-            }
-
-            @include laptop-up {
-              font-size: $font-base;
-            }
-          }
-        }
-
-        .comment-rating {
-          display: flex;
-          gap: 2px;
-          flex-shrink: 0;
-
-          @include tablet-up {
-            gap: 4px;
-          }
-
-          @include laptop-up {
-            gap: $spacing-sm;
-          }
-
-          .star {
-            font-size: $font-xs;
-            color: #ffd700;
-
-            @include tablet-up {
-              font-size: $font-sm;
-            }
-
-            @include laptop-up {
-              font-size: $font-base;
-            }
-
-            &.empty {
-              color: $border-medium;
-            }
-          }
-        }
-      }
-
-      .comment-text {
-        font-size: $font-sm;
-        line-height: 1.5;
-        margin-bottom: $spacing-sm;
-        color: $text-color;
-
-        @include tablet-up {
-          font-size: $font-base;
-          line-height: 1.6;
-          margin-bottom: $spacing-md;
-        }
-
-        @include laptop-up {
-          font-size: $font-lg;
-          line-height: 1.7;
-          margin-bottom: $spacing-lg;
-        }
-      }
-
-      .comment-actions {
-        display: flex;
-        gap: $spacing-md;
-
-        @include tablet-up {
-          gap: $spacing-lg;
-        }
-
-        @include laptop-up {
-          gap: $spacing-xl;
-        }
-
-        .comment-action {
-          background: none;
-          border: none;
-          color: $text-light;
-          font-size: $font-xs;
-          cursor: pointer;
-          @include flex-center;
-          gap: 4px;
-          @include transition();
-          padding: $spacing-xs $spacing-sm;
-          border-radius: $radius-sm;
-
-          @include tablet-up {
-            font-size: $font-sm;
-            gap: $spacing-sm;
-            padding: $spacing-sm $spacing-md;
-          }
-
-          @include laptop-up {
-            font-size: $font-base;
-            gap: $spacing-sm;
-            padding: $spacing-sm $spacing-lg;
-          }
-
-          &:hover {
-            color: $primary-color;
-            background: $bg-lighter;
-          }
-
-          &.liked {
-            color: $primary-color;
-          }
-
-          i {
-            @include laptop-up {
-              font-size: $font-lg;
-            }
-          }
-        }
-      }
+    @include mobile {
+      font-size: 10px;
     }
   }
 
-  /* Ultra-wide Screen Optimizations */
-  @media (min-width: 1600px) {
-    .recipe-header {
-      .recipe-title-overlay {
-        h1 {
-          font-size: 3rem;
-        }
-
-        .recipe-meta-header {
-          .meta-item-header {
-            font-size: $font-base;
-            padding: $spacing-sm $spacing-md;
-          }
-        }
-      }
-    }
-
-    .recipe-section {
-      .section-title {
-        font-size: $font-xl;
-        
-        i {
-          font-size: $font-xl;
-        }
-      }
-    }
-
-    .instructions-list {
-      .instruction-item {
-        .step-number {
-          width: 35px;
-          height: 35px;
-          font-size: $font-base;
-        }
-
-        .step-content {
-          font-size: $font-lg;
-          line-height: 1.7;
-        }
-      }
-    }
-
-    .ingredients-list {
-      .ingredient-item {
-        .ingredient-text {
-          font-size: $font-lg;
-        }
-
-        .ingredient-checkbox {
-          width: 26px;
-          height: 26px;
-        }
-      }
-    }
+  &:hover i,
+  &:hover span {
+    color: $primary-color;
   }
+}
 
-  /* Print Styles */
-  @media print {
-    .recipe-detail-page {
-      background: white;
-      color: black;
-      
-      .container {
-        max-width: none;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-      }
+// ===================================
+// Responsive Adjustments
+// ===================================
 
-      .header-controls,
-      .actions-bar,
-      .comment-form,
-      .comments-list,
-      .your-rating,
-      .follow-btn {
-        display: none;
-      }
-
-      .recipe-header {
-        height: 200px;
-        page-break-inside: avoid;
-      }
-
-      .recipe-section {
-        border: none;
-        box-shadow: none;
-        page-break-inside: avoid;
-      }
-
-      .instructions-list .instruction-item {
-        page-break-inside: avoid;
-        margin-bottom: $spacing-md;
-      }
-    }
+@include mobile {
+  .recipe-meta {
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  /* High DPI / Retina Displays */
-  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .recipe-header {
-      background-image: linear-gradient(45deg, rgba(255,107,107,0.8), rgba(238,90,36,0.8));
-    }
-
-    .user-avatar,
-    .comment-avatar {
-      // Better rendering for high DPI displays
-      image-rendering: -webkit-optimize-contrast;
-      image-rendering: crisp-edges;
-    }
+  
+  .actions-left {
+    gap: $spacing-sm;
   }
-
-  /* Reduced Motion Preferences */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-
-    .recipe-content {
-      animation: none;
-      opacity: 1;
-      transform: none;
-    }
+  
+  .meta-item-header {
+    font-size: 11px;
   }
-
-  /* Dark Mode Support */
-  @media (prefers-color-scheme: dark) {
-    .recipe-detail-page {
-      // Add dark mode variables if available
-      // background: $bg-dark;
-      // color: $text-dark;
-    }
+  
+  .comment-form {
+    border-radius: $radius-md;
   }
-
-  /* Animations */
-  @keyframes slideUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  
+  .instruction-item {
+    border-radius: $radius-md;
   }
-
-  @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+  
+  .meta-card {
+    border-radius: $radius-md;
   }
+}
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+// ===================================
+// Accessibility & Focus States
+// ===================================
 
-  /* Accessibility Improvements */
-  .recipe-detail-page {
-    // Focus states
-    button:focus-visible,
-    .ingredient-item:focus-visible,
-    .comment-input:focus-visible {
-      outline: 2px solid $primary-color;
-      outline-offset: 2px;
-    }
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
 
-    // High contrast mode support
-    @media (prefers-contrast: high) {
-      .recipe-section {
-        border: 2px solid $text-color;
-      }
+// ===================================
+// Animation for better UX
+// ===================================
 
-      .meta-card {
-        border: 2px solid $border-medium;
-      }
+.ingredient-item,
+.instruction-item,
+.meta-card {
+  animation: fadeInUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
 
-      .ingredient-checkbox {
-        border-width: 3px;
-      }
-    }
+.ingredient-item:nth-child(1) { animation-delay: 0.1s; }
+.ingredient-item:nth-child(2) { animation-delay: 0.2s; }
+.ingredient-item:nth-child(3) { animation-delay: 0.3s; }
+.ingredient-item:nth-child(4) { animation-delay: 0.4s; }
+.ingredient-item:nth-child(5) { animation-delay: 0.5s; }
 
-    // Large text support
-    @media (prefers-font-size: large) {
-      font-size: 1.2em;
-      
-      .section-title {
-        font-size: calc(#{$font-2xl} * 1.2);
-      }
-      
-      .ingredient-text,
-      .step-content,
-      .comment-text {
-        font-size: calc(#{$font-base} * 1.2);
-        line-height: 1.6;
-      }
-    }
+.instruction-item:nth-child(1) { animation-delay: 0.1s; }
+.instruction-item:nth-child(2) { animation-delay: 0.2s; }
+.instruction-item:nth-child(3) { animation-delay: 0.3s; }
+
+.meta-card:nth-child(1) { animation-delay: 0.1s; }
+.meta-card:nth-child(2) { animation-delay: 0.2s; }
+.meta-card:nth-child(3) { animation-delay: 0.3s; }
+.meta-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
