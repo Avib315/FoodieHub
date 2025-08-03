@@ -1,9 +1,9 @@
 const recipeController = require("../DL/controllers/recipe.controller.js");
-const  ApiMessages = require("../common/apiMessages.js");
+const ApiMessages = require("../common/apiMessages.js");
 
 
 async function getRecipes(request) {
-if(!request) return { success: false, message: ApiMessages.errorMessages.forbidden };
+    if (!request) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const { title, ingredients, instructions, freeSearch, userId } = request;
     const query = {};
     if (title) query.title = { $regex: title, $options: 'i' };
@@ -18,4 +18,9 @@ async function getRecipeById(id) {
     const recipe = await recipeController.readOne({ _id: id });
     return recipe;
 }
-module.exports = { getRecipes , getRecipeById};
+async function getAllRecipes() {
+    const recipe = await recipeController.read();
+    console.log(recipe)
+    return recipe;
+}
+module.exports = { getRecipes, getRecipeById, getAllRecipes };

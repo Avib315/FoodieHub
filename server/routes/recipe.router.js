@@ -18,10 +18,18 @@ router.post('/getAll', async (req, res) => {
         const result = await service.getRecipes(recipeInput);
         res.status(200).send(result);
     } catch (error) {
-        
+
     }
 });
+// http//localhost:3001/api/recipe/getAll
+router.get("/getAll", async (req, res) => {
+    try {
+        const result = await service.getAllRecipes();
+        res.status(200).send(result);
+    } catch (error) {
 
+    }
+})
 
 
 module.exports = router;

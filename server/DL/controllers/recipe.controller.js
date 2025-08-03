@@ -8,7 +8,7 @@ const read = async (filter) => {
     return await recipeModel.find(filter);
 }
 
-const readOne = async (filter) => {
+const readOne = async (filter) => { // {_id:2}
     return await recipeModel.findOne(filter);
 }
 

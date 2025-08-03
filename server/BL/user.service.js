@@ -25,10 +25,8 @@ async function register(body) {
         profileImageUrl: body?.profileImageUrl || "https://st.depositphotos.com/1787196/1330/i/450/depositphotos_13303160-stock-illustration-funny-chef-and-empty-board.jpg"
     };
     const user = await userController.create(userInput);
-    const items = await itemController.read();
-    await userController.createItems(user._id, items);
     if (!user) return false;
-    const result = { register: true, message: "נוסף בהצלחה", user: { email: user.email, name: user.firstName + " " + user.lastName, items: user.items, lists: user.lists } };
+    const result = { register: true, message: "נוסף בהצלחה", user: { email: user.email, name: user.firstName + " " + user.lastName, lists: user.lists } };
     return result;
 }
 async function getUser(userId) {
