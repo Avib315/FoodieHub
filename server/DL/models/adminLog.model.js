@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const adminLogSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   adminId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

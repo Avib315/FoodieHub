@@ -46,6 +46,17 @@ const insertUsers = async () => {
                 status: "active",
                 profileImageUrl: "https://example.com/profiles/admin.jpg",
                 lastLogin: new Date()
+            },
+            {
+                username: "pnina",
+                email: "pnina@example.com",
+                passwordHash:hashedPassword,
+                firstName: "פנינה",
+                lastName: "כהן",
+                role: "user",
+                status: "active",
+                profileImageUrl: "https://example.com/profiles/admin.jpg",
+                lastLogin: new Date()
             }
         ];
         
@@ -69,7 +80,6 @@ const insertProducts = async () => {
         
         const products = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "עגבניות",
                 alternativeNames: ["עגבנייה", "עגבניה"],
                 category: "פירות וירקות",
@@ -79,7 +89,6 @@ const insertProducts = async () => {
                 imageUrl: "https://example.com/products/tomatoes.jpg"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "בצל",
                 alternativeNames: ["בצלים"],
                 category: "פירות וירקות",
@@ -89,7 +98,6 @@ const insertProducts = async () => {
                 imageUrl: "https://example.com/products/onion.jpg"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "שום",
                 alternativeNames: ["שן שום"],
                 category: "פירות וירקות",
@@ -99,7 +107,6 @@ const insertProducts = async () => {
                 imageUrl: "https://example.com/products/garlic.jpg"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "שמן זית",
                 alternativeNames: ["שמן זית בתולי"],
                 category: "שמנים",
@@ -109,7 +116,6 @@ const insertProducts = async () => {
                 imageUrl: "https://example.com/products/olive-oil.jpg"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "קמח",
                 alternativeNames: ["קמח לבן", "קמח רגיל"],
                 category: "מוצרי מאפייה",
@@ -119,7 +125,6 @@ const insertProducts = async () => {
                 imageUrl: "https://example.com/products/flour.jpg"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 name: "ביצים",
                 alternativeNames: ["ביצה"],
                 category: "חלב וביצים",
@@ -155,7 +160,6 @@ const insertRecipes = async (users, categories, products) => {
         
         const recipes = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: user1._id,
                 categoryId: saladCategory._id,
                 title: "סלט עגבניות ובצל",
@@ -224,7 +228,6 @@ const insertRecipes = async (users, categories, products) => {
                 ratingsCount: 15
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: user2._id,
                 categoryId: mainDishCategory._id,
                 title: "פסטה עם שום ושמן זית",
@@ -308,21 +311,18 @@ const insertRatings = async (users, recipes) => {
         
         const ratings = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[1]._id,
                 recipeId: recipes[0]._id,
                 rating: 5,
                 review: "מתכון נפלא! הסלט יצא טעים מאוד ומהיר להכנה"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[0]._id,
                 recipeId: recipes[1]._id,
                 rating: 4,
                 review: "פסטה טעימה, הוספתי גם פטרוזיליה טרייה"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[2]._id,
                 recipeId: recipes[0]._id,
                 rating: 4,
@@ -350,21 +350,18 @@ const insertSavedRecipes = async (users, recipes) => {
         
         const savedRecipes = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[0]._id,
                 recipeId: recipes[1]._id,
                 folder: "מנות עיקריות",
                 notes: "לנסות עם פסטה מקמח מלא"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[1]._id,
                 recipeId: recipes[0]._id,
                 folder: "default",
                 notes: "מושלם לארוחות קיץ"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[2]._id,
                 recipeId: recipes[0]._id,
                 folder: "קלים ומהירים",
@@ -392,7 +389,6 @@ const insertShoppingLists = async (users, products, recipes) => {
         
         const shoppingLists = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[0]._id,
                 name: "רשימת קניות לשבת",
                 items: [
@@ -434,7 +430,6 @@ const insertShoppingLists = async (users, products, recipes) => {
                 completedAt: null
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[1]._id,
                 name: "קניות חירום",
                 items: [
@@ -474,7 +469,6 @@ const insertNotifications = async (users, recipes) => {
         
         const notifications = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[0]._id,
                 type: "recipe_rated",
                 title: "המתכון שלך קיבל דירוג חדש",
@@ -484,7 +478,6 @@ const insertNotifications = async (users, recipes) => {
                 isEmailSent: true
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[1]._id,
                 type: "recipe_approved",
                 title: "המתכון שלך אושר",
@@ -494,7 +487,6 @@ const insertNotifications = async (users, recipes) => {
                 isEmailSent: true
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 userId: users[0]._id,
                 type: "system",
                 title: "ברוכים הבאים לאתר המתכונים",
@@ -525,7 +517,6 @@ const insertReports = async (users, recipes) => {
         
         const reports = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 reportedBy: users[1]._id,
                 targetType: "recipe",
                 targetId: recipes[0]._id,
@@ -540,7 +531,6 @@ const insertReports = async (users, recipes) => {
                 }
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 reportedBy: users[0]._id,
                 targetType: "user",
                 targetId: users[1]._id,
@@ -576,7 +566,6 @@ const insertAdminLogs = async (users, recipes) => {
         
         const adminLogs = [
             {
-                _id: new mongoose.Types.ObjectId(),
                 adminId: users[2]._id, // Admin user
                 action: "recipe_approved",
                 targetType: "recipe",
@@ -590,7 +579,6 @@ const insertAdminLogs = async (users, recipes) => {
                 userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             },
             {
-                _id: new mongoose.Types.ObjectId(),
                 adminId: users[2]._id,
                 action: "user_blocked",
                 targetType: "user",

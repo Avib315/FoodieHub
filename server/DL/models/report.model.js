@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
   reportedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
