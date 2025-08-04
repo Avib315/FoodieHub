@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
-import useAxiosRequest from '../../services/ApiReuest';
+import useAxiosRequest from '../../services/ApiRequest';
 import { useEffect } from 'react';
 
 // Mock data based on the provided structure
@@ -178,7 +178,7 @@ export default function RecipeDetailPage() {
   ];
 
   return (
-    <div className="container">
+    <div className="recipe-detail-page">
       {/* Recipe Header Image */}
       <div className="recipe-header">
         <div className="header-overlay"></div>

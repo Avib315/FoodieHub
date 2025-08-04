@@ -68,17 +68,13 @@ function App() {
           </AuthPageLayout>
         } />
          */}
-        {/* <Route path="/home" element={
+        <Route path="/home" element={
           <AuthPageLayout>
-            <HomePage />
-          </AuthPageLayout>
-        } /> */}
-
-        <Route path="/recipes" element={
-          <AuthPageLayout>
-            <RecipesPage />
+           <RecipesPage />
           </AuthPageLayout>
         } />
+
+      
 
         <Route path="/recipe/:id" element={
           <AuthPageLayout>

@@ -165,30 +165,9 @@ $transition-slow: 0.5s;
   }
 }
 
-// ===================================
-// Base Styles
-// ===================================
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  line-height: 1.6;
-  color: $text-color;
-  background: $bg-lighter;
-  direction: rtl;
-  text-align: right;
-}
-
-// ===================================
-// Container
-// ===================================
-
-.container {
+.recipe-detail-page {
   max-width: 414px;
   margin: 0 auto;
   background: $bg-white;

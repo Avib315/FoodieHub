@@ -12,16 +12,15 @@ router.post('/login', async (req, res) => {
             email: req.body?.email,
             password: req.body?.password
         };
-        console.log("LOGIN START");
         
 
-        const { result, token } = await service.login(userInput);
+        const { success , token } = await service.login(userInput);
 
         if (token) {
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: "None" });
         }
 
-        res.status(200).send({result,token});
+        res.status(200).send({success});
     } catch (error) {
         console.error('Login Error:', error);
         res.status(500).send({ login: false, message: ApiMessages.errorMessages.forbidden });
