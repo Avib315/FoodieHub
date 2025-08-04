@@ -5,6 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "node DL/test.js",
+    "testC": "node DL/coral-test.js",
+    "testP": "node DL/pnina-test.js",
     "dev": "nodemon index.js",
     "start": "node index.js"
   },
