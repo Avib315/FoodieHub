@@ -545,8 +545,72 @@ const runCompleteTest = async () => {
     }
 };
 
+// Test data insertion for comments
+const insertComments = async () => {
+    try {
+        console.log("========================= COMMENTS TEST BEGIN =========================");
+
+        const users = await userController.read({})
+        const user1 = users[0];
+        const user2 = users[1];
+
+        const recipes = await recipeController.read({})
+        const recipe1 = recipes[0];
+        const recipe2 = recipes[1];
+        
+        const comments = [
+            {
+                userId: user1._id,
+                recipeId: recipe1._id,
+                content: "This recipe was amazing! I added extra garlic and it turned out perfect.",
+                status: "active"
+            },
+            {
+                userId: user2._id,
+                recipeId: recipe1._id,
+                content: "Good base recipe, but Id recommend baking it a bit longer for a crispier texture.",
+                status: "active",
+                isEdited: true,
+                editedAt: new Date()
+            },
+            {
+                userId: user1._id,
+                recipeId: recipe2._id,
+                content: "Didnt love it. It was a bit bland for my taste.",
+                status: "hidden"
+            },
+            {
+                userId: user2._id,
+                recipeId: recipe2._id,
+                content: "Absolutely delicious. Ill be making this again next weekend!",
+                status: "active"
+            },
+            {
+                userId: user2._id,
+                recipeId: recipe1._id,
+                content: "Deleted my old review. Just wanted to say thanks for the great recipe!",
+                status: "deleted",
+                isEdited: true,
+                editedAt: new Date()
+            }
+        ];
+
+        for (const comment of comments) {
+            const result = await commentController.create(comment);
+            console.log("Comment created:", result.content);
+        }
+        
+        console.log("========================= COMMENTS TEST END =========================\n");
+        return comments;
+    } catch (error) {
+        console.error("Comments error:", error);
+        throw error;
+    }
+};
+
 // Run the complete test
 runCompleteTest();
+await insertComments();
 
 // const insertUsers = async () => {
 //     try {

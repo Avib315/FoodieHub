@@ -30,6 +30,8 @@ async function register(body) {
 }
 async function getUser(userId) {
     const user = await userController.readOne({ _id: userId });
+    const savedCount = await userController.count({ _id: userId });
+    user.savedRecipeCount = savedCount;
     return user;
 }
 module.exports = { login, register, getUser };
