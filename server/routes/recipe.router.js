@@ -46,4 +46,38 @@ router.get("/getById", async (req, res) => {
     }
 });
 
+
+
+router.post("/create", loginAuth, async (req, res) => {
+    try {
+        const recipeInput = {
+            userId: req.body?.id,
+            categoryId: req.body?.categoryId,
+            title: req.body?.title,
+            description: req.body?.description,
+            instructions: req.body?.instructions,
+            ingredients: req.body?.ingredients,
+            prepTime: req.body?.prepTime,
+            servings: req.body?.servings,
+            difficultyLevel: req.body?.difficultyLevel,
+            imageUrl: req.body?.imageUrl
+        };
+
+        const result = await service.createRecipe(recipeInput);
+        
+        if (result.success) {
+            res.status(201).send(result);
+        } else {
+            res.status(400).send(result);
+        }
+    } catch (error) {
+        console.error("Error creating recipe", error);
+        res.status(500).send({
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Internal server error"
+        });
+    }
+});
+
+
 module.exports = router;

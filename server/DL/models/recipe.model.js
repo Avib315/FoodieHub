@@ -79,4 +79,4 @@ const recipeSchema = new mongoose.Schema({
 
 const recipeModel = mongoose.model("Recipe", recipeSchema);
 
-module.exports =    recipeModel;
+module.exports = recipeModel;

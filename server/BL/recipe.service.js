@@ -99,4 +99,145 @@ async function getAllRecipes(filterByActive = true) {
 }
 
 
-module.exports = { getRecipes, getRecipeById, getAllRecipes };
+
+
+const createRecipe = async (recipeInput) => {
+    try {
+        const {
+            userId,
+            categoryId,
+            title,
+            description,
+            instructions,
+            ingredients,
+            prepTime,
+            servings,
+            difficultyLevel,
+            imageUrl
+        } = recipeInput;
+
+        // ולידציה בסיסית
+        if (!userId || !categoryId || !title || !description || !instructions || !ingredients || !prepTime || !servings || !difficultyLevel) {
+            return {
+                success: false,
+                message: ApiMessages.MISSING_REQUIRED_FIELDS || "Missing required fields"
+            };
+        }
+
+        // ולידציה של מערכים
+        if (!Array.isArray(instructions) || instructions.length === 0) {
+            return {
+                success: false,
+                message: "Instructions must be a non-empty array"
+            };
+        }
+
+        if (!Array.isArray(ingredients) || ingredients.length === 0) {
+            return {
+                success: false,
+                message: "Ingredients must be a non-empty array"
+            };
+        }
+
+        // ולידציה של הוראות הכנה
+        for (let i = 0; i < instructions.length; i++) {
+            const instruction = instructions[i];
+            if (!instruction.stepNumber || !instruction.text) {
+                return {
+                    success: false,
+                    message: `Instruction ${i + 1} is missing stepNumber or text`
+                };
+            }
+        }
+
+        // ולידציה של רכיבים
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            if (!ingredient.name || !ingredient.quantity || !ingredient.unit) {
+                return {
+                    success: false,
+                    message: `Ingredient ${i + 1} is missing required fields (name, quantity, unit)`
+                };
+            }
+
+            // בדיקת יחידות מדידה תקינות
+            const validUnits = ['גרם', 'קילוגרם', 'מ"ל', 'ליטר', 'כף', 'כפית', 'כוס', 'יחידה', 'קורט'];
+            if (!validUnits.includes(ingredient.unit)) {
+                return {
+                    success: false,
+                    message: `Invalid unit "${ingredient.unit}" for ingredient ${ingredient.name}`
+                };
+            }
+        }
+
+        // ולידציה של ערכים מספריים
+        if (prepTime < 0) {
+            return {
+                success: false,
+                message: "Prep time must be a positive number"
+            };
+        }
+
+        if (servings < 1) {
+            return {
+                success: false,
+                message: "Servings must be at least 1"
+            };
+        }
+
+        if (difficultyLevel < 1 || difficultyLevel > 5) {
+            return {
+                success: false,
+                message: "Difficulty level must be between 1 and 5"
+            };
+        }
+
+        // הכנת נתוני המתכון
+        const recipeData = {
+            userId,
+            categoryId,
+            title: title.trim(),
+            description: description.trim(),
+            instructions: instructions.map((inst, index) => ({
+                stepNumber: inst.stepNumber || index + 1,
+                text: inst.text.trim()
+            })),
+            ingredients: ingredients.map(ing => ({
+                name: ing.name.trim(),
+                quantity: Number(ing.quantity),
+                unit: ing.unit,
+                notes: ing.notes ? ing.notes.trim() : ""
+            })),
+            prepTime: Number(prepTime),
+            servings: Number(servings),
+            difficultyLevel: Number(difficultyLevel),
+            imageUrl: imageUrl || null,
+            status: 'pending' // הסטטוס נקבע בשרת כמו שביקשת
+        };
+
+        // יצירת המתכון
+        const newRecipe = await recipeController.create(recipeData);
+
+        return {
+            success: true,
+            data: newRecipe,
+            message: ApiMessages.CREATED || "Recipe created successfully and pending approval"
+        };
+
+    } catch (error) {
+        console.error("Error in createRecipe service:", error);
+        return {
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Failed to create recipe",
+            error: error.message
+        };
+    }
+};
+
+
+
+
+
+
+
+module.exports = { getRecipes, getRecipeById, getAllRecipes, createRecipe };
