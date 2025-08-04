@@ -15,3 +15,5 @@ router.get("/getById", async (req, res) => {
         res.status(500)
     }
 });
+
+module.exports = router;
