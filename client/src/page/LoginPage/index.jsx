@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import './style.scss'
 import Input from '../../component/Input'
 import FloatingElements from '../../component/FloatingElements'
-import { axiosRequestHandler } from '../../services/ApiReuest'
+import { axiosRequestHandler } from '../../services/ApiRequest'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
-
+  const nav = useNavigate()
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -66,15 +66,23 @@ export default function LoginPage() {
     try {
       // Simulate API call
 
-     const data = await axiosRequestHandler({url: "user/login" , method:"POST" , data:formData })
-      if(data?.login){
-        console.log(data);
-        
+      const data = await axiosRequestHandler({ url: "user/login", method: "POST", data: formData })
+      console.log(data);
+      if (data?.data) {
+        if (data?.data?.success === true){
+
+          setSuccessMessage('התחברת בהצלחה!')
+          setTimeout(()=>{
+            nav("/home")
+          },800)
+        }
+        else{
+          setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
+        }
       }
-      else{
+      else {
         setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
       }
-      setSuccessMessage('התחברת בהצלחה!')
 
 
     } catch (error) {

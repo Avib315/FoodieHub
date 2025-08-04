@@ -12,7 +12,7 @@ async function login(userInput) {
     const passwordMatch = await bcrypt.compare(userInput.password, user?.passwordHash);
     if (!passwordMatch) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const token = loginAuth({ id: user._id });
-    return {  result:{ success: true}, token };
+    return {   success: true, token };
 }
 async function register(body) {
     const userInput = {
