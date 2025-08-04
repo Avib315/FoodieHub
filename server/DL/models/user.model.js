@@ -38,18 +38,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'blocked', 'inactive'],
     default: 'active'
-  },
-  profileImageUrl: {
-    type: String,
-    default: null
-  },
-  lastLogin: {
-    type: Date,
-    default: null
-  },
-  signupDate: {
-    type: Date,
-    default: Date.now
   }
 });
 

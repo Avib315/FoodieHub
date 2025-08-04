@@ -532,7 +532,6 @@ const runCompleteTest = async () => {
         console.log("📊 Database Summary:");
         console.log(`👥 Users: ${users.length}`);
         console.log(`📂 Categories: ${categories.length}`);
-        console.log(`🛒 Products: ${products.length}`);
         console.log(`📖 Recipes: ${recipes.length}`);
         console.log(`⭐ Ratings: ${ratings.length}`);
         console.log(`💾 Saved Recipes: ${savedRecipes.length}`);

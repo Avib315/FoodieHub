@@ -10,10 +10,9 @@ async function login(userInput) {
     if (!user) return { success: false, message: ApiMessages.errorMessages.forbidden };
     if (!userInput.password) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const passwordMatch = await bcrypt.compare(userInput.password, user?.passwordHash);
-    if (!passwordMatch) return failedLogin;
+    if (!passwordMatch) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const token = loginAuth({ id: user._id });
-    const result = { success: true, data: { email: user.email, name: user.firstName + " " + user.lastName, profileImageUrl: user.profileImageUrl, username: user.username } };
-    return { result, token };
+    return {  result:{ success: true}, token };
 }
 async function register(body) {
     const userInput = {
