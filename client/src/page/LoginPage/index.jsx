@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './style.scss'
 import Input from '../../component/Input'
 import FloatingElements from '../../component/FloatingElements'
-import { axiosRequestHandler } from '../../services/useApiRequest'
-
+import axiosRequest from '../../services/axiosRequest'
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
@@ -66,10 +65,10 @@ export default function LoginPage() {
     try {
       // Simulate API call
 
-      const data = await axiosRequestHandler({ url: "user/login", method: "POST", data: formData })
+      const data = await axiosRequest({ url: "user/login", method: "POST", body: formData })
       console.log(data);
-      if (data?.data) {
-        if (data?.data?.success === true){
+      if (data) { 
+        if (data?.success === true){
 
           setSuccessMessage('התחברת בהצלחה!')
           setTimeout(()=>{

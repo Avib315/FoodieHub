@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './style.scss'
 import Input from '../../component/Input'
 import FloatingElements from '../../component/FloatingElements'
-import { axiosRequestHandler } from '../../services/useApiRequest'
-
+import axiosRequest from '../../services/axiosRequest'
 export default function SignupPage() {
   const navigate = useNavigate()
 
@@ -111,7 +110,7 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      const data = await axiosRequestHandler({url: "user/register" , method:"POST" , data:formData })
+      const data = await axiosRequest({url: "user/register" , method:"POST" , body:formData })
       console.log(data);
       
       if(data){
@@ -131,14 +130,6 @@ export default function SignupPage() {
     }
   }
 
-  // Toggle password visibility
-  const togglePasswordVisibility = (field) => {
-    if (field === 'password') {
-      setShowPassword(!showPassword)
-    } else {
-      setShowConfirmPassword(!showConfirmPassword)
-    }
-  }
 
   return (
     <div className="signup-page">

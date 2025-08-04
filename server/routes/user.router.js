@@ -12,6 +12,7 @@ router.post('/login', async (req, res) => {
             email: req.body?.email,
             password: req.body?.password
         };
+        console.log(userInput); 
         
 
         const { success , token } = await service.login(userInput);
