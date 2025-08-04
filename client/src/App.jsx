@@ -20,6 +20,7 @@ import ForgotPasswordPage from './page/ForgotPasswordPage/index.jsx'
 import NotFoundPage from './page/NotFoundPage/index.jsx'
 import LoadingPage from './page/LoadingPage/index.jsx'
 import DevPage from './page/DevPage/index.jsx'
+import ProtectedPage from './common/ProtectedPage.jsx'
 
 function App() {
   return (
@@ -55,72 +56,53 @@ function App() {
           </AuthPageLayout>
         } />
 
-        {/* <Route path="/reset-password" element={
-          <AuthPageLayout>
-            <ResetPasswordPage />
-          </AuthPageLayout>
-        } /> */}
-
-        {/* Main App Pages - With NavBar */}
-        {/* <Route path="/" element={
-          <AuthPageLayout>
-            <HomePage />
-          </AuthPageLayout>
+        <Route path="/" element={
+       <ProtectedPage element={<RecipesPage />} />
         } />
-         */}
+        
         <Route path="/home" element={
-          <AuthPageLayout>
-           <RecipesPage />
-          </AuthPageLayout>
+            <ProtectedPage element={<RecipesPage />} />
+  
         } />
 
       
 
         <Route path="/recipe/:id" element={
-          <AuthPageLayout>
-            <RecipeDetailPage />
-          </AuthPageLayout>
+          <ProtectedPage element={<RecipeDetailPage />} />
+
         } />
 
 
 
         <Route path="/favorites" element={
-          <AuthPageLayout>
-            <FavoritesPage />
-          </AuthPageLayout>
+       
+           <ProtectedPage element={<FavoritesPage />} />
         } />
 
 
 
         <Route path="/personal-area" element={
-          <AuthPageLayout>
-            <PersonalAreaPage />
-          </AuthPageLayout>
+                   <ProtectedPage element={<PersonalAreaPage />} />
         } />
 
         <Route path="/notifications" element={
-          <AuthPageLayout>
-            <NotificationPage />
-          </AuthPageLayout>
+             <ProtectedPage element={<PersonalAreaPage />} />
+ 
         } />
 
         <Route path="/settings" element={
-          <AuthPageLayout>
-            <SettingPage />
-          </AuthPageLayout>
+            <ProtectedPage element={<SettingPage />} />
+   
         } />
 
         {/* Content Creation */}
         <Route path="/new-recipe" element={
-          <AuthPageLayout>
-            <NewRecipePage />
-          </AuthPageLayout>
+           <ProtectedPage element={<NewRecipePage />} />
         } />
 
         <Route path="/edit-recipe/:id" element={
-          <AuthPageLayout>
-            <NewRecipePage />
-          </AuthPageLayout>
+              <ProtectedPage element={<NewRecipePage />} />
+
         } />
 
 

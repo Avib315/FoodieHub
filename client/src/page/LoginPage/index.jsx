@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import './style.scss'
 import Input from '../../component/Input'
 import FloatingElements from '../../component/FloatingElements'
-import { axiosRequestHandler } from '../../services/ApiRequest'
+import { axiosRequestHandler } from '../../services/useApiRequest'
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({

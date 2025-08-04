@@ -24,7 +24,6 @@ async function getRecipeById(id) {
 }
 async function getAllRecipes() {
     const recipe = await recipeController.read();
-    console.log(recipe)
     return {success: true, data: recipe};
 }
 module.exports = { getRecipes, getRecipeById, getAllRecipes };

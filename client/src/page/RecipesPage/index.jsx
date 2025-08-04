@@ -6,13 +6,15 @@ import DropDown from '../../component/DropDown'
 import { AiOutlineFilter, AiOutlineClose } from 'react-icons/ai'
 import {recipes} from './data.json'
 import NavBar from '../../component/NavBar'
+import useApiRequest from '../../services/useApiRequest'
 
 export default function RecipesPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
   
-
-
+  const {data , setData } = useApiRequest({url: "/recipe/getAll" })
+  console.log(data);
+  
   const handleFilterSelect = (option) => {
     console.log(option)
     setActiveFilters(prev => prev + 1)
@@ -97,13 +99,13 @@ export default function RecipesPage() {
 
       
       <div className='recipes-list'>  
-        {recipes.map(recipe => (
+        {data.map(recipe => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
       </div>
 
       {/* Empty State Example */}
-      {recipes.length === 0 && (
+      {data.length === 0 && (
         <div className="empty-state">
           <div className="empty-icon">🍳</div>
           <h3>לא נמצאו מתכונים</h3>
