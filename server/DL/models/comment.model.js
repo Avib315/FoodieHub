@@ -11,11 +11,6 @@ recipeId: {
     ref: 'Recipe',
     required: true
 },
-parentCommentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Comment',
-    default: null // עבור תגובות רגילות, יהיה null. עבור תשובות לתגובה יהיה מזהה התגובה המקורית
-},
 content: {
     type: String,
     required: true,

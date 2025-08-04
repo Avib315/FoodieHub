@@ -20,10 +20,15 @@ const del = async (filter) => {
     return await savedRecipeModel.findOneAndDelete(filter);
 }
 
+const count = async (filter) => {
+    return await savedRecipeModel.countDocuments(filter);
+}
+
 module.exports = {
     create,
     read,
     readOne,
     update,
-    del
+    del,
+    count
 }
