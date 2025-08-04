@@ -8,7 +8,7 @@ router.get("/getById", async (req, res) => {
     try {
         const { id } = req.query;
         console.log("Received ID:", id);
-        const result = await service.getNotificationById(id);
+        const result = await service.getNotificationByUserId(id);
         res.status(200).json(result);
     } catch (error) {
         console.error("Error getting notifications by ID:", error);
