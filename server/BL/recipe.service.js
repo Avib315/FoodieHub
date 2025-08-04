@@ -99,4 +99,341 @@ async function getAllRecipes(filterByActive = true) {
 }
 
 
-module.exports = { getRecipes, getRecipeById, getAllRecipes };
+
+
+const createRecipe = async (recipeInput) => {
+    try {
+        const {
+            userId,
+            categoryId,
+            title,
+            description,
+            instructions,
+            ingredients,
+            prepTime,
+            servings,
+            difficultyLevel,
+            imageUrl
+        } = recipeInput;
+
+        console.log("Creating recipe with input:", recipeInput);
+        
+
+        // ולידציה בסיסית
+        if (!userId || !categoryId || !title || !description || !instructions || !ingredients || !prepTime || !servings || !difficultyLevel) {
+            return {
+                success: false,
+                message: ApiMessages.MISSING_REQUIRED_FIELDS || "Missing required fields"
+            };
+        }
+
+        // ולידציה של מערכים
+        if (!Array.isArray(instructions) || instructions.length === 0) {
+            return {
+                success: false,
+                message: "Instructions must be a non-empty array"
+            };
+        }
+
+        if (!Array.isArray(ingredients) || ingredients.length === 0) {
+            return {
+                success: false,
+                message: "Ingredients must be a non-empty array"
+            };
+        }
+
+        // ולידציה של הוראות הכנה
+        for (let i = 0; i < instructions.length; i++) {
+            const instruction = instructions[i];
+            if (!instruction.stepNumber || !instruction.text) {
+                return {
+                    success: false,
+                    message: `Instruction ${i + 1} is missing stepNumber or text`
+                };
+            }
+        }
+
+        // ולידציה של רכיבים
+        for (let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            if (!ingredient.name || !ingredient.quantity || !ingredient.unit) {
+                return {
+                    success: false,
+                    message: `Ingredient ${i + 1} is missing required fields (name, quantity, unit)`
+                };
+            }
+
+            // בדיקת יחידות מדידה תקינות
+            const validUnits = ['גרם', 'קילוגרם', 'מ"ל', 'ליטר', 'כף', 'כפית', 'כוס', 'יחידה', 'קורט'];
+            if (!validUnits.includes(ingredient.unit)) {
+                return {
+                    success: false,
+                    message: `Invalid unit "${ingredient.unit}" for ingredient ${ingredient.name}`
+                };
+            }
+        }
+
+        // ולידציה של ערכים מספריים
+        if (prepTime < 0) {
+            return {
+                success: false,
+                message: "Prep time must be a positive number"
+            };
+        }
+
+        if (servings < 1) {
+            return {
+                success: false,
+                message: "Servings must be at least 1"
+            };
+        }
+
+        if (difficultyLevel < 1 || difficultyLevel > 5) {
+            return {
+                success: false,
+                message: "Difficulty level must be between 1 and 5"
+            };
+        }
+
+        // הכנת נתוני המתכון
+        const recipeData = {
+            userId,
+            categoryId,
+            title: title.trim(),
+            description: description.trim(),
+            instructions: instructions.map((inst, index) => ({
+                stepNumber: inst.stepNumber || index + 1,
+                text: inst.text.trim()
+            })),
+            ingredients: ingredients.map(ing => ({
+                name: ing.name.trim(),
+                quantity: Number(ing.quantity),
+                unit: ing.unit,
+                notes: ing.notes ? ing.notes.trim() : ""
+            })),
+            prepTime: Number(prepTime),
+            servings: Number(servings),
+            difficultyLevel: Number(difficultyLevel),
+            imageUrl: imageUrl || null,
+            status: 'pending' // הסטטוס נקבע בשרת כמו שביקשת
+        };
+
+        // יצירת המתכון
+        const newRecipe = await recipeController.create(recipeData);
+
+        return {
+            success: true,
+            data: newRecipe,
+            message: ApiMessages.CREATED || "Recipe created successfully and pending approval"
+        };
+
+    } catch (error) {
+        console.error("Error in createRecipe service:", error);
+        return {
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Failed to create recipe",
+            error: error.message
+        };
+    }
+};
+
+
+const updateRecipe = async (recipeId, updateData, currentUserId) => {
+    try {
+        if (!recipeId || !currentUserId) {
+            return {
+                success: false,
+                message: ApiMessages.MISSING_REQUIRED_FIELDS || "Recipe ID and user authentication required"
+            };
+        }
+
+        // בדיקה שהמתכון קיים
+        const existingRecipe = await recipeController.readOne({ _id: recipeId });
+        if (!existingRecipe) {
+            return {
+                success: false,
+                message: ApiMessages.NOT_FOUND || "Recipe not found"
+            };
+        }
+
+        // בדיקה שהמשתמש הוא הבעלים של המתכון
+        if (existingRecipe.userId.toString() !== currentUserId.toString()) {
+            return {
+                success: false,
+                message: "Unauthorized: You can only update your own recipes"
+            };
+        }
+
+        // הכנת נתוני העדכון (רק שדות שנשלחו)
+        const filteredUpdateData = {};
+        Object.keys(updateData).forEach(key => {
+            if (updateData[key] !== undefined && updateData[key] !== null) {
+                filteredUpdateData[key] = updateData[key];
+            }
+        });
+
+        // עדכון הסטטוס ל-pending אם יש שינויים תוכן
+        if (Object.keys(filteredUpdateData).length > 0) {
+            filteredUpdateData.status = 'pending';
+        }
+
+        const updatedRecipe = await recipeController.update({ _id: recipeId }, filteredUpdateData);
+
+        return {
+            success: true,
+            data: updatedRecipe,
+            message: ApiMessages.UPDATED || "Recipe updated successfully and pending approval"
+        };
+
+    } catch (error) {
+        console.error("Error in updateRecipe service:", error);
+        return {
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Failed to update recipe",
+            error: error.message
+        };
+    }
+};
+
+
+const deleteRecipe = async (recipeId, currentUserId) => {
+    try {
+        if (!recipeId || !currentUserId) {
+            return {
+                success: false,
+                message: ApiMessages.MISSING_REQUIRED_FIELDS || "Recipe ID and user authentication required"
+            };
+        }
+
+        // בדיקה שהמתכון קיים
+        const existingRecipe = await recipeController.readOne({ _id: recipeId });
+        if (!existingRecipe) {
+            return {
+                success: false,
+                message: ApiMessages.NOT_FOUND || "Recipe not found"
+            };
+        }
+
+        // בדיקה שהמשתמש הוא הבעלים של המתכון
+        if (existingRecipe.userId.toString() !== currentUserId.toString()) {
+            return {
+                success: false,
+                message: "Unauthorized: You can only delete your own recipes"
+            };
+        }
+
+        await recipeController.del({ _id: recipeId });
+
+        return {
+            success: true,
+            message: ApiMessages.DELETED || "Recipe deleted successfully"
+        };
+
+    } catch (error) {
+        console.error("Error in deleteRecipe service:", error);
+        return {
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Failed to delete recipe",
+            error: error.message
+        };
+    }
+};
+
+
+const getRecipesByUser = async (userId, requestType) => {
+    try {
+        // ולידציה בסיסית
+        if (!userId) {
+            return {
+                success: false,
+                message: ApiMessages.MISSING_REQUIRED_FIELDS || "User ID is required"
+            };
+        }
+
+        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return {
+                success: false,
+                message: ApiMessages.INVALID_ID || "Invalid user ID format"
+            };
+        }
+
+        // קביעת פילטר על בסיס סוג הבקשה
+        let filter = { userId: userId };
+        
+        if (requestType === 'otherUser') {
+            filter.status = 'active';
+        }
+
+        // שליפת המתכונים
+        const recipes = await recipeController.read(filter);
+
+        if (!recipes || recipes.length === 0) {
+            const message = requestType === 'currentUser' 
+                ? "No recipes found for current user"
+                : "No active recipes found for user";
+            
+            return {
+                success: true,
+                data: [],
+                message: message
+            };
+        }
+
+        // שליפת דירוגים לכל מתכון במקביל
+        const recipesWithRatings = await Promise.all(
+            recipes.map(async (recipe) => {
+                try {
+                    // שליפת הדירוגים למתכון
+                    const ratingResult = await ratingController.getAllRatings(recipe._id);
+
+                    // עיבוד התוצאות
+                    const averageRating = ratingResult.success ? ratingResult.data.averageRating : 0;
+                    const totalRatings = ratingResult.success ? ratingResult.data.totalCount : 0;
+
+                    // המרה לאובייקט רגיל ומחיקת userId
+                    const recipeObj = recipe.toObject ? recipe.toObject() : { ...recipe };
+                    const { userId: recipeUserId, ...recipeWithoutUserId } = recipeObj;
+
+                    return {
+                        ...recipeWithoutUserId,
+                        averageRating: averageRating,
+                        ratingsCount: totalRatings
+                    };
+                } catch (error) {
+                    console.error(`Error processing recipe ${recipe._id}:`, error);
+                    // במקרה של שגיאה, החזר את המתכון בלי הדירוגים
+                    const recipeObj = recipe.toObject ? recipe.toObject() : { ...recipe };
+                    const { userId: recipeUserId, ...recipeWithoutUserId } = recipeObj;
+                    
+                    return {
+                        ...recipeWithoutUserId,
+                        averageRating: 0,
+                        ratingsCount: 0
+                    };
+                }
+            })
+        );
+
+        // הודעת הצלחה מותאמת
+        const message = requestType === 'currentUser' 
+            ? `Found ${recipesWithRatings.length} recipes for current user`
+            : `Found ${recipesWithRatings.length} active recipes for user`;
+
+        return {
+            success: true,
+            data: recipesWithRatings,
+            message: message
+        };
+
+    } catch (error) {
+        console.error("Error in getRecipesByUser service:", error);
+        return {
+            success: false,
+            message: ApiMessages.SERVER_ERROR || "Failed to retrieve user recipes",
+            error: error.message
+        };
+    }
+};
+
+
+module.exports = { getRecipes, getRecipeById, getAllRecipes, createRecipe, updateRecipe, deleteRecipe, getRecipesByUser};
