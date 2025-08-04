@@ -10,4 +10,51 @@ async function getNotificationByUserId(userId) {
     return {success: true, data: notification};
 }
 
-module.exports = { getNotificationByUserId };
+async function addRecipeRatedNotification(userId, recipeId) {
+    return notificationController.create({
+        userId,
+        type: 'recipe_rated',
+        title: 'Your recipe was rated!',
+        message: 'Someone just rated your recipe. Check out the feedback!',
+        relatedId: recipeId
+    });
+}
+
+async function addRecipeCommentedNotification(userId, recipeId) {
+    return notificationController.create({
+        userId,
+        type: 'recipe_commented',
+        title: 'New comment on your recipe',
+        message: 'Someone commented on your recipe. Take a look!',
+        relatedId: recipeId
+    });
+}
+
+async function addRecipeApprovedNotification(userId, recipeId) {
+    return notificationController.create({
+        userId,
+        type: 'recipe_approved',
+        title: 'Recipe Approved',
+        message: 'Congratulations! Your recipe has been approved.',
+        relatedId: recipeId
+    });
+}
+
+async function addRecipeRejectedNotification(userId, recipeId) {
+    return notificationController.create({
+        userId,
+        type: 'recipe_rejected',
+        title: 'Recipe Rejected',
+        message: 'Unfortunately, your recipe was not approved. Please review it and try again.',
+        relatedId: recipeId
+    });
+}
+
+
+module.exports = {
+    getNotificationByUserId,
+    addRecipeRatedNotification,
+    addRecipeCommentedNotification,
+    addRecipeApprovedNotification,
+    addRecipeRejectedNotification
+};
