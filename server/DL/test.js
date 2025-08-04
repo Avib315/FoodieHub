@@ -332,30 +332,41 @@ const insertSavedRecipes = async (users, recipes) => {
             {
                 userId: users[0]._id,
                 recipeId: recipes[1]._id,
-                folder: "מנות עיקריות",
-                notes: "לנסות עם פסטה מקמח מלא"
             },
             {
                 userId: users[1]._id,
                 recipeId: recipes[0]._id,
-                folder: "default",
-                notes: "מושלם לארוחות קיץ"
             },
             {
                 userId: users[2]._id,
                 recipeId: recipes[0]._id,
-                folder: "קלים ומהירים",
-                notes: null
             }
         ];
-        
-        for (const savedRecipe of savedRecipes) {
-            const result = await savedRecipeController.create(savedRecipe);
-            console.log("Saved recipe created for user:", savedRecipe.userId);
+         const results = [];
+          for (const savedRecipe of savedRecipes) {
+            // השתמש בפונקציה create עם userId ו-recipeId בנפרד
+            const result = await savedRecipeController.create(savedRecipe.userId, savedRecipe.recipeId);
+            
+            if (result) {
+                console.log(`✅ Saved recipe added: User ${savedRecipe.userId} saved Recipe ${savedRecipe.recipeId}`);
+                results.push({
+                    userId: savedRecipe.userId,
+                    recipeId: savedRecipe.recipeId,
+                    success: true
+                });
+            } else {
+                console.log(`❌ Failed to save recipe for User ${savedRecipe.userId}`);
+                results.push({
+                    userId: savedRecipe.userId,
+                    recipeId: savedRecipe.recipeId,
+                    success: false
+                });
+            }
         }
         
+        console.log(`\n📊 Summary: ${results.filter(r => r.success).length}/${results.length} saved recipes added successfully`);
         console.log("========================= SAVED RECIPES TEST END =========================\n");
-        return savedRecipes;
+        
     } catch (error) {
         console.error("Saved recipes error:", error);
         throw error;
@@ -535,8 +546,7 @@ const runCompleteTest = async () => {
         console.log(`📂 Categories: ${categories.length}`);
         console.log(`📖 Recipes: ${recipes.length}`);
         console.log(`⭐ Ratings: ${ratings.length}`);
-        console.log(`💾 Saved Recipes: ${savedRecipes.length}`);
-        console.log(`📝 Shopping Lists: ${shoppingLists.length}`);
+        console.log(`💾 Saved Recipes: ${savedRecipes}`);
         console.log(`🔔 Notifications: ${notifications.length}`);
         console.log(`📢 Reports: ${reports.length}`);
         console.log(`📋 Admin Logs: ${adminLogs.length}`);
