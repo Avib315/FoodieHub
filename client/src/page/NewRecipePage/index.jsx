@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
+import { Link } from 'react-router-dom';
 
 export default function NewRecipePage() {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -80,11 +81,11 @@ export default function NewRecipePage() {
   return (
     <div className="new-recipe-page">
       <div className="header">
-        <a href="PersonalArea-mobile.html">
+        <Link to={-1}>
           <button className="back-btn">
             <i className="fas fa-arrow-right"></i>
           </button>
-        </a>
+        </Link>
         <div className="header-content">
           <h1>הוספת מתכון חדש</h1>
           <p>שתף את המתכון שלך עם הקהילה</p>
