@@ -59,6 +59,50 @@ async function addSystemNotification(userId, title, message) {
     });
 }
 
+async function markNotificationsAsRead(notificationIds) {
+  if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
+    return { success: false, message: ApiMessages.errorMessages.invalidData };
+  }
+
+  const isValidIds = notificationIds.every(id => /^[0-9a-fA-F]{24}$/.test(id));
+  if (!isValidIds) {
+    return { success: false, message: ApiMessages.errorMessages.invalidId };
+  }
+
+  try {
+    const result = await notificationController.updateMany(
+      { _id: { $in: notificationIds } },
+      { $set: { isRead: true } }
+    );
+
+    return {
+      success: true,
+      modifiedCount: result.modifiedCount
+    };
+  } catch (error) {
+    console.error("Service - markNotificationsAsRead error:", error);
+    throw error;
+  }
+}
+
+async function countUnreadNotifications(userId) {
+  if (!userId) {
+    return { success: false, message: ApiMessages.errorMessages.forbidden };
+  }
+
+  if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+    return { success: false, message: ApiMessages.errorMessages.invalidId };
+  }
+
+  try {
+    const count = await notificationController.count({ userId, isRead: false });
+    return { success: true, count };
+  } catch (error) {
+    console.error("Service - countUnreadNotifications error:", error);
+    throw error;
+  }
+}
+
 
 module.exports = {
     getNotificationByUserId,
@@ -66,5 +110,7 @@ module.exports = {
     addRecipeCommentedNotification,
     addRecipeApprovedNotification,
     addRecipeRejectedNotification,
-    addSystemNotification
+    addSystemNotification,
+    markNotificationsAsRead,
+    countUnreadNotifications
 };
