@@ -5,7 +5,7 @@ const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
 // GET all logs (optionally with filters)
-router.get("/", auth, async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const result = await service.getAllLogs(req.query); // support filters via query params
         res.status(200).json(result);
@@ -16,7 +16,7 @@ router.get("/", auth, async (req, res) => {
 });
 
 // POST create a new log
-router.post("/create", auth, async (req, res) => {
+router.post("/create", async (req, res) => {
     try {
         const result = await service.createLog(req.body);
         res.status(201).json(result);
@@ -27,7 +27,7 @@ router.post("/create", auth, async (req, res) => {
 });
 
 // GET logs by admin ID
-router.get("/byAdmin/:id", auth, async (req, res) => {
+router.get("/byAdmin/:id", async (req, res) => {
     try {
         const result = await service.getLogsByAdminId(req.params.id);
         res.status(200).json(result);
@@ -38,7 +38,7 @@ router.get("/byAdmin/:id", auth, async (req, res) => {
 });
 
 // GET logs by target type and ID (e.g. logs for a specific recipe or user)
-router.get("/byTarget/:type/:id", auth, async (req, res) => {
+router.get("/byTarget/:type/:id", async (req, res) => {
     try {
         const { type, id } = req.params;
         const result = await service.getLogsByTarget(type, id);

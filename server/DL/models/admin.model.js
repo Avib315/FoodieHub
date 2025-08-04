@@ -28,10 +28,7 @@ const adminSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
-  },
-
-
-
+  }
 });
 
 const adminModels = mongoose.model("Admin", adminSchema);
