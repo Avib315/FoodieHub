@@ -1,4 +1,5 @@
 const userController = require("../DL/controllers/user.controller");
+const savedRecipeController = require("../DL/controllers/savedRecipe.controller");
 const bcrypt = require('bcrypt');
 const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -30,7 +31,7 @@ async function register(body) {
 }
 async function getUser(userId) {
     const user = await userController.readOne({ _id: userId });
-    const savedCount = await userController.count({ _id: userId });
+    const savedCount = await savedRecipeController.count({ _id: userId });
     user.savedRecipeCount = savedCount;
     return user;
 }
