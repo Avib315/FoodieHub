@@ -12,9 +12,8 @@ export default function RecipesPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
   
-  const {data , setData } = useApiRequest({url: "/recipe/getAll" })
-  console.log(data);
-  
+  const {data , setData } = useApiRequest({url: "/recipe/getAll" , defaultValue:[]})
+
   const handleFilterSelect = (option) => {
     console.log(option)
     setActiveFilters(prev => prev + 1)

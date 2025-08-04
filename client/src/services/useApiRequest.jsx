@@ -12,9 +12,11 @@ const useApiRequest = (
 ) => {
 
   const [data, setData] = useState(defaultValue);
+  const[loading , setLoading] = useState()
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true)
         const response = await axiosRequest({
           url: `${url}`,
           method,
@@ -30,16 +32,19 @@ const useApiRequest = (
         }
         else {
           if (errorMessage) {
+            console.log(errorMessage)
           }
         }
       } catch (err) {
       }
+      finally{
+        setLoading(false)
+      }
     };
-
-    getData();
+getData()
   }, dependencies);
 
-  return { setData, data };
+  return { setData, data , loading };
 };
 
 export default useApiRequest;
