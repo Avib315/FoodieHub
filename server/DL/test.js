@@ -598,6 +598,7 @@ const insertComments = async () => {
 
         for (const comment of comments) {
             const result = await commentController.create(comment);
+            
             console.log("Comment created:", result.content);
         }
         
