@@ -46,6 +46,8 @@ const useAxiosRequest = ({url, options = {}}) => {
       }
 
       const response = await axios.request(config);
+      console.log(data);
+      
       setData(response.data);
       return response.data;
     } catch (err) {
@@ -93,7 +95,7 @@ const axiosRequestHandler = ({url, method = 'GET', data = null, headers = {}}) =
     }
   };
 
-  // Add data based on method type
+
   if (data) {
     if (method.toLowerCase() === 'get') {
       config.params = data;

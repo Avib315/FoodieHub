@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/ApiReuest';
+import { useEffect } from 'react';
 
 // Mock data based on the provided structure
-const recipeData = {
+const recipeData1 = {
   "_id": "688f442a5e937eb07e4e304a",
   "userId": "688f42c999d726b6c49719e4",
   "categoryId": "688f42cd99d726b6c49719f6",
@@ -93,9 +94,11 @@ export default function RecipeDetailPage() {
   const [userRating, setUserRating] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [showCommentActions, setShowCommentActions] = useState(false);
-const recipe = useAxiosRequest({url:"recp"}) 
+
+  const { data:recipeData } = useAxiosRequest({ url: "recipe/getById?id=688f442a5e937eb07e4e304a" });
+
   const getDifficultyText = (level) => {
-    switch(level) {
+    switch (level) {
       case 1: return 'קל';
       case 2: return 'בינוני';
       case 3: return 'קשה';
@@ -164,7 +167,7 @@ const recipe = useAxiosRequest({url:"recp"})
     },
     {
       id: 2,
-      author: "מיכל לוי", 
+      author: "מיכל לוי",
       avatar: "מ",
       time: "לפני 5 שעות",
       rating: 4,
@@ -187,7 +190,7 @@ const recipe = useAxiosRequest({url:"recp"})
             <button className="control-btn" onClick={() => alert('שיתוף')}>
               <i className="fas fa-share"></i>
             </button>
-            <button 
+            <button
               className={`control-btn ${saved ? 'saved' : ''}`}
               onClick={() => setSaved(!saved)}
             >
@@ -196,7 +199,7 @@ const recipe = useAxiosRequest({url:"recp"})
           </div>
         </div>
         <div className="recipe-title-overlay">
-          <h1>{recipeData.title}</h1>
+          <h1>{recipeData?.title}</h1>
           <div className="recipe-meta-header">
             <div className="meta-item-header">
               <i className="fas fa-clock"></i>
@@ -228,7 +231,7 @@ const recipe = useAxiosRequest({url:"recp"})
                 <span>נרשמה ב-{userData.joinedYear}</span>
               </div>
             </div>
-            <button 
+            <button
               className={`follow-btn ${following ? 'following' : ''}`}
               onClick={() => setFollowing(!following)}
             >
@@ -243,7 +246,7 @@ const recipe = useAxiosRequest({url:"recp"})
         {/* Actions Bar */}
         <div className="actions-bar">
           <div className="actions-left">
-            <button 
+            <button
               className={`action-btn ${liked ? 'liked' : ''}`}
               onClick={() => setLiked(!liked)}
             >
@@ -259,7 +262,7 @@ const recipe = useAxiosRequest({url:"recp"})
               <span>שתף</span>
             </button>
           </div>
-          <button 
+          <button
             className={`save-btn ${saved ? 'saved' : ''}`}
             onClick={() => setSaved(!saved)}
           >
@@ -301,13 +304,13 @@ const recipe = useAxiosRequest({url:"recp"})
           </h2>
           <ul className="ingredients-list">
             {recipeData.ingredients.map((ingredient, index) => (
-              <li 
+              <li
                 key={ingredient._id}
                 className={`ingredient-item ${checkedIngredients.has(index) ? 'checked' : ''}`}
                 onClick={() => toggleIngredient(index)}
               >
                 <div className={`ingredient-checkbox ${checkedIngredients.has(index) ? 'checked' : ''}`}>
-                  <i className="fas fa-check" style={{display: checkedIngredients.has(index) ? 'block' : 'none'}}></i>
+                  <i className="fas fa-check" style={{ display: checkedIngredients.has(index) ? 'block' : 'none' }}></i>
                 </div>
                 <span className="ingredient-text">
                   {ingredient.quantity} {ingredient.unit} {ingredient.name}
@@ -342,7 +345,7 @@ const recipe = useAxiosRequest({url:"recp"})
             <i className="fas fa-star"></i>
             דירוגים וחוות דעת
           </h2>
-          
+
           <div className="rating-section">
             <div className="current-rating">
               <div className="rating-stars">
@@ -358,8 +361,8 @@ const recipe = useAxiosRequest({url:"recp"})
               <div className="rating-input">
                 {renderStars(userRating, true, setRating)}
               </div>
-              <button 
-                className="rating-submit" 
+              <button
+                className="rating-submit"
                 onClick={submitRating}
                 disabled={userRating === 0}
               >
@@ -384,7 +387,7 @@ const recipe = useAxiosRequest({url:"recp"})
 
           {/* Comment Form */}
           <div className={`comment-form ${showCommentActions ? 'active' : ''}`}>
-            <textarea 
+            <textarea
               className="comment-input"
               placeholder="שתף את החוויה שלך עם המתכון..."
               value={commentText}
@@ -400,8 +403,8 @@ const recipe = useAxiosRequest({url:"recp"})
                   <i className="fas fa-camera"></i>
                 </button>
               </div>
-              <button 
-                className="comment-submit" 
+              <button
+                className="comment-submit"
                 onClick={submitComment}
                 disabled={!commentText.trim()}
               >
@@ -441,7 +444,7 @@ const recipe = useAxiosRequest({url:"recp"})
         </div>
       </div>
 
-    
+
     </div>
   );
 }

@@ -8,26 +8,15 @@ import PersonalAreaPage from './page/PersonalAreaPage/index.jsx'
 import NotificationPage from './page/NotificationPage/index.jsx'
 import SettingPage from './page/SettingPage/index.jsx'
 import NewRecipePage from './page/NewRecipePage/index.jsx'
-import ListViewPage from './page/ListViewPage/index.jsx'
-import ListCreationPage from './page/ListCreationPage/index.jsx'
 
 // Auth Pages
 import LoginPage from './page/LoginPage/index.jsx'
 import SignupPage from './page/SignupPage/index.jsx'
 
-// Additional Common Pages
-// import HomePage from './page/HomePage/index.jsx'
 import RecipeDetailPage from './page/RecipeDetailPage/index.jsx'
-// import SearchPage from './page/SearchPage/index.jsx'
-// import CategoryPage from './page/CategoryPage/index.jsx'
-// import ProfilePage from './page/ProfilePage/index.jsx'
 import FavoritesPage from './page/FavoritesPage/index.jsx'
 import AboutPage from './page/AboutPage/index.jsx'
-// import ContactPage from './page/ContactPage/index.jsx'
-// import TermsPage from './page/TermsPage/index.jsx'
-// import PrivacyPage from './page/PrivacyPage/index.jsx'
 import ForgotPasswordPage from './page/ForgotPasswordPage/index.jsx'
-// import ResetPasswordPage from './page/ResetPasswordPage/index.jsx'
 import NotFoundPage from './page/NotFoundPage/index.jsx'
 import LoadingPage from './page/LoadingPage/index.jsx'
 import DevPage from './page/DevPage/index.jsx'
@@ -138,30 +127,10 @@ function App() {
           </AuthPageLayout>
         } />
 
-        {/* Shopping Lists */}
-        <Route path="/shopping-list" element={
-          <AuthPageLayout>
-            <ListViewPage />
-          </AuthPageLayout>
-        } />
 
-        <Route path="/shopping-lists" element={
-          <AuthPageLayout>
-            <ListViewPage />
-          </AuthPageLayout>
-        } />
 
-        <Route path="/create-list" element={
-          <AuthPageLayout>
-            <ListCreationPage />
-          </AuthPageLayout>
-        } />
 
-        <Route path="/edit-list/:id" element={
-          <AuthPageLayout>
-            <ListCreationPage />
-          </AuthPageLayout>
-        } />
+
 
         {/* Static/Info Pages */}
         <Route path="/about" element={
