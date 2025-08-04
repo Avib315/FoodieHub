@@ -525,6 +525,7 @@ const runCompleteTest = async () => {
         const notifications = await insertNotifications(users, recipes);
         const reports = await insertReports(users, recipes);
         const adminLogs = await insertAdminLogs(users, recipes);
+        const comments = await insertComments();
         
         console.log("✅ All schema-based tests completed successfully!\n");
         
@@ -597,6 +598,7 @@ const insertComments = async () => {
 
         for (const comment of comments) {
             const result = await commentController.create(comment);
+            
             console.log("Comment created:", result.content);
         }
         
@@ -610,7 +612,7 @@ const insertComments = async () => {
 
 // Run the complete test
 runCompleteTest();
-await insertComments();
+
 
 // const insertUsers = async () => {
 //     try {
