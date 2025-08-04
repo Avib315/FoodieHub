@@ -18,29 +18,28 @@ router.post('/getAll', async (req, res) => {
         const result = await service.getRecipes(recipeInput);
         res.status(200).send(result);
     } catch (error) {
-
+        console.error("Error getting recipes", error);
+        res.status(500)
     }
 });
-// http//localhost:3001/api/recipe/getAll
+
 router.get("/getAll", async (req, res) => {
     try {
         const result = await service.getAllRecipes();
         res.status(200).send(result);
     } catch (error) {
-
+        console.error("Error getting recipes", error);
+        res.status(500)
     }
 })
+
 router.get("/getById", async (req, res) => {
     try {
         // קבלת ה-ID מה-query parameters
         const { id } = req.query;
         console.log("Received ID:", id);
-        
         const result = await service.getRecipeById(id);
-        
-
         res.status(200).json(result);
-        
     } catch (error) {
         console.error("Error getting recipe by ID:", error);
         res.status(500)
