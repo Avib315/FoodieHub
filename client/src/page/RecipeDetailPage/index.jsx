@@ -2,80 +2,10 @@ import React, { useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import LoadingPage from '../LoadingPage';
 
 // Mock data based on the provided structure
-const recipeData1 = {
-  "_id": "688f442a5e937eb07e4e304a",
-  "userId": "688f42c999d726b6c49719e4",
-  "categoryId": "688f42cd99d726b6c49719f6",
-  "title": "סלט עגבניות ובצל",
-  "description": "סלט פשוט וטעים עם עגבניות ובצל טרי",
-  "instructions": [
-    {
-      "stepNumber": 1,
-      "text": "חתכו את העגבניות לקוביות בינוניות",
-      "imageUrl": "https://example.com/steps/step1.jpg",
-      "_id": "688f442a5e937eb07e4e304b"
-    },
-    {
-      "stepNumber": 2,
-      "text": "חתכו את הבצל לפרוסות דקות",
-      "imageUrl": null,
-      "_id": "688f442a5e937eb07e4e304c"
-    },
-    {
-      "stepNumber": 3,
-      "text": "ערבבו הכל עם שמן זית ומלח",
-      "imageUrl": null,
-      "_id": "688f442a5e937eb07e4e304d"
-    }
-  ],
-  "ingredients": [
-    {
-      "name": "עגבניות",
-      "quantity": 500,
-      "unit": "גרם",
-      "notes": "עגבניות בשלות",
-      "_id": "688f442a5e937eb07e4e304e"
-    },
-    {
-      "name": "בצל",
-      "quantity": 1,
-      "unit": "יחידה",
-      "notes": "בצל אדום עדיף",
-      "_id": "688f442a5e937eb07e4e304f"
-    },
-    {
-      "name": "שמן זית",
-      "quantity": 2,
-      "unit": "כף",
-      "notes": null,
-      "_id": "688f442a5e937eb07e4e3050"
-    }
-  ],
-  "prepTime": 15,
-  "cookTime": 0,
-  "servings": 4,
-  "difficultyLevel": 1,
-  "imageUrl": "https://example.com/recipes/tomato-salad.jpg",
-  "images": [
-    {
-      "url": "https://example.com/recipes/tomato-salad.jpg",
-      "caption": "סלט עגבניות מוכן להגשה",
-      "isPrimary": true,
-      "_id": "688f442a5e937eb07e4e3051"
-    }
-  ],
-  "tags": ["סלט", "טבעוני", "קל", "מהיר"],
-  "isPublic": true,
-  "status": "active",
-  "viewCount": 142,
-  "averageRating": 4.2,
-  "ratingsCount": 15,
-  "createdAt": "2025-08-03T11:12:42.970Z",
-  "updatedAt": "2025-08-03T11:12:42.970Z",
-  "__v": 0
-};
 
 // Mock user data
 const userData = {
@@ -94,8 +24,8 @@ export default function RecipeDetailPage() {
   const [userRating, setUserRating] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [showCommentActions, setShowCommentActions] = useState(false);
-
-  const { data:recipeData } = useAxiosRequest({ url: "recipe/getById?id=688f442a5e937eb07e4e304a" });
+  const {id } = useParams()
+  const { data , loading} = useAxiosRequest({ url: `recipe/getById?id=${id}` , method:"GET" });
 
   const getDifficultyText = (level) => {
     switch (level) {
@@ -176,7 +106,13 @@ export default function RecipeDetailPage() {
       liked: true
     }
   ];
-
+if(loading){
+  return <LoadingPage/>
+}
+console.log(data)
+if(!data){
+  return <></>
+}
   return (
     <div className="recipe-detail-page">
       {/* Recipe Header Image */}
@@ -199,19 +135,19 @@ export default function RecipeDetailPage() {
           </div>
         </div>
         <div className="recipe-title-overlay">
-          <h1>{recipeData?.title}</h1>
+          <h1>{data?.title}</h1>
           <div className="recipe-meta-header">
             <div className="meta-item-header">
               <i className="fas fa-clock"></i>
-              <span>{formatTime(recipeData.prepTime)}</span>
+              <span>{formatTime(data?.prepTime)}</span>
             </div>
             <div className="meta-item-header">
               <i className="fas fa-users"></i>
-              <span>{recipeData.servings} מנות</span>
+              <span>{data?.servings} מנות</span>
             </div>
             <div className="meta-item-header">
               <i className="fas fa-signal"></i>
-              <span>{getDifficultyText(recipeData.difficultyLevel)}</span>
+              <span>{getDifficultyText(data?.difficultyLevel)}</span>
             </div>
           </div>
         </div>
@@ -222,24 +158,15 @@ export default function RecipeDetailPage() {
         {/* User Section */}
         <div className="user-section">
           <div className="user-header">
-            <div className="user-avatar">{userData.avatar}</div>
+            <div className="user-avatar">{data.userName?.slice(0,1)}</div>
             <div className="user-info">
-              <h3>{userData.name}</h3>
-              <div className="user-stats">
-                <span>{userData.recipesCount} מתכונים</span>
-                <span>{userData.followersCount.toLocaleString()} עוקבים</span>
-                <span>נרשמה ב-{userData.joinedYear}</span>
-              </div>
+              <h3>{data.userName}</h3>
+           
             </div>
-            <button
-              className={`follow-btn ${following ? 'following' : ''}`}
-              onClick={() => setFollowing(!following)}
-            >
-              {following ? 'עוקב' : 'עקוב'}
-            </button>
+ 
           </div>
           <p className="recipe-description">
-            {recipeData.description}
+            {data.description}
           </p>
         </div>
 
@@ -275,17 +202,17 @@ export default function RecipeDetailPage() {
           <div className="recipe-meta">
             <div className="meta-card">
               <i className="fas fa-clock"></i>
-              <div className="meta-value">{recipeData.prepTime}</div>
+              <div className="meta-value">{data.prepTime}</div>
               <div className="meta-label">דקות</div>
             </div>
             <div className="meta-card">
               <i className="fas fa-users"></i>
-              <div className="meta-value">{recipeData.servings}</div>
+              <div className="meta-value">{data.servings}</div>
               <div className="meta-label">מנות</div>
             </div>
             <div className="meta-card">
               <i className="fas fa-signal"></i>
-              <div className="meta-value">{getDifficultyText(recipeData.difficultyLevel)}</div>
+              <div className="meta-value">{getDifficultyText(data.difficultyLevel)}</div>
               <div className="meta-label">רמת קושי</div>
             </div>
             <div className="meta-card">
@@ -303,7 +230,7 @@ export default function RecipeDetailPage() {
             רכיבים
           </h2>
           <ul className="ingredients-list">
-            {recipeData.ingredients.map((ingredient, index) => (
+            {data.ingredients.map((ingredient, index) => (
               <li
                 key={ingredient._id}
                 className={`ingredient-item ${checkedIngredients.has(index) ? 'checked' : ''}`}
@@ -328,7 +255,7 @@ export default function RecipeDetailPage() {
             הוראות הכנה
           </h2>
           <ol className="instructions-list">
-            {recipeData.instructions.map((instruction) => (
+            {data.instructions.map((instruction) => (
               <li key={instruction._id} className="instruction-item">
                 <div className="step-number">{instruction.stepNumber}</div>
                 <div className="step-content">
@@ -349,10 +276,10 @@ export default function RecipeDetailPage() {
           <div className="rating-section">
             <div className="current-rating">
               <div className="rating-stars">
-                {renderStars(Math.round(recipeData.averageRating))}
+                {renderStars(Math.round(data.averageRating))}
               </div>
               <div className="rating-text">
-                {recipeData.averageRating} מתוך 5 ({recipeData.ratingsCount} דירוגים)
+                {data.averageRating} מתוך 5 ({data.ratingsCount} דירוגים)
               </div>
             </div>
 
