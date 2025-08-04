@@ -62,7 +62,6 @@ function App() {
         
         <Route path="/home" element={
             <ProtectedPage element={<RecipesPage />} />
-  
         } />
 
       
