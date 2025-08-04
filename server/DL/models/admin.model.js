@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -29,17 +29,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  status: {
-    type: String,
-    enum: ['active', 'blocked', 'inactive'],
-    default: 'active'
-  },
-  savedRecipes: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Recipe',
-  }],
+
+
+
 });
 
-const userModels = mongoose.model("User", userSchema);
+const adminModels = mongoose.model("Admin", adminSchema);
 
-module.exports = userModels;
+module.exports = adminModels;

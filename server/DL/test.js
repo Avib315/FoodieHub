@@ -29,10 +29,8 @@ const insertUsers = async () => {
                 passwordHash: hashedPassword, // Should be properly hashed in real app
                 firstName: "אבי",
                 lastName: "הרשקוביץ",
-                role: "user",
                 status: "active",
-                profileImageUrl: "https://example.com/profiles/yossi.jpg",
-                lastLogin: new Date()
+                savedRecipes:[]
             },
             {
                 username: "coral286",
@@ -40,10 +38,8 @@ const insertUsers = async () => {
                 passwordHash:hashedPassword,
                 firstName: "קורל",
                 lastName: "שמואלוביץ",
-                role: "admin",
                 status: "active",
-                profileImageUrl: "https://example.com/profiles/admin.jpg",
-                lastLogin: new Date()
+                   savedRecipes:[]
             },
             {
                 username: "pnina",
@@ -51,10 +47,8 @@ const insertUsers = async () => {
                 passwordHash:hashedPassword,
                 firstName: "פנינה",
                 lastName: "כהן",
-                role: "user",
                 status: "active",
-                profileImageUrl: "https://example.com/profiles/admin.jpg",
-                lastLogin: new Date()
+                   savedRecipes:[]
             }
         ];
         
