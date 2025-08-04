@@ -8,11 +8,10 @@ const notificationSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['comment_reply', 
-        'recipe_rated',
+    enum: ['recipe_rated',
+        'recipe_commented',
         'recipe_approved',
         'recipe_rejected',
-        'new_follower',
         'system'],
     required: true
   },
@@ -30,10 +29,6 @@ const notificationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId // מזהה הישות הקשורה (מתכון, תגובה וכו')
   },
   isRead: {
-    type: Boolean,
-    default: false
-  },
-  isEmailSent: {
     type: Boolean,
     default: false
   }
