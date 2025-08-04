@@ -105,10 +105,12 @@ const deleteRating = async (ratingInput) => {
                 message: ApiMessages.MISSING_REQUIRED_FIELDS || "User ID and Rating ID are required"
             };
         }
-
+        // ratingId = "fsfdsfsrewr32424"
+        // filter = {_id: ratingId, userId: userId};
+        const filterObject = { _id: ratingId, userId: userId };
 
         // בדיקה שהדירוג קיים
-        const existingRating = await ratingController.readOne({_id:ratingId});
+        const existingRating = await ratingController.readOne(filterObject);
         if (!existingRating) {
             return {
                 success: false,
@@ -125,7 +127,16 @@ const deleteRating = async (ratingInput) => {
         }
 
         // מחיקת הדירוג
-        await ratingController.del(ratingId);
+        
+        const deletedRating = await ratingController.del(filterObject);
+        console.log(deletedRating);
+        
+        if (!deletedRating) {
+            return {
+                success: false,
+                message: ApiMessages.NOT_FOUND || "Rating not found"
+            };
+        }
 
         return {
             success: true,
@@ -145,7 +156,8 @@ const deleteRating = async (ratingInput) => {
 const updateRating = async (ratingInput) => {
     try {
         const { userId, recipeId, rating, review } = ratingInput;
-
+        console.log(userId,recipeId );
+        
         // ולידציה
         if (!userId || !recipeId) {
             return {

@@ -23,8 +23,8 @@ router.get("/getAll", async (req, res) => {
     }
 });
 
-router.post("/create", auth, async (req, res) => { // הוסף authentication
-    try {
+router.post("/create", async (req, res) => { // הוסף authentication
+    try {   
         const ratingInput = {
             userId: req.body?.userId,
             recipeId: req.body?.recipeId,
@@ -47,18 +47,19 @@ router.post("/create", auth, async (req, res) => { // הוסף authentication
     }
 });
 
-router.delete("/delete", auth, async (req, res) => { // הוסף authentication
+router.put("/delete", async (req, res) => { // הוסף authentication
     try {
         const ratingInput = {
             userId: req.body?.userId,
             ratingId: req.body?.ratingId
         };
+        
         const result = await service.deleteRating(ratingInput);
         
         if (result.success) {
-            res.status(200).send(result.success);
+            res.status(200).send(result);
         } else {
-            res.status(400).send(result.success);
+            res.status(400).send(result);
         }
     } catch (error) {
         console.error("Error deleting rating", error);
@@ -69,20 +70,20 @@ router.delete("/delete", auth, async (req, res) => { // הוסף authentication
     }
 });
 
-router.put("/update", auth, async (req, res) => { // הוסף authentication
+router.put("/update", async (req, res) => { // הוסף authentication
     try {
         const ratingInput = {
             userId: req.body?.userId,
-            ratingId: req.body?.ratingId, // הוסף ratingId
+            recipeId: req.body?.recipeId, // הוסף ratingId
             rating: req.body?.rating,
             review: req.body?.review
         };
         const result = await service.updateRating(ratingInput);
         
         if (result.success) {
-            res.status(200).send(result.success);
+            res.status(200).send(result);
         } else {
-            res.status(400).send(result.success);
+            res.status(400).send(result);
         }
     } catch (error) {
         console.error("Error updating rating", error);
