@@ -23,6 +23,7 @@ const getAllRatings = async (recipeId) => {
         }
 
         return {
+            success: true,
             data: {
                 ratings: ratings,
                 totalCount: ratings ? ratings.length : 0,
