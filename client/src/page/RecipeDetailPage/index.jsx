@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
-import useAxiosRequest from '../../services/ApiRequest';
+import useAxiosRequest from '../../services/useApiRequest';
 import { useEffect } from 'react';
 
 // Mock data based on the provided structure

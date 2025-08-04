@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import useAxiosRequest, { axiosRequestHandler } from '../../services/ApiRequest'
+import useAxiosRequest, { axiosRequestHandler } from '../../services/useApiRequest'
 
 export default function AuthPageLayout({ children }) {
   const [isAuth, setIsAuth] = useState(false)

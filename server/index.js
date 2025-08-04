@@ -9,11 +9,11 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     credentials: true
-    }));
-    app.use(express.json());
-    app.use(cookieParser());
+}));
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/api/user", require("./routes/user.router.js"));
 app.use("/api/recipe", require("./routes/recipe.router.js"));
