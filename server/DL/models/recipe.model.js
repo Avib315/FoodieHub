@@ -39,7 +39,7 @@ const recipeSchema = new mongoose.Schema({
     },
     unit: {
       type: String,
-      required: true,
+      required: true, 
       enum: ['גרם', 'קילוגרם', 'מ"ל', 'ליטר', 'כף', 'כפית', 'כוס', 'יחידה', 'קורט']
     },
     notes: {
