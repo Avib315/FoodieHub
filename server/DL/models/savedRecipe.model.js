@@ -10,16 +10,8 @@ const savedRecipeSchema = new mongoose.Schema({
     ref: 'Recipe',
     required: true
   },
-  folder: {
-    type: String,
-    default: 'default',
-    trim: true
-  },
-  notes: {
-    type: String,
-    trim: true,
-    maxlength: 500
-  }
+
+
 }, {
   timestamps: true
 });
