@@ -50,11 +50,21 @@ async function addRecipeRejectedNotification(userId, recipeId) {
     });
 }
 
+async function addSystemNotification(userId, title, message) {
+    return notificationController.create({
+        userId,
+        type: 'system',
+        title,
+        message
+    });
+}
+
 
 module.exports = {
     getNotificationByUserId,
     addRecipeRatedNotification,
     addRecipeCommentedNotification,
     addRecipeApprovedNotification,
-    addRecipeRejectedNotification
+    addRecipeRejectedNotification,
+    addSystemNotification
 };
