@@ -29,7 +29,7 @@ function App() {
 
         <Route path="/dev" element={
 
-            <DevPage />
+          <DevPage />
         } />
         {/* Auth Pages - No NavBar */}
         <Route path="/login" element={
@@ -57,50 +57,42 @@ function App() {
         } />
 
         <Route path="/" element={
-       <ProtectedPage element={<RecipesPage />} />
-        } />
-        
-        <Route path="/home" element={
-            <ProtectedPage element={<RecipesPage />} />
+          <ProtectedPage element={<RecipesPage />} />
         } />
 
-      
+        <Route path="/home" element={
+          <ProtectedPage element={<RecipesPage />} />
+        } />
 
         <Route path="/recipe/:id" element={
           <ProtectedPage element={<RecipeDetailPage />} />
 
         } />
-
-
-
         <Route path="/favorites" element={
-       
-           <ProtectedPage element={<FavoritesPage />} />
+
+          <ProtectedPage element={<FavoritesPage />} />
         } />
-
-
-
         <Route path="/personal-area" element={
-                   <ProtectedPage element={<PersonalAreaPage />} />
+          <ProtectedPage element={<PersonalAreaPage />} />
         } />
 
         <Route path="/notifications" element={
-             <ProtectedPage element={<NotificationPage />} />
- 
+          <ProtectedPage element={<NotificationPage />} />
+
         } />
 
         <Route path="/settings" element={
-            <ProtectedPage element={<SettingPage />} />
-   
+          <ProtectedPage element={<SettingPage />} />
+
         } />
 
         {/* Content Creation */}
         <Route path="/new-recipe" element={
-           <ProtectedPage element={<NewRecipePage />} />
+          <ProtectedPage element={<NewRecipePage />} />
         } />
 
         <Route path="/edit-recipe/:id" element={
-              <ProtectedPage element={<NewRecipePage />} />
+          <ProtectedPage element={<NewRecipePage />} />
 
         } />
 

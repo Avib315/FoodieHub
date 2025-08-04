@@ -12,7 +12,7 @@ export default function RecipesPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
   
-  const {data , setData } = useApiRequest({url: "/recipe/getAll" , defaultValue:[]})
+  const {data , loading } = useApiRequest({url: "/recipe/getAll" , defaultValue:[]})
 
   const handleFilterSelect = (option) => {
     console.log(option)
@@ -33,7 +33,6 @@ export default function RecipesPage() {
 
   return (
     <>
-    <NavBar/>
     <div className='recipes-page'>
       {/* Desktop/Tablet Filter Container */}
       <div className={`filter-container ${isMobileFilterOpen ? 'mobile-open' : ''}`}>
@@ -76,7 +75,6 @@ export default function RecipesPage() {
         )}
       </div>
 
-      {/* Mobile Floating Filter Button */}
       <button className="floating-filter-btn" onClick={toggleMobileFilter}>
         <AiOutlineFilter />
         {activeFilters > 0 && (

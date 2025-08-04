@@ -6,9 +6,8 @@ const recipeSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  categoryId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category',
+  category: {
+    type: String,
     required: true
   },
   title: {
