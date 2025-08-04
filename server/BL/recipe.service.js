@@ -77,16 +77,16 @@ async function getRecipeById(id) {
 }
 
 
-
-
-// async function getAllRecipes() {
-//     const recipe = await recipeController.read();
-//     return { success: true, data: recipe };
-// }
-
-async function getAllRecipes() {
+async function getAllRecipes(filterByActive = true) {
     try {
         const recipes = await recipeController.readWithUserAndRatings();
+        if(recipes.length == 0) {
+            return { success: false, message: ApiMessages.errorMessages.notFound };
+        }
+        if(filterByActive) {
+            return { success: true, data: recipes.filter(recipe => recipe.status === 'active')};
+        }
+
         return { success: true, data: recipes };
     } catch (error) {
         console.error("Error in getAllRecipes:", error);
