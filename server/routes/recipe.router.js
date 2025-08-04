@@ -3,7 +3,8 @@ const router = express.Router();
 const service = require('../BL/recipe.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
-
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 router.post('/getAll', async (req, res) => {
     try {
         const recipeInput = {
@@ -48,21 +49,22 @@ router.get("/getById", async (req, res) => {
 
 
 
-router.post("/create", async (req, res) => {
+router.post("/create", upload.single('image') , async (req, res) => {
     try {
+        
         const recipeInput = {
             userId: req.body?.userId,
-            categoryId: req.body?.categoryId,
-            title: req.body?.title,
+            category: req.body?.category,
+            title: req.body?.recipeName,
             description: req.body?.description,
             instructions: req.body?.instructions,
             ingredients: req.body?.ingredients,
             prepTime: req.body?.prepTime,
             servings: req.body?.servings,
             difficultyLevel: req.body?.difficultyLevel,
-            imageUrl: req.body?.imageUrl
+            image: req.body?.image
         };
-
+  console.log("Creating recipe with input:", recipeInput);
         const result = await service.createRecipe(recipeInput);
         
         if (result.success) {

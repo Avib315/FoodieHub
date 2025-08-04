@@ -116,7 +116,7 @@ const createRecipe = async (recipeInput) => {
             imageUrl
         } = recipeInput;
 
-        console.log("Creating recipe with input:", recipeInput);
+      
         
 
         // ולידציה בסיסית
