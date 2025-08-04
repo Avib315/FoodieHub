@@ -6,13 +6,13 @@ const ApiMessages = require("../common/apiMessages.js");
 
 async function login(userInput) {
     const user = await userController.readOne({ email: userInput.email });
-    console.log(user.passwordHash, 'user.password');
-    if (!user) return { success: false, message: ApiMessages.errorMessages.forbidden };
+    if (!user ) return { success: false, message: ApiMessages.errorMessages.forbidden };
     if (!userInput.password) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const passwordMatch = await bcrypt.compare(userInput.password, user?.passwordHash);
     if (!passwordMatch) return { success: false, message: ApiMessages.errorMessages.forbidden };
     const token = loginAuth({ id: user._id });
-    return {   success: true, token };
+    console.log(1111);
+    return { success: true, token };
 }
 async function register(body) {
     const userInput = {

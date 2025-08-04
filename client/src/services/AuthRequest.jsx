@@ -1,4 +1,4 @@
-import { axiosRequest } from "./axiosRequest";
+import axiosRequest  from "./axiosRequest";
 
 export async function isAuthenticated() {
     try {

@@ -16,10 +16,10 @@ export default function RecipeCard({ recipe }) {
   // Destructure recipe data with fallbacks
   const { 
     userName = 'משתמש לא ידוע', 
-    recipeName = 'מתכון ללא שם', 
-    image = '', 
+    title = 'מתכון ללא שם', 
+    imageUrl = '', 
     dateCreated = 'לא ידוע', 
-    desc = 'אין תיאור', 
+    description = 'אין תיאור', 
     time = '0 דק\'', 
     level = 'לא ידוע', 
     stars = 0, 
@@ -74,9 +74,9 @@ export default function RecipeCard({ recipe }) {
 
   // Generate background image style
   const getImageStyle = () => {
-    if (image) {
+    if (imageUrl) {
       return {
-        backgroundImage: `url(${image})`,
+        backgroundImage: `url(${imageUrl})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       }
@@ -104,13 +104,13 @@ export default function RecipeCard({ recipe }) {
         style={getImageStyle()}
       >
         <div className="recipe-overlay">
-          <p>{desc}</p>
+          <p>{description}</p>
         </div>
       </div>
 
       <div className="recipe-info">
-        <h2 className="recipe-title">{recipeName}</h2>
-        <p className="recipe-description">{desc}</p>
+        <h2 className="recipe-title">{title}</h2>
+        <p className="recipe-description">{description}</p>
         
         <div className="recipe-meta">
           <div className="meta-item">

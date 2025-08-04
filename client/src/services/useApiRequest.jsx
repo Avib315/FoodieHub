@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { axiosRequest } from './axiosRequest';
+import axiosRequest  from './axiosRequest';
 
 
 const useApiRequest = (

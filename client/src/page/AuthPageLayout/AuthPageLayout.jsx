@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import useAxiosRequest, { axiosRequestHandler } from '../../services/useApiRequest'
+import useAxiosRequest from '../../services/useApiRequest'
+import axiosRequest from '../../services/axiosRequest'
 
 export default function AuthPageLayout({ children }) {
   const [isAuth, setIsAuth] = useState(false)
   const location = useLocation()
   useEffect(()=>{
-      const {data} =  axiosRequestHandler({url:"user/isAuthenticated"})
+      const {data} =  axiosRequest({url:"user/isAuthenticated"})
       setIsAuth(data)
   },[])
   const isAuthPage = location.pathname === '/login' || 
