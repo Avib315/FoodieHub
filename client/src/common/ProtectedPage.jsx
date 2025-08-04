@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { isAuthenticated } from "../services/AuthRequest";
 import LoadingPage from "../page/LoadingPage/index";
 import NotFoundPage from "../page/NotFoundPage";
+import NavBar from "../component/NavBar";
 
 export default function ProtectedPage({ element }) {
     const [isAuth, setIsAuth] = useState(null);
@@ -19,7 +20,7 @@ export default function ProtectedPage({ element }) {
         <>
             {!loading ?
                 (isAuth ?
-                    <>  {element}  </>
+                    <>  {element} <NavBar /> </>
                     : <NotFoundPage/>) : <LoadingPage/>}
 
         </>)

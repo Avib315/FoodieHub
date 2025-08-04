@@ -4,9 +4,9 @@ import RecipeCard from '../../component/RecipeCard'
 import SearchBar from '../../component/SerchBar'
 import DropDown from '../../component/DropDown'
 import { AiOutlineFilter, AiOutlineClose } from 'react-icons/ai'
-import {recipes} from './data.json'
 import NavBar from '../../component/NavBar'
 import useApiRequest from '../../services/useApiRequest'
+import { Link } from 'react-router-dom'
 
 export default function RecipesPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
@@ -99,7 +99,11 @@ export default function RecipesPage() {
       
       <div className='recipes-list'>  
         {data.map(recipe => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <>
+          <Link to={`recipe/${recipe._id}`}>
+          <RecipeCard key={recipe._id} recipe={recipe} />
+          </Link>
+          </>
         ))}
       </div>
 

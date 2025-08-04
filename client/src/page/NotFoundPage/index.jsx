@@ -25,7 +25,7 @@ export default function NotFoundPage() {
           <div className="suggestions">
             <h3>אולי תמצא מה שאתה מחפש כאן:</h3>
             <ul>
-              <li><Link to="/recipes">מתכונים</Link></li>
+              <li><Link to="/">מתכונים</Link></li>
               <li><Link to="/new-recipe">יצירת מתכון חדש</Link></li>
             </ul>
           </div>
