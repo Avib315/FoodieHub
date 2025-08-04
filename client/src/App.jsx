@@ -85,7 +85,7 @@ function App() {
         } />
 
         <Route path="/notifications" element={
-             <ProtectedPage element={<PersonalAreaPage />} />
+             <ProtectedPage element={<NotificationPage />} />
  
         } />
 
