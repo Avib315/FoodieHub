@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const adminLogSchema = new mongoose.Schema({
   adminId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'Admin',
     required: true
   },
   action: {
