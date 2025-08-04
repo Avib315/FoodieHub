@@ -21,7 +21,7 @@ export default function ProtectedPage({ element }) {
             {!loading ?
                 (isAuth ?
                     <>  {element} <NavBar /> </>
-                    : <NotFoundPage/>) : <LoadingPage/>}
+                    : <NotFoundPage type={1}/>) : <LoadingPage/>}
 
         </>)
 }
