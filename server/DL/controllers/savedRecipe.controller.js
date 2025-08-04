@@ -1,34 +1,51 @@
-const savedRecipeModel = require('../models/savedRecipe.model.js');
+// savedRecipes.controller.js
 
-const create = async (data, isPopulate) => {
-    return await savedRecipeModel.create(data);
-}
+const userModel = require('../models/user.model.js');
 
-const read = async (filter) => {
-    return await savedRecipeModel.find(filter);
-}
+// הוספת מתכון למתכונים השמורים
+const create = async (userId, recipeId) => {
+    return await userModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: { savedRecipes: recipeId } }, // $addToSet מונע כפילויות
+        { new: true }
+    );
+};
 
-const readOne = async (filter) => {
-    return await savedRecipeModel.findOne(filter);
-}
+// קבלת כל המתכונים השמורים של משתמש
+const read = async (userId) => {
+    return await userModel.findById(userId)
+        .populate({
+            path: 'savedRecipes',
+            select: 'title description imageUrl averageRating ratingsCount status prepTime servings difficultyLevel',
+            match: { status: 'active' } // רק מתכונים פעילים
+        });
+};
 
-const update = async (filter, data) => {
-    return await savedRecipeModel.findOneAndUpdate(filter, data);
-}
+// קבלת משתמש אחד עם המתכונים השמורים שלו
+const readWithUser = async (userId) => {
+    return await userModel.findById(userId).populate('savedRecipes');
+};
 
-const del = async (filter) => {
-    return await savedRecipeModel.findOneAndDelete(filter);
-}
+// הסרת מתכון מהמתכונים השמורים
+const del = async (userId, recipeId) => {
+    return await userModel.findByIdAndUpdate(
+        userId,
+        { $pull: { savedRecipes: recipeId } },
+        { new: true }
+    );
+};
 
-const count = async (filter) => {
-    return await savedRecipeModel.countDocuments(filter);
-}
+
+// קבלת מספר המתכונים השמורים
+const count = async (userId) => {
+    const user = await userModel.findById(userId, { savedRecipes: 1 });
+    return user ? user.savedRecipes.length : 0;
+};
 
 module.exports = {
     create,
     read,
-    readOne,
-    update,
+    readWithUser,
     del,
     count
-}
+};

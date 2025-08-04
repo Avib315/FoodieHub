@@ -38,7 +38,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['active', 'blocked', 'inactive'],
     default: 'active'
-  }
+  },
+    savedRecipes: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Recipe',
+      required: true
+    }],
 });
 
 const userModels = mongoose.model("User", userSchema);
