@@ -79,7 +79,10 @@ async function getAllLogs(filters = {}) {
 
 // Get logs by adminId
 async function getLogsByAdminId(adminId) {
-    if (!adminId || !adminId.match(/^[0-9a-fA-F]{24}$/)) {
+    if (!adminId) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+    if (!adminId.match(/^[0-9a-fA-F]{24}$/)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
