@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const result = await service.register(req.body);
-        res.status(200).send(result);
+        res.status(200).send({success: true, result});
     } catch (error) {
         console.error("RouteName: user : register : error message:", error.message);
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });

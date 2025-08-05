@@ -7,7 +7,7 @@ const ApiMessages = require("../common/apiMessages.js");
 
 async function login(userInput) {
     if (!userInput || !userInput.email || !userInput.email.trim()) {
-        throw new Error(ApiMessages.errorMessages.missingData || !userInput.password || userInput.password.trim() === '');
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
