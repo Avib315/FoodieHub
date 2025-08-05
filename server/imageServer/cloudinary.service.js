@@ -37,7 +37,7 @@ async function uploadImage(fileBase64, folderName = "") {
     console.log("------upload image--------");
  
     return {
-      src: result.url,
+      url: result.url,
       alt: result.original_filename || "item-img"
     };
   } catch (error) {

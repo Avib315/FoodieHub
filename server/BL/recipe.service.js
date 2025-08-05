@@ -94,7 +94,7 @@ const createRecipe = async (recipeInput) => {
     await cloudinaryService.connect();
 
     const imageResult = await cloudinaryService.uploadImage(image, "recipesImages");
-    if (!imageResult || !imageResult.src) {
+    if (!imageResult || !imageResult.url) {
         throw new Error(ApiMessages.errorMessages.imageUploadFailed);
     }
     // ולידציות בסיסיות במשולב
@@ -172,7 +172,7 @@ const createRecipe = async (recipeInput) => {
         prepTime: Number(prepTime),
         servings: Number(servings),
         difficultyLevel: Number(difficultyLevel),
-        imageUrl: imageResult.src || null,
+        imageUrl: imageResult.url || null,
         status: 'pending'
     };
 
