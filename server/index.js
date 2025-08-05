@@ -21,6 +21,7 @@ app.use("/api/rating", require("./routes/rating.router.js"))
 app.use("/api/categories", require("./routes/categories.router.js"));
 app.use("/api/notification", require("./routes/notification.router.js"));
 app.use("/api/adminLog", require("./routes/adminLog.router.js"));
+app.use("/api/admin", require("./routes/admin.router.js"));
 // app.use("/api/items", auth, require("./routes/userItems.router.js"));
 
 app.listen(process.env.PORT, () => {

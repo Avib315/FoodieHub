@@ -20,10 +20,20 @@ const del = async (filter) => {
     return await notificationModel.findOneAndDelete(filter);
 }
 
+const updateMany = async (filter, data) => {
+  return await notificationModel.updateMany(filter, data);
+};
+
+const count = async (filter) => {
+  return await notificationModel.countDocuments(filter);
+};
+
 module.exports = {
     create,
     read,
     readOne,
     update,
-    del
+    del,
+    updateMany,
+    count
 }
