@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: "None" });
         }
 
-        res.status(200).send({ success: true, admin });
+        res.status(200).send({ success: true, data: admin });
 
     } catch (error) {
         console.error('RouteName: admin , Path: login , error message: ', error.message);

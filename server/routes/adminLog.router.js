@@ -8,7 +8,7 @@ const ApiMessages = require('../common/apiMessages.js');
 router.get("/", async (req, res) => {
     try {
         const result = await service.getAllLogs(req.query); // support filters via query params
-        res.status(200).send({ success: true, result });
+        res.status(200).send({ success: true, data: result });
     } catch (error) {
         console.error('RouteName: adminLog , Path: get/ , error message: ', error.message);
         res.status(500).send({
@@ -22,7 +22,7 @@ router.get("/", async (req, res) => {
 router.post("/create", async (req, res) => {
     try {
         const result = await service.createLog(req.body);
-        res.status(201).send({ success: true, result });
+        res.status(201).send({ success: true, data: result });
     } catch (error) {
         console.error('RouteName: adminLog , Path: create , error message: ', error.message);
         res.status(500).send({
@@ -35,9 +35,9 @@ router.post("/create", async (req, res) => {
 // GET logs by admin ID
 router.get("/byAdmin/:id", async (req, res) => {
     try {
-        const { id } = req.params;
-        const result = await service.getLogsByAdminId(id);
-        res.status(200).send({ success: true, result });
+        const { userId } = req.body;
+        const result = await service.getLogsByAdminId(userId);
+        res.status(200).send({ success: true, data: result });
     } catch (error) {
         console.error('RouteName: adminLog , Path: get/byAdmin/:id , error message: ', error.message);
         res.status(500).send({
@@ -52,7 +52,7 @@ router.get("/byTarget/:type/:id", async (req, res) => {
     try {
         const { type, id } = req.params;
         const result = await service.getLogsByTarget(type, id);
-        res.status(200).send({ success: true, result });
+        res.status(200).send({ success: true, data: result });
     } catch (error) {
         console.error('RouteName: adminLog , Path: get/byTarget/:type/:id , error message: ', error.message);
         res.status(500).send({
