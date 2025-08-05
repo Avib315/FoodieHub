@@ -5,45 +5,39 @@ const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
-router.post('/getAll', async (req, res) => {
-    try {
-        const recipeInput = {
-            title: req.body?.title,
-            ingredients: req.body?.ingredients,
-            instructions: req.body?.instructions,
-            freeSearch: req.body?.freeSearch,
-            userId: req.body?.userId,
-            page: req.body?.page || 1,
-            limit: req.body?.limit || 10
-        };
-        const result = await service.getRecipes(recipeInput);
-        res.status(200).send(result);
-    } catch (error) {
-        console.error("Error getting recipes", error);
-        res.status(500)
-    }
-});
+
+
 
 router.get("/getAll", async (req, res) => {
     try {
         const result = await service.getAllRecipes();
-        res.status(200).send(result);
+        res.status(200).send({
+            success: true,
+            data: result
+      });
     } catch (error) {
-        console.error("Error getting recipes", error);
-        res.status(500)
+        console.error("RouteName: recipe , Path: getAll , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
     }
 })
 
 router.get("/getById", async (req, res) => {
     try {
-        // קבלת ה-ID מה-query parameters
         const { id } = req.query;
-        console.log("Received ID:", id);
         const result = await service.getRecipeById(id);
-        res.status(200).json(result);
+        res.status(200).send({
+            success: true,
+            data: result
+      });
     } catch (error) {
-        console.error("Error getting recipe by ID:", error);
-        res.status(500)
+        console.error("RouteName: recipe , Path: getById , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
     }
 });
 
@@ -55,28 +49,24 @@ router.post("/create", upload.single('image') , async (req, res) => {
         const recipeInput = {
             userId: req.body?.userId,
             category: req.body?.category,
-            title: req.body?.recipeName,
+            title: req.body?.title,
             description: req.body?.description,
             instructions: req.body?.instructions,
             ingredients: req.body?.ingredients,
             prepTime: req.body?.prepTime,
             servings: req.body?.servings,
             difficultyLevel: req.body?.difficultyLevel,
-            image: req.body?.image
+            imageUrl: req.body?.imageUrl
         };
-  console.log("Creating recipe with input:", recipeInput);
         const result = await service.createRecipe(recipeInput);
         
-        if (result.success) {
-            res.status(201).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(201).send({success: true, result});
+    
     } catch (error) {
-        console.error("Error creating recipe", error);
+        console.error("RouteName: recipe , Path: create , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -88,7 +78,7 @@ router.put("/update/:id", async (req, res) => {
         const currentUserId = req.body?.userId;
         
         const updateData = {
-            categoryId: req.body?.categoryId,
+            category: req.body?.category,
             title: req.body?.title,
             description: req.body?.description,
             instructions: req.body?.instructions,
@@ -101,16 +91,13 @@ router.put("/update/:id", async (req, res) => {
 
         const result = await service.updateRecipe(recipeId, updateData, currentUserId);
         
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(200).send({success: true});
+
     } catch (error) {
-        console.error("Error updating recipe", error);
+        console.error("RouteName: recipe , Path: update , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -123,16 +110,13 @@ router.delete("/delete/:id", async (req, res) => {
         
         const result = await service.deleteRecipe(recipeId, currentUserId);
         
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(200).send({success: true});
+
     } catch (error) {
-        console.error("Error deleting recipe", error);
+        console.error("RouteName: recipe , Path: delete , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -145,16 +129,13 @@ router.post("/myRecipes", async (req, res) => {
         
         const result = await service.getRecipesByUser(currentUserId, 'currentUser');
         
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(200).send({success: true, data: result});
+
     } catch (error) {
-        console.error("Error getting current user recipes", error);
+        console.error("RouteName: recipe , Path: myRecipes , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -163,26 +144,16 @@ router.post("/myRecipes", async (req, res) => {
 router.get("/userRecipes/:userId", async (req, res) => {
     try {
         const targetUserId = req.params.userId;
-        
-        if (!targetUserId) {
-            return res.status(400).send({
-                success: false,
-                message: "User ID is required"
-            });
-        }
 
         const result = await service.getRecipesByUser(targetUserId, 'otherUser');
         
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(200).send({success: true, data: result});
+
     } catch (error) {
-        console.error("Error getting user recipes", error);
+        console.error("RouteName: recipe , Path: userRecipes , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
