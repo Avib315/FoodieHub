@@ -60,7 +60,7 @@ router.post("/create", upload.single('image') , async (req, res) => {
         };
         const result = await service.createRecipe(recipeInput);
         
-        res.status(201).send({success: true, result});
+        res.status(201).send({success: true, data: result});
     
     } catch (error) {
         console.error("RouteName: recipe , Path: create , error message:", error.message);

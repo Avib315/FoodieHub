@@ -31,7 +31,7 @@ router.post("/create", async (req, res) => { // הוסף authentication
         };
         const result = await service.createRating(ratingInput); // תוקן: getAllRatings -> createRating
         
-        res.status(201).send({success: true, result});
+        res.status(201).send({success: true, data: result});
     
     } catch (error) {
         console.error("RouteName: rating , Path: create , error message:", error.message);
