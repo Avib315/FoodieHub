@@ -3,57 +3,114 @@ const ApiMessages = require("../common/apiMessages.js");
 
 // Create a new admin log entry
 async function createLog(data) {
-    try {
-        if (!data.adminId || !data.action || !data.targetType) {
-            return { success: false, message: ApiMessages.errorMessages.requiredField };
-        }
-        const result = await adminLogController.create(data);
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Service - createLog error:", error);
-        throw error;
+    if (!data.adminId || !data.action || !data.targetType) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
+
+    const validActions = [
+        'user_blocked', 'user_unblocked', 'user_deleted',
+        'recipe_approved', 'recipe_rejected', 'recipe_deleted',
+        'comment_deleted', 'comment_hidden',
+        'category_created', 'category_updated', 'category_deleted',
+        'product_created', 'product_updated', 'product_deleted',
+        'settings_updated'
+    ];
+
+    const validTargetTypes = ['user', 'recipe', 'comment', 'category', 'product', 'system'];
+
+    if (
+        !data.adminId.match(/^[0-9a-fA-F]{24}$/) ||
+        typeof data.action !== 'string' ||
+        !validActions.includes(data.action) ||
+        typeof data.targetType !== 'string' ||
+        !validTargetTypes.includes(data.targetType) ||
+        (data.targetId && !data.targetId.match(/^[0-9a-fA-F]{24}$/))
+    ) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    const result = await adminLogController.create(data);
+
+    if (!result || !result._id) {
+        throw new Error(ApiMessages.errorMessages.creationFailed);
+    }
+    return result._id;
 }
 
 // Get all logs (optional filters via query)
 async function getAllLogs(filters = {}) {
-    try {
-        const logs = await adminLogController.read(filters);
-        return { success: true, data: logs };
-    } catch (error) {
-        console.error("Service - getAllLogs error:", error);
-        throw error;
+    if (filters.adminId && !filters.adminId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
     }
+
+    if (Object.keys(obj).includes('action')) {
+        const validActions = [
+            'user_blocked', 'user_unblocked', 'user_deleted',
+            'recipe_approved', 'recipe_rejected', 'recipe_deleted',
+            'comment_deleted', 'comment_hidden',
+            'category_created', 'category_updated', 'category_deleted',
+            'product_created', 'product_updated', 'product_deleted',
+            'settings_updated'
+        ];
+
+        if (!validActions.includes(filters.action) || filters.action === '') {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+    }
+
+    if (filters.targetType) {
+        const validTargetTypes = ['user', 'recipe', 'comment', 'category', 'product', 'system'];
+        if (!validTargetTypes.includes(filters.targetType)) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+    }
+
+    if (filters.targetId && !filters.targetId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    const logs = await adminLogController.read(filters);
+
+    if (!logs || logs.length === 0) {
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+    return logs;
 }
 
 // Get logs by adminId
 async function getLogsByAdminId(adminId) {
-    try {
-        if (!adminId.match(/^[0-9a-fA-F]{24}$/)) {
-            return { success: false, message: ApiMessages.errorMessages.badRequest };
-        }
-
-        const logs = await adminLogController.read({ adminId });
-        return { success: true, data: logs };
-    } catch (error) {
-        console.error("Service - getLogsByAdminId error:", error);
-        throw error;
+    if (!adminId || !adminId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
     }
+
+    const logs = await adminLogController.read({ adminId });
+
+    if (!logs || logs.length === 0) {
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+    return logs;
 }
 
 // Get logs by target type and target ID
 async function getLogsByTarget(targetType, targetId) {
-    try {
-        if (!targetId.match(/^[0-9a-fA-F]{24}$/)) {
-            return { success: false, message: ApiMessages.errorMessages.badRequest };
-        }
-
-        const logs = await adminLogController.read({ targetType, targetId });
-        return { success: true, data: logs };
-    } catch (error) {
-        console.error("Service - getLogsByTarget error:", error);
-        throw error;
+    if (!targetType || !targetId) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
+
+    const validTargetTypes = ['user', 'recipe', 'comment', 'category', 'product', 'system'];
+    if (!targetId.match(/^[0-9a-fA-F]{24}$/) ||
+        typeof targetType !== 'string' ||
+        !validTargetTypes.includes(targetType)
+    ) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    const logs = await adminLogController.read({ targetType, targetId });
+
+    if (!logs || logs.length === 0) {
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+    return logs;
 }
 
 module.exports = {
