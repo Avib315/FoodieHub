@@ -3,18 +3,16 @@ const ApiMessages = require('../common/apiMessages.js');
 
 // קבלת כל הדירוגים לפי מתכון
 const getAllRatings = async (recipeId) => {
-    try {
         // ולידציה של הפרמטרים
         if (!recipeId) {
-            return {
-                success: false,
-                message: "Recipe ID is required"
-            };
+            throw new Error(ApiMessages.errorMessages.missingRequiredFields);
         }
 
         // קריאה לשכבת הנתונים
         const ratings = await ratingController.read({recipeId});
-        
+        if (!ratings) {
+            throw new Error(ApiMessages.errorMessages.notFound);
+        }
         // חישוב ממוצע דירוגים
         let averageRating = 0;
         if (ratings && ratings.length > 0) {
@@ -30,12 +28,7 @@ const getAllRatings = async (recipeId) => {
                 averageRating: parseFloat(averageRating)
             },
         };
-    } catch (error) {
-        console.error("Error in getAllRatings service:", error);
-        return {
-            success: false
-        };
-    }
+    
 };
 
 // יצירת דירוג חדש

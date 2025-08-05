@@ -8,6 +8,10 @@
     serverError: "שגיאה פנימית בשרת",
     badRequest: "בקשה לא תקינה",
     conflict: "קונפליקט במידע",
+    missingRequiredFields: "חסרים שדות נדרשים",
+    creationFailed: "יצירת הנתון נכשלה",
+    updateFailed: "עדכון הנתון נכשל",
+    deletionFailed: "מחיקת הנתון נכשלה",
     
     invalidCredentials: "פרטי התחברות שגויים",
     tokenExpired: "פג תוקף ההתחברות",
@@ -22,7 +26,6 @@
     invalidPhone: "מספר טלפון לא תקין",
     passwordTooWeak: "הסיסמה חלשה מדי",
     
-    fileTooLarge: "הקובץ גדול מדי",
     invalidFileType: "סוג קובץ לא נתמך",
     uploadFailed: "העלאת הקובץ נכשלה"
   },

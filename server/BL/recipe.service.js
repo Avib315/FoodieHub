@@ -14,19 +14,8 @@ async function getRecipes(request) {
     if (freeSearch) query.freeSearch = { $regex: freeSearch, $options: 'i' };
     if (userId) query.userId = userId;
     const recipes = await recipeController.read(query);
-    return { success: true, data: recipe };
+    return { success: true, data: recipes };
 }
-
-
-// async function getRecipeById(id) {
-//     if (!id) return { success: false, message: ApiMessages.errorMessages.forbidden };
-//     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-//         return { success: false, message: ApiMessages.errorMessages.invalidId };
-//     }
-//     const recipe = await recipeController.readOne({ _id: id });
-//     return {success: true, data: recipe};
-// }
-
 
 
 async function getRecipeById(id) {
@@ -80,20 +69,20 @@ async function getRecipeById(id) {
 async function getAllRecipes(filterByActive = true) {
     try {
         const recipes = await recipeController.readWithUserAndRatings();
-        if(recipes.length == 0) {
+        if (recipes.length == 0) {
             return { success: false, message: ApiMessages.errorMessages.notFound };
         }
-        if(filterByActive) {
-            return { success: true, data: recipes.filter(recipe => recipe.status === 'active')};
+        if (filterByActive) {
+            return { success: true, data: recipes.filter(recipe => recipe.status === 'active') };
         }
 
         return { success: true, data: recipes };
     } catch (error) {
         console.error("Error in getAllRecipes:", error);
-        return { 
-            success: false, 
+        return {
+            success: false,
             message: "Failed to retrieve recipes",
-            error: error.message 
+            error: error.message
         };
     }
 }
@@ -116,14 +105,11 @@ const createRecipe = async (recipeInput) => {
             imageUrl
         } = recipeInput;
 
-      
-        
-
         // ולידציה בסיסית
         if (!userId || !categoryId || !title || !description || !instructions || !ingredients || !prepTime || !servings || !difficultyLevel) {
             return {
                 success: false,
-                message: ApiMessages.MISSING_REQUIRED_FIELDS || "Missing required fields"
+                message: ApiMessages.errorMessages.badRequest || "Missing required fields"
             };
         }
 
@@ -174,26 +160,10 @@ const createRecipe = async (recipeInput) => {
         }
 
         // ולידציה של ערכים מספריים
-        if (prepTime < 0) {
-            return {
-                success: false,
-                message: "Prep time must be a positive number"
-            };
+        if (prepTime < 0 || servings < 1 || difficultyLevel < 1 || difficultyLevel > 5) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
         }
 
-        if (servings < 1) {
-            return {
-                success: false,
-                message: "Servings must be at least 1"
-            };
-        }
-
-        if (difficultyLevel < 1 || difficultyLevel > 5) {
-            return {
-                success: false,
-                message: "Difficulty level must be between 1 and 5"
-            };
-        }
 
         // הכנת נתוני המתכון
         const recipeData = {
@@ -220,12 +190,10 @@ const createRecipe = async (recipeInput) => {
 
         // יצירת המתכון
         const newRecipe = await recipeController.create(recipeData);
-
-        return {
-            success: true,
-            data: newRecipe,
-            message: ApiMessages.CREATED || "Recipe created successfully and pending approval"
-        };
+        if (!newRecipe) {
+            throw ApiMessages.errorMessages.creationFailed;
+        }
+        return newRecipe._id;
 
     } catch (error) {
         console.error("Error in createRecipe service:", error);
@@ -359,7 +327,7 @@ const getRecipesByUser = async (userId, requestType) => {
 
         // קביעת פילטר על בסיס סוג הבקשה
         let filter = { userId: userId };
-        
+
         if (requestType === 'otherUser') {
             filter.status = 'active';
         }
@@ -368,10 +336,10 @@ const getRecipesByUser = async (userId, requestType) => {
         const recipes = await recipeController.read(filter);
 
         if (!recipes || recipes.length === 0) {
-            const message = requestType === 'currentUser' 
+            const message = requestType === 'currentUser'
                 ? "No recipes found for current user"
                 : "No active recipes found for user";
-            
+
             return {
                 success: true,
                 data: [],
@@ -404,7 +372,7 @@ const getRecipesByUser = async (userId, requestType) => {
                     // במקרה של שגיאה, החזר את המתכון בלי הדירוגים
                     const recipeObj = recipe.toObject ? recipe.toObject() : { ...recipe };
                     const { userId: recipeUserId, ...recipeWithoutUserId } = recipeObj;
-                    
+
                     return {
                         ...recipeWithoutUserId,
                         averageRating: 0,
@@ -415,7 +383,7 @@ const getRecipesByUser = async (userId, requestType) => {
         );
 
         // הודעת הצלחה מותאמת
-        const message = requestType === 'currentUser' 
+        const message = requestType === 'currentUser'
             ? `Found ${recipesWithRatings.length} recipes for current user`
             : `Found ${recipesWithRatings.length} active recipes for user`;
 
@@ -436,4 +404,4 @@ const getRecipesByUser = async (userId, requestType) => {
 };
 
 
-module.exports = { getRecipes, getRecipeById, getAllRecipes, createRecipe, updateRecipe, deleteRecipe, getRecipesByUser};
+module.exports = { getRecipes, getRecipeById, getAllRecipes, createRecipe, updateRecipe, deleteRecipe, getRecipesByUser };
