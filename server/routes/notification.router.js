@@ -12,7 +12,7 @@ router.get("/getAll",auth ,async (req, res) => {
         console.log("Received ID:", userId);
 
         const result = await service.getNotificationByUserId(userId);
-        res.status(200).send({ success: true, data:result });
+        res.status(200).send({ success: true, data: result });
     } catch (error) {
         console.error('RouteName: notification , Path: getById , error message: ', error.message);
         res.status(500).send({
@@ -42,7 +42,7 @@ router.get("/countUnread", async (req, res) => {
     try {
         const { userId } = req.body;
         const count = await service.countUnreadNotifications(userId);
-        res.status(200).send({ success: true, data:count });
+        res.status(200).send({ success: true, data: count });
 
     } catch (error) {
         console.error('RouteName: notification , Path: countUnread , error message: ', error.message);
