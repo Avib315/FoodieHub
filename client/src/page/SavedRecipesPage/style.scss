@@ -1,0 +1,192 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.saved-recipes-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $bg-lighter 0%, $bg-light 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+
+  // Header Styles
+  .page-header {
+    padding: $spacing-xl $spacing-lg;
+    background: $bg-white;
+    @include shadow(light);
+    border-bottom: 1px solid $border-color;
+    text-align: center;
+
+    .page-title {
+      font-size: $font-4xl;
+      font-weight: $font-bold;
+      color: $text-color;
+      margin: 0;
+      @include gradient-bg();
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+
+      @include tablet {
+        font-size: $font-3xl;
+      }
+
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+  }
+
+  // Main Content Styles
+  .recipes-content {
+    padding: $spacing-xl $spacing-lg;
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: $spacing-xl;
+      
+      @include tablet {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: $spacing-lg;
+      }
+
+      @include mobile {
+        grid-template-columns: 1fr;
+        gap: $spacing-lg;
+        padding: 0 $spacing-sm;
+      }
+    }
+
+    // Loading State
+    .loading-state {
+      @include flex-center;
+      @include flex-column;
+      padding: $spacing-xxl * 2;
+      color: $text-light;
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid $border-color;
+        border-top: 4px solid $primary-color;
+        border-radius: $radius-full;
+        animation: spin 1s linear infinite;
+        margin-bottom: $spacing-lg;
+      }
+
+      p {
+        font-size: $font-xl;
+        font-weight: $font-medium;
+        color: $text-lighter;
+      }
+    }
+
+    // Empty State
+    .empty-state {
+      @include flex-center;
+      @include flex-column;
+      padding: $spacing-xxl * 2;
+      text-align: center;
+      background: $bg-white;
+      border-radius: $radius-xl;
+      @include shadow(light);
+      margin: $spacing-xl auto;
+      max-width: 500px;
+
+      p {
+        font-size: $font-2xl;
+        color: $text-light;
+        margin-bottom: $spacing-xl;
+        font-weight: $font-medium;
+      }
+
+      .cta-button {
+        @include button-primary;
+        text-decoration: none;
+        font-size: $font-lg;
+        padding: $spacing-lg $spacing-xxl;
+        border-radius: $radius-xl;
+        font-weight: $font-semibold;
+        @include shadow(medium);
+
+        &:hover {
+          transform: translateY(-3px);
+          @include shadow(primary);
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments for NavBar integration
+@include laptop-up {
+  .saved-recipes-page {
+    // Account for desktop sidebar (240px width)
+    margin-right: 240px;
+    
+    .page-header {
+      padding: $spacing-xxl $spacing-xl;
+    }
+    
+    .recipes-content {
+      padding: $spacing-xxl $spacing-xl;
+    }
+  }
+}
+
+@include laptop {
+  .saved-recipes-page {
+    // Account for mobile bottom nav
+    padding-bottom: 100px;
+    
+    .recipes-content {
+      padding-bottom: $spacing-xxl + 100px;
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Enhanced animations for recipe cards
+.recipes-grid {
+  .recipe-card {
+    animation: fadeInUp 0.6s ease forwards;
+    
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Mobile specific adjustments
+@include mobile {
+  .saved-recipes-page {
+    .page-header {
+      padding: $spacing-lg $spacing-md;
+    }
+
+    .recipes-content {
+      padding: $spacing-lg $spacing-md $spacing-xxl + 100px;
+    }
+  }
+}

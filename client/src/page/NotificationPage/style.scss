@@ -1,546 +1,430 @@
-@use '../../styles/variables.scss' as *;
-@use '../../styles/mixins.scss' as *;
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
 
 .notification-page {
-  width: 100%;
-  max-width: 414px;
-  margin: 0 auto;
-  background: $bg-white;
   min-height: 100vh;
-  position: relative;
+  background: linear-gradient(135deg, $bg-lighter 0%, $bg-light 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
 
-  @include tablet-up {
-    max-width: 600px;
-    @include shadow(medium);
-    border-radius: $radius-xl;
-    margin: $spacing-lg auto;
-    min-height: calc(100vh - #{$spacing-xl});
-    overflow: hidden;
-  }
-
-  @include laptop-up {
-    max-width: 800px;
-    margin: $spacing-xl auto;
-  }
-
-  @include desktop {
-    max-width: 1000px;
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    grid-template-rows: auto 1fr;
-    gap: 0;
-    min-height: calc(100vh - #{$spacing-xxl * 2});
-  }
-
-  /* Header */
+  // Header Section
   .header {
-    @include gradient-bg(#4ecdc4, #26d0ce);
-    padding: 60px $spacing-lg 25px $spacing-lg;
-    color: $text-white;
-    position: relative;
-    overflow: hidden;
-
-    @include tablet-up {
-      padding: $spacing-xxl $spacing-xl $spacing-lg $spacing-xl;
-    }
-
-    @include desktop {
-      grid-column: 1 / -1;
-      padding: $spacing-xxl;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-      animation: float 20s infinite linear;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      100% { transform: translateY(-100px); }
-    }
+    background: $bg-white;
+    @include shadow(light);
+    border-bottom: 1px solid $border-color;
+    position: sticky;
+    top: 0;
+    z-index: $z-sticky;
 
     .header-content {
       @include flex-between;
-      position: relative;
-      z-index: 2;
+      padding: $spacing-xl $spacing-lg;
+      max-width: 1200px;
+      margin: 0 auto;
 
-      @include mobile {
-        flex-direction: column;
-        align-items: flex-start;
+      @include tablet {
+        @include flex-column;
         gap: $spacing-md;
+        text-align: center;
       }
-    }
 
-    .header-title {
-      flex: 1;
+      .header-title {
+        h1 {
+          font-size: $font-3xl;
+          font-weight: $font-bold;
+          color: $text-color;
+          margin: 0 0 $spacing-xs 0;
+          display: flex;
+          align-items: center;
+          gap: $spacing-sm;
+          justify-content: center;
 
-      h1 {
-        font-size: $font-3xl;
-        font-weight: $font-bold;
-        margin-bottom: $spacing-sm;
-        margin: 0;
+          @include tablet {
+            font-size: $font-2xl;
+            justify-content: center;
+          }
 
-        @include tablet-up {
-          font-size: $font-4xl;
+          .unread-badge {
+            background: $error-color;
+            color: $text-white;
+            border-radius: $radius-full;
+            padding: $spacing-xs $spacing-sm;
+            font-size: $font-sm;
+            font-weight: $font-bold;
+            min-width: 24px;
+            height: 24px;
+            @include flex-center;
+            animation: pulse 2s infinite;
+          }
+        }
+
+        p {
+          color: $text-light;
+          font-size: $font-base;
+          margin: 0;
         }
       }
 
-      p {
-        font-size: $font-base;
-        opacity: 0.9;
-        margin: 0;
+      .mark-all-read {
+        @include button-secondary;
+        font-size: $font-sm;
+        padding: $spacing-sm $spacing-lg;
+        border-radius: $radius-lg;
+        font-weight: $font-semibold;
+        @include transition();
 
-        @include tablet-up {
-          font-size: $font-lg;
+        &:hover {
+          @include shadow(medium);
+          transform: translateY(-2px);
         }
-      }
-    }
 
-    .mark-all-read {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: $text-white;
-      padding: $spacing-sm $spacing-md;
-      border-radius: $radius-2xl;
-      font-size: $font-sm;
-      cursor: pointer;
-      @include transition();
-      white-space: nowrap;
-
-      @include tablet-up {
-        padding: $spacing-md $spacing-lg;
-        font-size: $font-base;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
+        @include tablet {
+          width: 100%;
+          max-width: 200px;
+        }
       }
     }
   }
 
-  /* Filter Tabs */
+  // Filter Tabs
   .filter-tabs {
     background: $bg-white;
-    border-bottom: 1px solid $border-color;
-    padding: $spacing-lg;
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    padding: $spacing-md $spacing-lg 0;
+    @include shadow(light);
+    display: flex;
+    gap: $spacing-sm;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: 1200px;
+    margin: 0 auto;
 
-    @include tablet-up {
-      padding: $spacing-lg $spacing-xl;
-    }
-
-    @include desktop {
-      grid-column: 1;
-      border-right: 1px solid $border-color;
-      border-bottom: none;
-      position: static;
-      padding: $spacing-xl $spacing-lg;
-      background: $bg-lighter;
-    }
-
-    .filter-tabs-wrapper {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-
-      @include tablet-up {
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: $spacing-md;
-      }
-
-      @include desktop {
-        flex-direction: column;
-        gap: $spacing-sm;
-        overflow-x: visible;
-      }
+    &::-webkit-scrollbar {
+      display: none;
     }
 
     .filter-tab {
-      background: $bg-lighter;
+      background: transparent;
       border: none;
-      padding: 10px $spacing-md;
-      border-radius: $radius-2xl;
-      font-size: $font-sm;
-      white-space: nowrap;
+      padding: $spacing-md $spacing-lg;
+      border-radius: $radius-lg $radius-lg 0 0;
       cursor: pointer;
       @include transition();
+      font-weight: $font-medium;
       color: $text-light;
+      white-space: nowrap;
       position: relative;
-      display: flex;
-      align-items: center;
-      min-width: max-content;
+      font-size: $font-sm;
 
-      @include tablet-up {
-        padding: $spacing-md $spacing-lg;
-        font-size: $font-base;
-      }
-
-      @include desktop {
-        justify-content: flex-start;
-        padding: $spacing-md;
-        border-radius: $radius-lg;
-        width: 100%;
+      &:hover {
+        background: rgba($primary-color, 0.1);
+        color: $primary-color;
       }
 
       &.active {
-        background: #4ecdc4;
+        background: $primary-color;
         color: $text-white;
         @include shadow(medium);
-        transform: translateY(-2px);
 
-        @include desktop {
-          transform: translateX(5px);
-        }
-
-        .count {
-          background: rgba(255, 255, 255, 0.4);
-        }
-      }
-
-      .count {
-        background: rgba(255, 255, 255, 0.3);
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: $font-xs;
-        margin-right: $spacing-sm;
-        min-width: 20px;
-        text-align: center;
-
-        @include tablet-up {
-          padding: $spacing-xs $spacing-sm;
-          font-size: $font-sm;
-        }
-      }
-
-      .tab-text {
-        @include mobile {
-          display: none;
-        }
-
-        @include tablet-up {
-          display: inline;
-        }
-      }
-    }
-  }
-
-  /* Notifications Container */
-  .notifications-container {
-    padding: $spacing-lg;
-    padding-bottom: $spacing-xxl * 3;
-
-    @include tablet-up {
-      padding: $spacing-xl;
-      padding-bottom: $spacing-xxl * 2;
-    }
-
-    @include desktop {
-      grid-column: 2;
-      padding: $spacing-xl $spacing-lg;
-      overflow-y: auto;
-      max-height: calc(100vh - 200px);
-    }
-
-    .notification-item {
-      background: $bg-white;
-      border-radius: 15px;
-      padding: $spacing-lg;
-      margin-bottom: 12px;
-      @include shadow(light);
-      @include transition();
-      cursor: pointer;
-      border-left: 4px solid transparent;
-      position: relative;
-      animation: fadeInUp 0.6s ease forwards;
-      opacity: 0;
-      transform: translateY(30px);
-
-      @include tablet-up {
-        padding: $spacing-xl;
-        margin-bottom: $spacing-md;
-        border-radius: $spacing-lg;
-      }
-
-      @include laptop-up {
         &:hover {
-          transform: translateY(-5px);
-          @include shadow(medium);
+          background: $primary-dark;
+          color: $text-white;
         }
       }
 
       @include mobile {
-        &:hover {
-          transform: none;
-        }
+        padding: $spacing-sm $spacing-md;
+        font-size: $font-xs;
+      }
+    }
+  }
+
+  // Notifications Container
+  .notifications-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $spacing-lg;
+
+    @include tablet {
+      padding: $spacing-md;
+    }
+
+    // Empty State
+    .empty-state {
+      @include flex-center;
+      @include flex-column;
+      padding: $spacing-xxl * 2;
+      text-align: center;
+      background: $bg-white;
+      border-radius: $radius-xl;
+      @include shadow(light);
+      margin: $spacing-xl auto;
+      max-width: 500px;
+
+      .empty-icon {
+        font-size: 4rem;
+        margin-bottom: $spacing-lg;
+        opacity: 0.6;
+      }
+
+      h3 {
+        font-size: $font-xl;
+        color: $text-color;
+        margin: 0 0 $spacing-md 0;
+        font-weight: $font-semibold;
+      }
+
+      p {
+        color: $text-light;
+        font-size: $font-base;
+        margin: 0;
+        line-height: 1.5;
+      }
+    }
+
+    // Notification Items
+    .notification-item {
+      background: $bg-white;
+      border-radius: $radius-lg;
+      margin-bottom: $spacing-md;
+      @include shadow(light);
+      @include transition();
+      cursor: pointer;
+      overflow: hidden;
+      animation: slideInRight 0.4s ease forwards;
+      opacity: 0;
+      transform: translateX(30px);
+
+      &:hover {
+        @include shadow(medium);
+        transform: translateY(-2px);
       }
 
       &.unread {
-        border-left-color: #4ecdc4;
-        background: #f8ffff;
+        border-right: 4px solid $primary-color;
+        background: linear-gradient(90deg, rgba($primary-color, 0.05) 0%, $bg-white 10%);
 
-        &::before {
-          content: '';
-          position: absolute;
-          top: $spacing-lg;
-          left: $spacing-lg;
-          width: 8px;
-          height: 8px;
-          background: #4ecdc4;
-          border-radius: $radius-full;
-
-          @include tablet-up {
-            top: $spacing-xl;
-            left: $spacing-xl;
-            width: 10px;
-            height: 10px;
-          }
+        .notification-title {
+          font-weight: $font-semibold;
         }
       }
 
       .notification-header {
         display: flex;
         align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 12px;
+        padding: $spacing-lg;
+        gap: $spacing-md;
 
-        @include tablet-up {
-          gap: $spacing-lg;
-          margin-bottom: $spacing-md;
-        }
-      }
-
-      .notification-icon {
-        width: 45px;
-        height: 45px;
-        border-radius: $radius-full;
-        @include flex-center;
-        font-size: $font-lg;
-        color: $text-white;
-        flex-shrink: 0;
-
-        @include tablet-up {
-          width: 55px;
-          height: 55px;
-          font-size: $font-xl;
-        }
-
-        &.likes {
-          @include gradient-bg(#ff6b6b, #ff5252);
-        }
-
-        &.follows {
-          @include gradient-bg(#4ecdc4, #26d0ce);
-        }
-
-        &.recipes {
-          @include gradient-bg(#ffa726, #ff9800);
-        }
-
-        &.comments {
-          @include gradient-bg(#9c27b0, #8e24aa);
-        }
-
-        &.system {
-          @include gradient-bg(#607d8b, #546e7a);
-        }
-      }
-
-      .notification-content {
-        flex: 1;
-        min-width: 0; // Prevent text overflow
-
-        .notification-title {
-          font-size: $font-base;
-          font-weight: $font-semibold;
-          color: $text-color;
-          margin-bottom: 6px;
-          line-height: 1.4;
-
-          @include tablet-up {
-            font-size: $font-lg;
-            margin-bottom: $spacing-sm;
-          }
-        }
-
-        .notification-message {
-          font-size: $font-sm;
-          color: $text-light;
-          line-height: 1.5;
-          margin-bottom: $spacing-sm;
-          @include text-clamp(2);
-
-          @include tablet-up {
-            font-size: $font-base;
-            @include text-clamp(3);
-          }
-        }
-
-        .notification-meta {
-          @include flex-between;
-          font-size: $font-xs;
-          color: $text-lighter;
-
-          @include tablet-up {
-            font-size: $font-sm;
-          }
-
-          .notification-time {
-            display: flex;
-            align-items: center;
-            gap: $spacing-xs;
-          }
-
-          .notification-actions {
-            display: flex;
-            gap: $spacing-sm;
-
-            .action-btn {
-              background: none;
-              border: none;
-              font-size: $font-sm;
-              color: #4ecdc4;
-              cursor: pointer;
-              padding: $spacing-xs $spacing-sm;
-              border-radius: $radius-md;
-              @include transition();
-
-              @include tablet-up {
-                font-size: $font-base;
-                padding: $spacing-sm;
-              }
-
-              &:hover {
-                background: rgba(78, 205, 196, 0.1);
-                transform: scale(1.1);
-              }
-            }
-          }
-        }
-      }
-
-      .recipe-preview {
-        background: $bg-lighter;
-        border-radius: 10px;
-        padding: 12px;
-        margin-top: 10px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-
-        @include tablet-up {
-          padding: $spacing-md;
-          margin-top: $spacing-md;
-          gap: $spacing-md;
-          border-radius: $radius-lg;
-        }
-
-        .recipe-image {
-          width: 40px;
-          height: 40px;
-          @include gradient-bg(#4ecdc4, #26d0ce);
-          border-radius: $radius-md;
+        .notification-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: $radius-full;
           @include flex-center;
-          color: $text-white;
-          font-size: $font-base;
+          font-size: $font-xl;
+          flex-shrink: 0;
+          @include shadow(light);
 
-          @include tablet-up {
-            width: 50px;
-            height: 50px;
-            font-size: $font-lg;
+          &.recipe_rated {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+          }
+
+          &.recipe_commented {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+          }
+
+          &.recipe_approved {
+            background: linear-gradient(135deg, #00b894, #00a085);
+          }
+
+          &.recipe_rejected {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+          }
+
+          &.system {
+            background: linear-gradient(135deg, $secondary-color, $secondary-dark);
           }
         }
 
-        .recipe-info {
+        .notification-content {
           flex: 1;
           min-width: 0;
 
-          .recipe-name {
-            font-size: $font-sm;
-            font-weight: $font-semibold;
+          .notification-title {
+            font-size: $font-base;
+            font-weight: $font-medium;
             color: $text-color;
-            margin-bottom: 2px;
-            @include text-truncate;
+            margin-bottom: $spacing-xs;
+            @include text-clamp(1);
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
 
-            @include tablet-up {
-              font-size: $font-base;
+            .new-badge {
+              background: $error-color;
+              color: $text-white;
+              padding: 2px $spacing-xs;
+              border-radius: $radius-sm;
+              font-size: $font-xs;
+              font-weight: $font-bold;
+              animation: pulse 2s infinite;
             }
           }
 
-          .recipe-stats {
-            font-size: $font-xs;
-            color: $text-lighter;
+          .notification-message {
+            color: $text-light;
+            font-size: $font-sm;
+            line-height: 1.4;
+            margin-bottom: $spacing-md;
+            @include text-clamp(2);
+          }
 
-            @include tablet-up {
-              font-size: $font-sm;
+          .notification-meta {
+            @include flex-between;
+            align-items: center;
+
+            .notification-time {
+              display: flex;
+              align-items: center;
+              gap: $spacing-xs;
+              color: $text-lighter;
+              font-size: $font-xs;
+
+              .time-icon {
+                font-size: $font-sm;
+              }
+            }
+
+            .notification-type-badge {
+              background: rgba($primary-color, 0.1);
+              color: $primary-color;
+              padding: $spacing-xs $spacing-sm;
+              border-radius: $radius-md;
+              font-size: $font-xs;
+              font-weight: $font-medium;
             }
           }
         }
-      }
-    }
 
-    .empty-state {
-      text-align: center;
-      padding: 60px $spacing-lg;
-      color: $text-lighter;
+        .notification-actions {
+          display: flex;
+          gap: $spacing-xs;
+          align-items: flex-start;
 
-      @include tablet-up {
-        padding: $spacing-xxl * 2 $spacing-xl;
-      }
+          .action-btn {
+            background: transparent;
+            border: none;
+            padding: $spacing-sm;
+            cursor: pointer;
+            border-radius: $radius-md;
+            @include transition();
+            font-size: $font-base;
 
-      .empty-icon {
-        font-size: 64px;
-        color: $border-medium;
-        margin-bottom: $spacing-lg;
+            &:hover {
+              background: rgba($error-color, 0.1);
+              transform: scale(1.1);
+            }
 
-        @include tablet-up {
-          font-size: 80px;
-          margin-bottom: $spacing-xl;
-        }
-      }
-
-      h3 {
-        font-size: $font-xl;
-        margin-bottom: 10px;
-        color: $text-light;
-
-        @include tablet-up {
-          font-size: $font-2xl;
-          margin-bottom: $spacing-md;
-        }
-      }
-
-      p {
-        font-size: $font-sm;
-        line-height: 1.5;
-
-        @include tablet-up {
-          font-size: $font-base;
+            &.delete-btn:hover {
+              background: rgba($error-color, 0.1);
+            }
+          }
         }
       }
     }
   }
+}
 
-  /* Animations */
-  @keyframes fadeInUp {
-    to {
-      opacity: 1;
-      transform: translateY(0);
+// Responsive adjustments for NavBar integration
+@include laptop-up {
+  .notification-page {
+    // Account for desktop sidebar (240px width)
+    margin-right: 240px;
+  }
+}
+
+@include laptop {
+  .notification-page {
+    // Account for mobile bottom nav
+    padding-bottom: 100px;
+
+    .notifications-container {
+      padding-bottom: $spacing-xxl + 100px;
+    }
+  }
+}
+
+// Animations
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Mobile specific adjustments
+@include mobile {
+  .notification-page {
+    .header .header-content {
+      padding: $spacing-lg $spacing-md;
+    }
+
+    .filter-tabs {
+      padding: $spacing-sm $spacing-md 0;
+    }
+
+    .notifications-container {
+      padding: $spacing-md;
+
+      .notification-item .notification-header {
+        padding: $spacing-md;
+        gap: $spacing-sm;
+
+        .notification-icon {
+          width: 40px;
+          height: 40px;
+          font-size: $font-lg;
+        }
+
+        .notification-content {
+          .notification-title {
+            font-size: $font-sm;
+          }
+
+          .notification-message {
+            font-size: $font-xs;
+          }
+
+          .notification-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: $spacing-xs;
+
+            .notification-type-badge {
+              align-self: flex-end;
+            }
+          }
+        }
+
+        .notification-actions {
+          .action-btn {
+            padding: $spacing-xs;
+            font-size: $font-sm;
+          }
+        }
+      }
     }
   }
 }
