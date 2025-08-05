@@ -43,7 +43,7 @@ async function getAllLogs(filters = {}) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
-    if (Object.keys(obj).includes('action')) {
+    if (Object.keys(filters).includes('action')) {
         const validActions = [
             'user_blocked', 'user_unblocked', 'user_deleted',
             'recipe_approved', 'recipe_rejected', 'recipe_deleted',
@@ -58,14 +58,14 @@ async function getAllLogs(filters = {}) {
         }
     }
 
-    if (filters.targetType) {
+    if (Object.keys(filters).includes('targetType')) {
         const validTargetTypes = ['user', 'recipe', 'comment', 'category', 'product', 'system'];
-        if (!validTargetTypes.includes(filters.targetType)) {
+        if (!validTargetTypes.includes(filters.targetType) || filters.targetType === '') {
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
 
-    if (filters.targetId && !filters.targetId.match(/^[0-9a-fA-F]{24}$/)) {
+    if (Object.keys(filters).includes('targetId') && !filters.targetId.match(/^[0-9a-fA-F]{24}$/)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
