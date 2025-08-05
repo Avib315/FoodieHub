@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './style.scss';
 import { Link } from 'react-router-dom';
+import FloatingElements from '../../component/FloatingElements';
 
 export default function PersonalAreaPage() {
   // Sample user data - this could come from context or API
@@ -26,7 +27,7 @@ export default function PersonalAreaPage() {
       color: 'primary'
     },
     {
-      to: '/saved-recipes',
+      to: '/favorites',
       icon: '❤️',
       title: 'מועדפים',
       subtitle: `${userData.stats.savedRecipes} מתכונים`,
@@ -76,6 +77,7 @@ export default function PersonalAreaPage() {
   ];
 
   return (
+    <>
     <div className="personal-area-page">
       <div className="container">
         {/* Profile Header */}
@@ -108,16 +110,7 @@ export default function PersonalAreaPage() {
               <div className="stat-number">{userData.stats.savedRecipes}</div>
               <div className="stat-label">מועדפים</div>
             </div>
-            <div className="stat-card">
-              <div className="stat-icon">👥</div>
-              <div className="stat-number">{userData.stats.followers}</div>
-              <div className="stat-label">עוקבים</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-icon">👤</div>
-              <div className="stat-number">{userData.stats.following}</div>
-              <div className="stat-label">עוקב אחרי</div>
-            </div>
+     
           </div>
         </div>
 
@@ -127,8 +120,8 @@ export default function PersonalAreaPage() {
           <div className="quick-actions-grid">
             {quickActions.map((action, index) => (
               <Link 
-                key={index}
-                to={action.to} 
+              key={index}
+              to={action.to} 
                 className={`quick-action ${action.color}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
@@ -148,5 +141,6 @@ export default function PersonalAreaPage() {
        
       </div>
     </div>
+              </>
   );
 }

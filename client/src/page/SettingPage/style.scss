@@ -1,0 +1,452 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.settings-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $bg-lighter 0%, $bg-light 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: $spacing-xl $spacing-lg;
+
+    @include tablet {
+      padding: $spacing-lg $spacing-md;
+    }
+
+    @include mobile {
+      padding: $spacing-md;
+    }
+  }
+
+  // Header Section
+  .settings-header {
+    text-align: center;
+    margin-bottom: $spacing-xxl;
+
+    h1 {
+      font-size: $font-3xl;
+      font-weight: $font-bold;
+      color: $text-color;
+      margin: 0 0 $spacing-sm 0;
+      @include gradient-bg();
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+
+    p {
+      color: $text-light;
+      font-size: $font-base;
+      margin: 0;
+    }
+  }
+
+  // Success Message
+  .success-message {
+    background: linear-gradient(135deg, rgba($success-color, 0.1), rgba($success-color, 0.05));
+    border: 1px solid rgba($success-color, 0.3);
+    border-radius: $radius-lg;
+    padding: $spacing-md $spacing-lg;
+    margin-bottom: $spacing-xl;
+    @include flex-center;
+    gap: $spacing-sm;
+    color: $success-color;
+    font-weight: $font-medium;
+    animation: slideDown 0.4s ease;
+
+    .success-icon {
+      font-size: $font-lg;
+    }
+  }
+
+  // Settings Content
+  .settings-content {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: $spacing-xxl;
+    background: $bg-white;
+    border-radius: $radius-xl;
+    @include shadow(medium);
+    overflow: hidden;
+
+    @include tablet {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    // Navigation Tabs
+    .settings-nav {
+      background: rgba($primary-color, 0.05);
+      padding: $spacing-xl 0;
+      border-left: 1px solid $border-color;
+
+      @include tablet {
+        background: $bg-white;
+        border-left: none;
+        border-bottom: 1px solid $border-color;
+        padding: $spacing-lg;
+        display: flex;
+        gap: $spacing-sm;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .nav-tab {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        width: 100%;
+        padding: $spacing-lg $spacing-xl;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        @include transition();
+        color: $text-light;
+        font-weight: $font-medium;
+        border-radius: 0;
+        position: relative;
+
+        @include tablet {
+          white-space: nowrap;
+          padding: $spacing-md $spacing-lg;
+          border-radius: $radius-lg;
+          width: auto;
+          flex-shrink: 0;
+        }
+
+        &::before {
+          content: '';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 4px;
+          height: 0;
+          background: $primary-color;
+          @include transition();
+
+          @include tablet {
+            display: none;
+          }
+        }
+
+        &:hover {
+          background: rgba($primary-color, 0.1);
+          color: $primary-color;
+
+          &::before {
+            height: 50%;
+          }
+        }
+
+        &.active {
+          background: rgba($primary-color, 0.15);
+          color: $primary-color;
+          font-weight: $font-semibold;
+
+          @include tablet {
+            background: $primary-color;
+            color: $text-white;
+          }
+
+          &::before {
+            height: 100%;
+          }
+        }
+
+        .tab-icon {
+          font-size: $font-xl;
+
+          @include mobile {
+            font-size: $font-lg;
+          }
+        }
+
+        .tab-label {
+          font-size: $font-base;
+
+          @include mobile {
+            font-size: $font-sm;
+          }
+        }
+      }
+    }
+
+    // Main Content
+    .settings-main {
+      padding: $spacing-xxl;
+
+      @include tablet {
+        padding: $spacing-xl $spacing-lg;
+      }
+
+      @include mobile {
+        padding: $spacing-lg $spacing-md;
+      }
+
+      .settings-section {
+        animation: fadeIn 0.4s ease;
+
+        .section-header {
+          margin-bottom: $spacing-xxl;
+
+          h2 {
+            font-size: $font-2xl;
+            font-weight: $font-bold;
+            color: $text-color;
+            margin: 0 0 $spacing-sm 0;
+
+            @include mobile {
+              font-size: $font-xl;
+            }
+          }
+
+          p {
+            color: $text-light;
+            font-size: $font-base;
+            margin: 0;
+          }
+        }
+
+        // Form Styles
+        .settings-form {
+          .form-group {
+            margin-bottom: $spacing-xl;
+
+            label {
+              display: block;
+              font-size: $font-base;
+              font-weight: $font-semibold;
+              color: $text-color;
+              margin-bottom: $spacing-sm;
+            }
+
+            input {
+              @include input-base;
+              width: 100%;
+              font-size: $font-base;
+
+              &.error {
+                border-color: $error-color;
+                @include shadow(light);
+                box-shadow: 0 0 0 3px rgba($error-color, 0.1);
+              }
+
+              &:focus {
+                border-color: $primary-color;
+                box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+              }
+            }
+
+            .error-message {
+              display: block;
+              color: $error-color;
+              font-size: $font-sm;
+              margin-top: $spacing-xs;
+              font-weight: $font-medium;
+            }
+          }
+
+          // Avatar Section
+          .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: $spacing-lg;
+            padding: $spacing-lg;
+            background: rgba($primary-color, 0.05);
+            border-radius: $radius-lg;
+            border: 2px dashed rgba($primary-color, 0.2);
+
+            .current-avatar {
+              width: 80px;
+              height: 80px;
+              border-radius: $radius-full;
+              @include gradient-bg();
+              @include flex-center;
+              font-size: $font-3xl;
+              color: $text-white;
+              font-weight: $font-bold;
+              flex-shrink: 0;
+            }
+
+            .avatar-info {
+              p {
+                color: $text-light;
+                font-size: $font-sm;
+                margin: 0;
+                line-height: 1.4;
+              }
+            }
+          }
+
+          // Password Requirements
+          .password-requirements {
+            background: rgba($info-color, 0.05);
+            border: 1px solid rgba($info-color, 0.2);
+            border-radius: $radius-lg;
+            padding: $spacing-lg;
+            margin-bottom: $spacing-lg;
+
+            h4 {
+              font-size: $font-base;
+              font-weight: $font-semibold;
+              color: $info-color;
+              margin: 0 0 $spacing-md 0;
+            }
+
+            ul {
+              list-style: none;
+              padding: 0;
+              margin: 0;
+
+              li {
+                display: flex;
+                align-items: center;
+                gap: $spacing-sm;
+                padding: $spacing-xs 0;
+                color: $text-light;
+                font-size: $font-sm;
+                @include transition();
+
+                &::before {
+                  content: '✗';
+                  color: $text-lighter;
+                  font-weight: $font-bold;
+                }
+
+                &.valid {
+                  color: $success-color;
+
+                  &::before {
+                    content: '✓';
+                    color: $success-color;
+                  }
+                }
+              }
+            }
+          }
+
+          // Submit Button
+          .submit-btn {
+            @include button-primary;
+            font-size: $font-base;
+            padding: $spacing-lg $spacing-xxl;
+            border-radius: $radius-lg;
+            font-weight: $font-semibold;
+            @include transition();
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: $spacing-sm;
+            min-height: 50px;
+
+            &.warning {
+              background: linear-gradient(135deg, $warning-color, darken($warning-color, 10%));
+              
+              &:hover:not(:disabled) {
+                box-shadow: 0 8px 20px rgba($warning-color, 0.3);
+              }
+            }
+
+            &:disabled {
+              opacity: 0.7;
+              cursor: not-allowed;
+              transform: none !important;
+            }
+
+            .loading-spinner {
+              width: 20px;
+              height: 20px;
+              border: 2px solid rgba($text-white, 0.3);
+              border-top: 2px solid $text-white;
+              border-radius: $radius-full;
+              animation: spin 1s linear infinite;
+            }
+
+            @include mobile {
+              width: 100%;
+              padding: $spacing-md $spacing-lg;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments for NavBar integration
+@include laptop-up {
+  .settings-page {
+    // Account for desktop sidebar (240px width)
+    margin-right: 240px;
+  }
+}
+
+@include laptop {
+  .settings-page {
+    // Account for mobile bottom nav
+    padding-bottom: 100px;
+
+    .container {
+      padding-bottom: $spacing-xxl + 100px;
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Mobile specific adjustments
+@include mobile {
+  .settings-page {
+    .settings-content {
+      border-radius: $radius-lg;
+      
+      .settings-nav {
+        .nav-tab {
+          .tab-label {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
