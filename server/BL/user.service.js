@@ -5,18 +5,6 @@ const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
 
 
-// async function login(userInput) {
-//     const user = await userController.readOne({ email: userInput.email });
-//     if (!user ) return { success: false, message: ApiMessages.errorMessages.forbidden };
-//     if (!userInput.password) return { success: false, message: ApiMessages.errorMessages.forbidden };
-//     const passwordMatch = await bcrypt.compare(userInput.password, user?.passwordHash);
-//     if (!passwordMatch) return { success: false, message: ApiMessages.errorMessages.forbidden };
-//     const token = loginAuth({ id: user._id });
-//     console.log(1111);
-//     return { success: true, token };
-// }
-
-
 async function login(userInput) {
     if (!userInput || !userInput.email || !userInput.email.trim()) {
         throw new Error(ApiMessages.errorMessages.missingData || !userInput.password || userInput.password.trim() === '');
@@ -24,62 +12,47 @@ async function login(userInput) {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userInput.email.trim())) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+        throw new Error(ApiMessages.errorMessages.invalidEmail);
     }
 
-    // בדיקת אורך סיסמה מינימלי
     if (userInput.password.length < 6) {
-        throw new Error(ApiMessages.errorMessages.shortPassword || "Password must be at least 6 characters");
+        throw new Error(ApiMessages.errorMessages.passwordTooWeak);
     }
-    
-    // חיפוש המשתמש במסד הנתונים
+
     const user = await userController.readOne({ 
         email: userInput.email.trim().toLowerCase() 
     });
 
     if (!user) {
-        throw new Error(ApiMessages.errorMessages.userNotFound || "Invalid email or password");
+        throw new Error(ApiMessages.errorMessages.userNotFound);
     }
 
-    // בדיקת סטטוס המשתמש
     if (user.status === 'blocked') {
-        throw new Error(ApiMessages.errorMessages.userBlocked || "Account is blocked");
+        throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     if (user.status === 'inactive') {
-        throw new Error(ApiMessages.errorMessages.userInactive || "Account is inactive");
+        throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
-    // בדיקת תקינות הסיסמה
     const passwordMatch = await bcrypt.compare(userInput.password, user.passwordHash);
     if (!passwordMatch) {
-        throw new Error(ApiMessages.errorMessages.invalidCredentials || "Invalid email or password");
+        throw new Error(ApiMessages.errorMessages.invalidCredentials);
     }
 
-    // יצירת JWT token
-    const token = loginAuth({ 
-        id: user._id,
-        email: user.email,
-        role: user.role 
-    });
+    const token = loginAuth({ id: user._id });
 
     if (!token) {
-        throw new Error(ApiMessages.errorMessages.tokenError || "Failed to generate token");
+        throw new Error(ApiMessages.errorMessages.tokenInvalid);
     }
 
-    console.log(`✅ User logged in successfully: ${user.email}`);
-
-    // החזרת תשובה מוצלחת
     return { 
-        success: true, 
         token,
         user: {
-            id: user._id,
             username: user.username,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            role: user.role
         }
     };
 }
@@ -88,23 +61,99 @@ async function login(userInput) {
 
 
 
+// async function register(body) {
+//     const userInput = {
+//         firstName: body?.firstName?.trim(),
+//         lastName: body?.lastName?.trim(),
+//         username: body.username ,
+//         email: body?.email,
+//         passwordHash: await bcrypt.hash(body?.password, 10),
+//         profileImageUrl: body?.profileImageUrl || "https://st.depositphotos.com/1787196/1330/i/450/depositphotos_13303160-stock-illustration-funny-chef-and-empty-board.jpg"
+//     };
+//     if(!userInput.firstName || !userInput.lastName || !userInput.email || !userInput.passwordHash || !userInput.username   ) {
+//         return { register: false, message: "נא למלא את כל השדות" };
+//     }
+//     const user = await userController.create(userInput);
+//     if (!user) return false;
+//     const result = { register: true, message: "נוסף בהצלחה", user: { email: user.email, name: user.firstName + " " + user.lastName, lists: user.lists } };
+//     return result;
+// }
+
+
 async function register(body) {
-    const userInput = {
-        firstName: body?.firstName?.trim(),
-        lastName: body?.lastName?.trim(),
-        username: body.username ,
-        email: body?.email,
-        passwordHash: await bcrypt.hash(body?.password, 10),
-        profileImageUrl: body?.profileImageUrl || "https://st.depositphotos.com/1787196/1330/i/450/depositphotos_13303160-stock-illustration-funny-chef-and-empty-board.jpg"
-    };
-    if(!userInput.firstName || !userInput.lastName || !userInput.email || !userInput.passwordHash || !userInput.username   ) {
-        return { register: false, message: "נא למלא את כל השדות" };
+    // בדיקת קלט בסיסית
+    if (!body) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
     }
+
+    // בדיקות שדות חובה במשולב
+    if (!body.firstName || !body.firstName.trim() || 
+        !body.lastName || !body.lastName.trim() || 
+        !body.username || !body.username.trim() || 
+        !body.email || !body.email.trim() || 
+        !body.password || !body.password.trim()) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+
+    // בדיקות אורך במשולב - שמות
+    if (body.firstName.trim().length < 2 || body.firstName.trim().length > 50 ||
+        body.lastName.trim().length < 2 || body.lastName.trim().length > 50) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+ 
+    const usernameRegex = /^[a-zA-Z0-9_]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.email.trim()) || !usernameRegex.test(body.username.trim())) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // בדיקות סיסמה במשולב
+    if (body.password.length < 6) {
+        throw new Error(ApiMessages.errorMessages.passwordTooWeak);
+    }
+
+    // בדיקת קיום משתמש - אימייל ושם משתמש במקביל
+    const [existingUserByEmail, existingUserByUsername] = await Promise.all([
+        userController.readOne({ email: body.email.trim().toLowerCase() }),
+        userController.readOne({ username: body.username.trim() })
+    ]);
+
+    if (existingUserByEmail || existingUserByUsername) {
+        if (existingUserByEmail) throw new Error(ApiMessages.errorMessages.emailAlreadyExists);
+        if (existingUserByUsername) throw new Error(ApiMessages.errorMessages.userAlreadyExists);
+    }
+
+    // הכנת נתוני המשתמש
+    const userInput = {
+        firstName: body.firstName.trim(),
+        lastName: body.lastName.trim(),
+        username: body.username.trim(),
+        email: body.email.trim().toLowerCase(),
+        passwordHash: await bcrypt.hash(body.password, 10),
+        profileImageUrl: body.profileImageUrl || "https://st.depositphotos.com/1787196/1330/i/450/depositphotos_13303160-stock-illustration-funny-chef-and-empty-board.jpg"
+    };
+
+    // יצירת המשתמש
     const user = await userController.create(userInput);
-    if (!user) return false;
-    const result = { register: true, message: "נוסף בהצלחה", user: { email: user.email, name: user.firstName + " " + user.lastName, lists: user.lists } };
+    if (!user) {
+        throw new Error(ApiMessages.errorMessages.creationFailed);
+    }
+
+
+    // החזרת תוצאה מוצלחת
+    const result = { 
+        user: { 
+            id: user._id,
+        } 
+    };
+    
     return result;
 }
+
+
+
+
 async function getUser(userId) {
     const user = await userController.readOne({ _id: userId });
     const savedCount = await savedRecipeController.count({ _id: userId });

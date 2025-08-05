@@ -12,13 +12,14 @@ router.post('/login', async (req, res) => {
             email: req.body?.email,
             password: req.body?.password
         }
-        const { success , token } = await service.login(userInput);
+        const { token , user } = await service.login(userInput);
 
         if (token) {
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: "None" });
         }
 
-        res.status(200).send({success});
+        res.status(200).send({success: true, user: user});
+            
     } catch (error) {
         console.error("RouteName: user : login : error message:", error.message);
         res.status(500).send({ login: false, message: error.message || ApiMessages.errorMessages.serverError });
