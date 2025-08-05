@@ -10,18 +10,21 @@ router.post('/login', async (req, res) => {
             email: req.body?.email,
             password: req.body?.password
         };
-        console.log(adminInput); 
-        
-        const { success , token } = await service.login(adminInput);
+
+        const { token, admin } = await service.login(adminInput);
 
         if (token) {
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: "None" });
         }
 
-        res.status(200).send({success});
+        res.status(200).send({ success: true, admin });
+
     } catch (error) {
-        console.error('Login Error:', error);
-        res.status(500).send({ login: false, message: ApiMessages.errorMessages.forbidden });
+        console.error('RouteName: admin , Path: login , error message: ', error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError
+        });
     }
 });
 
@@ -29,7 +32,10 @@ router.get('/isAuthenticated', auth, async (req, res) => {
     try {
         res.status(200).send(true);
     } catch (error) {
-        res.status(500).send({ isAuthenticated: false, message: 'Something went wrong' });
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError
+        });
     }
 });
 

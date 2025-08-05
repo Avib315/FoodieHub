@@ -14,13 +14,13 @@ import LoginPage from './page/LoginPage/index.jsx'
 import SignupPage from './page/SignupPage/index.jsx'
 
 import RecipeDetailPage from './page/RecipeDetailPage/index.jsx'
-import FavoritesPage from './page/FavoritesPage/index.jsx'
 import AboutPage from './page/AboutPage/index.jsx'
 import ForgotPasswordPage from './page/ForgotPasswordPage/index.jsx'
 import NotFoundPage from './page/NotFoundPage/index.jsx'
 import LoadingPage from './page/LoadingPage/index.jsx'
 import DevPage from './page/DevPage/index.jsx'
 import ProtectedPage from './common/ProtectedPage.jsx'
+import SavedRecipesPage from './page/SavedRecipesPage/index.jsx'
 
 function App() {
   return (
@@ -70,7 +70,7 @@ function App() {
         } />
         <Route path="/favorites" element={
 
-          <ProtectedPage element={<FavoritesPage />} />
+          <ProtectedPage element={<SavedRecipesPage />} />
         } />
         <Route path="/personal-area" element={
           <ProtectedPage element={<PersonalAreaPage />} />
