@@ -35,7 +35,7 @@ router.post('/register', async (req, res) => {
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
-router.get('/getUserData', auth, async (req, res) => {
+router.get('/getUserData', async (req, res) => {
     try {
         const userId = req.body.userId
         const result = await service.getUser(userId);

@@ -20,6 +20,10 @@ const del = async (filter) => {
     return await recipeModel.findOneAndDelete(filter);
 }
 
+const count = async (filter) => {
+    return await recipeModel.countDocuments(filter);
+}
+
 const readWithUserAndRatings = async (filter = {}) => {
     return await recipeModel.aggregate([
         // שלב 1: סינון (אם יש)
@@ -90,5 +94,6 @@ module.exports = {
     readOne,
     update,
     del,
-    readWithUserAndRatings
+    readWithUserAndRatings,
+    count
 }
