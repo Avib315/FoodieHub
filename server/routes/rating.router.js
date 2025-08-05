@@ -6,19 +6,17 @@ const ApiMessages = require('../common/apiMessages.js');
 
 router.get("/getAll", async (req, res) => {
     try {
-        const recipeId = req.query.recipeId; // תוקן: racipeId -> recipeId
+        const recipeId = req.query.recipeId; 
         const result = await service.getAllRatings(recipeId);
-        
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+         res.status(200).send({
+            success: true,
+            data: result
+      });
     } catch (error) {
-        console.error("Error getting ratings", error);
+        console.error("RouteName: rating : getAll : error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
