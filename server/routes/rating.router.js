@@ -31,16 +31,13 @@ router.post("/create", async (req, res) => { // הוסף authentication
         };
         const result = await service.createRating(ratingInput); // תוקן: getAllRatings -> createRating
         
-        if (result.success) {
-            res.status(201).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+        res.status(201).send({success: true, result});
+    
     } catch (error) {
-        console.error("Error creating rating", error);
+        console.error("RouteName: rating , Path: create , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -53,17 +50,14 @@ router.put("/delete", async (req, res) => { // הוסף authentication
         };
         
         const result = await service.deleteRating(ratingInput);
-        
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
+
+        res.status(200).send({success: true});
+       
     } catch (error) {
-        console.error("Error deleting rating", error);
+        console.error("RouteName: rating , Path: delete , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });
@@ -78,16 +72,12 @@ router.put("/update", async (req, res) => { // הוסף authentication
         };
         const result = await service.updateRating(ratingInput);
         
-        if (result.success) {
-            res.status(200).send(result);
-        } else {
-            res.status(400).send(result);
-        }
-    } catch (error) {
-        console.error("Error updating rating", error);
+        res.status(200).send({success: true});
+    }  catch (error) {
+        console.error("RouteName: rating , Path: update , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: ApiMessages.SERVER_ERROR || "Internal server error"
+            message: error.message || ApiMessages.errorMessages.serverError 
         });
     }
 });

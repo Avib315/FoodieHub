@@ -12,26 +12,27 @@ router.post('/login', async (req, res) => {
             email: req.body?.email,
             password: req.body?.password
         }
-        const { success , token } = await service.login(userInput);
+        const { token , user } = await service.login(userInput);
 
         if (token) {
             res.cookie('token', token, { httpOnly: true, secure: true, sameSite: "None" });
         }
 
-        res.status(200).send({success});
+        res.status(200).send({success: true, user: user});
+            
     } catch (error) {
-        console.error('Login Error:', error);
-        res.status(500).send({ login: false, message: ApiMessages.errorMessages.forbidden });
+        console.error("RouteName: user : login : error message:", error.message);
+        res.status(500).send({ login: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 
 router.post('/register', async (req, res) => {
     try {
         const result = await service.register(req.body);
-        res.status(200).send(result);
+        res.status(200).send({success: true, result});
     } catch (error) {
-        console.error('Register Error:', error);
-        res.status(500).send({ registered: false, message: 'Something went wrong' });
+        console.error("RouteName: user : register : error message:", error.message);
+        res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 router.get('/getUserData', auth, async (req, res) => {
@@ -40,8 +41,8 @@ router.get('/getUserData', auth, async (req, res) => {
         const result = await service.getUser(userId);
         res.status(200).send(result);
     } catch (error) {
-        console.error('Register Error:', error);
-        res.status(500).send({ registered: false, message: 'Something went wrong' });
+        console.error("RouteName: user : getUserData : error message:", error.message);
+        res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 
@@ -49,7 +50,7 @@ router.get('/isAuthenticated', auth, async (req, res) => {
     try {
         res.status(200).send(true);
     } catch (error) {
-        res.status(500).send({ isAuthenticated: false, message: 'Something went wrong' });
+        res.status(500).send({ isAuthenticated: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 
