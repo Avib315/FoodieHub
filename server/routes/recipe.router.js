@@ -56,7 +56,7 @@ router.post("/create", upload.single('image') , async (req, res) => {
             prepTime: req.body?.prepTime,
             servings: req.body?.servings,
             difficultyLevel: req.body?.difficultyLevel,
-            imageUrl: req.body?.imageUrl
+            image: req.body?.image
         };
         const result = await service.createRecipe(recipeInput);
         

@@ -12,7 +12,7 @@
     creationFailed: "יצירת הנתון נכשלה",
     updateFailed: "עדכון הנתון נכשל",
     deletionFailed: "מחיקת הנתון נכשלה",
-    
+    imageUploadFailed: "העלאת התמונה נכשלה",
     invalidCredentials: "פרטי התחברות שגויים",
     tokenExpired: "פג תוקף ההתחברות",
     tokenInvalid: "טוקן לא תקין",

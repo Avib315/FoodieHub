@@ -2,8 +2,7 @@ const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const ratingController = require("../BL/rating.service.js");
 const ApiMessages = require("../common/apiMessages.js");
-
-
+const cloudinaryService = require('../imageServer/cloudinary.service.js');
 
 async function getAllRecipes(filterByActive = true) {
     // ולידציה של הפרמטר
@@ -87,9 +86,17 @@ const createRecipe = async (recipeInput) => {
         prepTime,
         servings,
         difficultyLevel,
-        imageUrl
+        image
     } = recipeInput;
+    if (!image)
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
 
+    await cloudinaryService.connect();
+
+    const imageResult = await cloudinaryService.uploadImage(image, "recipesImages");
+    if (!imageResult || !imageResult.src) {
+        throw new Error(ApiMessages.errorMessages.imageUploadFailed);
+    }
     // ולידציות בסיסיות במשולב
     if (!userId || !category || !title || !description || !instructions ||
         !ingredients || prepTime === undefined || servings === undefined ||
@@ -165,7 +172,7 @@ const createRecipe = async (recipeInput) => {
         prepTime: Number(prepTime),
         servings: Number(servings),
         difficultyLevel: Number(difficultyLevel),
-        imageUrl: imageUrl || null,
+        imageUrl: imageResult.src || null,
         status: 'pending'
     };
 
@@ -349,7 +356,7 @@ const deleteRecipe = async (recipeId, currentUserId) => {
 
     // מחיקת המתכון
     const deletedRecipe = await recipeController.del({ _id: recipeId });
-    
+
     if (!deletedRecipe) {
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
@@ -402,7 +409,7 @@ const getRecipesByUser = async (userId, requestType) => {
                 const averageRating = ratingResult.data.averageRating;
                 const totalRatings = ratingResult.data.totalCount;
                 console.log(`Recipe ID: ${recipe._id}, Average Rating: ${averageRating}, Total Ratings: ${totalRatings}`);
-                
+
                 // המרה לאובייקט רגיל ומחיקת userId
                 const recipeObj = recipe.toObject ? recipe.toObject() : { ...recipe };
                 const { userId: recipeUserId, ...recipeWithoutUserId } = recipeObj;
