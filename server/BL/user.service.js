@@ -19,11 +19,14 @@ async function register(body) {
     const userInput = {
         firstName: body?.firstName?.trim(),
         lastName: body?.lastName?.trim(),
-        username: body.userName || "user1",
+        username: body.username ,
         email: body?.email,
         passwordHash: await bcrypt.hash(body?.password, 10),
         profileImageUrl: body?.profileImageUrl || "https://st.depositphotos.com/1787196/1330/i/450/depositphotos_13303160-stock-illustration-funny-chef-and-empty-board.jpg"
     };
+    if(!userInput.firstName || !userInput.lastName || !userInput.email || !userInput.passwordHash || !userInput.username   ) {
+        return { register: false, message: "נא למלא את כל השדות" };
+    }
     const user = await userController.create(userInput);
     if (!user) return false;
     const result = { register: true, message: "נוסף בהצלחה", user: { email: user.email, name: user.firstName + " " + user.lastName, lists: user.lists } };
