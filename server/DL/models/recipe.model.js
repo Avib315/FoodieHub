@@ -8,7 +8,8 @@ const recipeSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true
+    required: true,
+    enum: ['main', 'appetizer', 'soup', 'salad', 'dessert', 'drink']
   },
   title: {
     type: String,
