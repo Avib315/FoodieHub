@@ -13,7 +13,7 @@ router.get("/getAll", async (req, res) => {
             data: result
       });
     } catch (error) {
-        console.error("RouteName: rating : getAll : error message:", error.message);
+        console.error("RouteName: rating , Path: getAll , error message:", error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError 
