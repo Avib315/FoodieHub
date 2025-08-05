@@ -4,13 +4,15 @@ const service = require('../BL/notification.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
-router.get("/getById", async (req, res) => {
+router.get("/getAll",auth ,async (req, res) => {
     try {
-        const { id } = req.query;
-        console.log("Received ID:", id);
+        const { userId } = req.body;
+        console.log(userId);
+        
+        console.log("Received ID:", userId);
 
-        const result = await service.getNotificationByUserId(id);
-        res.status(200).send({ success: true, result });
+        const result = await service.getNotificationByUserId(userId);
+        res.status(200).send({ success: true, data:result });
     } catch (error) {
         console.error('RouteName: notification , Path: getById , error message: ', error.message);
         res.status(500).send({
@@ -36,11 +38,11 @@ router.put("/markAsRead", async (req, res) => {
     }
 });
 
-router.get("/countUnread/:userId", async (req, res) => {
+router.get("/countUnread", async (req, res) => {
     try {
-        const { userId } = req.params;
+        const { userId } = req.body;
         const count = await service.countUnreadNotifications(userId);
-        res.status(200).send({ success: true, count });
+        res.status(200).send({ success: true, data:count });
 
     } catch (error) {
         console.error('RouteName: notification , Path: countUnread , error message: ', error.message);

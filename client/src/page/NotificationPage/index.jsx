@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
-
+import useAxiosRequest from '../../services/useApiRequest';
 export default function NotificationPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -110,7 +110,9 @@ export default function NotificationPage() {
     // Handle mark all as read logic
     console.log('Mark all as read');
   };
-
+  const {data , setData} = useAxiosRequest({url: '/notification/getAll', method: 'get', defaultValue: []});
+  console.log(data);
+  
   const handleNotificationClick = (notification) => {
     // Handle notification click
     console.log('Notification clicked:', notification);
@@ -142,46 +144,6 @@ export default function NotificationPage() {
         </div>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="filter-tabs">
-        <div className="filter-tabs-wrapper">
-          <button 
-            className={`filter-tab ${activeFilter === 'all' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('all')}
-          >
-            <span className="count">{filterCounts.all}</span>
-            <span className="tab-text">הכל</span>
-          </button>
-          <button 
-            className={`filter-tab ${activeFilter === 'likes' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('likes')}
-          >
-            <span className="count">{filterCounts.likes}</span>
-            <span className="tab-text">לייקים</span>
-          </button>
-          <button 
-            className={`filter-tab ${activeFilter === 'follows' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('follows')}
-          >
-            <span className="count">{filterCounts.follows}</span>
-            <span className="tab-text">עוקבים</span>
-          </button>
-          <button 
-            className={`filter-tab ${activeFilter === 'recipes' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('recipes')}
-          >
-            <span className="count">{filterCounts.recipes}</span>
-            <span className="tab-text">מתכונים</span>
-          </button>
-          <button 
-            className={`filter-tab ${activeFilter === 'comments' ? 'active' : ''}`}
-            onClick={() => setActiveFilter('comments')}
-          >
-            <span className="count">{filterCounts.comments}</span>
-            <span className="tab-text">תגובות</span>
-          </button>
-        </div>
-      </div>
 
       {/* Notifications Container */}
       <div className="notifications-container">
@@ -192,9 +154,9 @@ export default function NotificationPage() {
             <p>כל ההתראות שלך יופיעו כאן</p>
           </div>
         ) : (
-          filteredNotifications.map((notification, index) => (
+          data.map((notification, index) => (
             <div 
-              key={notification.id}
+              key={notification._id}
               className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
               onClick={() => handleNotificationClick(notification)}
               style={{ animationDelay: `${index * 0.1}s` }}
