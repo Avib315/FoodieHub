@@ -1,5 +1,6 @@
 const userController = require("../DL/controllers/user.controller");
 const savedRecipeController = require("../DL/controllers/savedRecipe.controller");
+const recipeController = require("../DL/controllers/recipe.controller");
 const bcrypt = require('bcrypt');
 const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -130,10 +131,29 @@ async function register(body) {
 
 
 // async function getUser(userId) {
+//     if (!userId) {
+//         throw new Error(ApiMessages.errorMessages.invalidData);
+//     }
+
+//     if (typeof userId !== 'string' || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+//         throw new Error(ApiMessages.errorMessages.invalidData);
+//     }
+
+//     // שליפת המשתמש
 //     const user = await userController.readOne({ _id: userId });
-//     const savedCount = await savedRecipeController.count({ _id: userId });
-//     user.savedRecipeCount = savedCount;
-//     return user;
+//     if (!user) {
+//         throw new Error(ApiMessages.errorMessages.badRequest);
+//     }
+
+//     if (user.status === 'blocked' || user.status === 'inactive') {
+//         throw new Error(ApiMessages.errorMessages.forbidden);
+//     }
+
+//     const savedCount = await savedRecipeController.count(userId);
+//     const userObj = user.toObject ? user.toObject() : { ...user };
+//     userObj.savedRecipeCount = savedCount;
+//     const { passwordHash, ...safeUser } = userObj;
+//     return safeUser;
 // }
 
 
@@ -150,20 +170,27 @@ async function getUser(userId) {
     // שליפת המשתמש
     const user = await userController.readOne({ _id: userId });
     if (!user) {
-        throw new Error(ApiMessages.errorMessages.badRequest);
+        throw new Error(ApiMessages.errorMessages.notFound);
     }
 
     if (user.status === 'blocked' || user.status === 'inactive') {
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
-    const savedCount = await savedRecipeController.count(userId);
-    const userObj = user.toObject ? user.toObject() : { ...user };
-    userObj.savedRecipeCount = savedCount;
-    const { passwordHash, ...safeUser } = userObj;
-    return safeUser;
-}
+    // שליפת כל הנתונים הנוספים במקביל
+    const [savedCount, createdRecipesCount] = await Promise.all([
+        savedRecipeController.count(userId),
+        recipeController.count({ userId: userId }) // כמות המתכונים שיצר
+    ]);
 
+    // הכנת האובייקט המוחזר
+    return {
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        createdRecipesCount: createdRecipesCount,
+        savedRecipesCount: savedCount
+    };
+}
 
 
 module.exports = { login, register, getUser };

@@ -123,7 +123,7 @@ router.delete("/delete/:id", async (req, res) => {
 
 
 
-router.post("/myRecipes", async (req, res) => {
+router.get("/myRecipes", async (req, res) => {
     try {
         const currentUserId = req.body?.userId; // מהאותנטיקציה
         
