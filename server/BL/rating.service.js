@@ -31,8 +31,6 @@ const getAllRatings = async (recipeId) => {
 };
 
 
-
-
 const createRating = async (ratingInput) => {
     // בדיקת קיום האובייקט
     if (!ratingInput) {
@@ -99,9 +97,7 @@ const createRating = async (ratingInput) => {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
-    return {
-        data: newRating._id
-    };
+    return newRating._id;
 };
 
 
