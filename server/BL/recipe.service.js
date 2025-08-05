@@ -320,9 +320,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
-    return {
-        data: updatedRecipe
-    };
+    return updatedRecipe;
 };
 
 
