@@ -1,33 +1,34 @@
 const ratingController = require("../DL/controllers/rating.controller");
 const recipeController = require("../DL/controllers/recipe.controller");
+const { addRecipeRatedNotification } = require("./notification.service.js");
 const ApiMessages = require('../common/apiMessages.js');
 
 // קבלת כל הדירוגים לפי מתכון
 const getAllRatings = async (recipeId) => {
-        // ולידציה של הפרמטרים
-        if (!recipeId || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-            throw new Error(ApiMessages.errorMessages.invalidData);
-        }
+    // ולידציה של הפרמטרים
+    if (!recipeId || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
 
-        const ratings = await ratingController.read({recipeId});
-        if (!ratings) {
-            throw new Error(ApiMessages.errorMessages.notFound);
-        }
+    const ratings = await ratingController.read({ recipeId });
+    if (!ratings) {
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
 
-        let averageRating = 0;
-        if (ratings && ratings.length > 0) {
-            const totalRating = ratings.reduce((sum, rating) => sum + rating.rating, 0);
-            averageRating = (totalRating / ratings.length).toFixed(1);
-        }
+    let averageRating = 0;
+    if (ratings && ratings.length > 0) {
+        const totalRating = ratings.reduce((sum, rating) => sum + rating.rating, 0);
+        averageRating = (totalRating / ratings.length).toFixed(1);
+    }
 
-        return {
-            data: {
-                ratings: ratings,
-                totalCount: ratings ? ratings.length : 0,
-                averageRating: parseFloat(averageRating)
-            },
-        };
-    
+    return {
+        data: {
+            ratings: ratings,
+            totalCount: ratings ? ratings.length : 0,
+            averageRating: parseFloat(averageRating)
+        },
+    };
+
 };
 
 
@@ -77,7 +78,7 @@ const createRating = async (ratingInput) => {
     }
 
     // בדיקה אם המשתמש כבר דירג את המתכון
-    const existingRating = await ratingController.readOne({userId, recipeId});
+    const existingRating = await ratingController.readOne({ userId, recipeId });
     if (existingRating) {
         throw new Error(ApiMessages.errorMessages.conflict);
     }
@@ -92,11 +93,12 @@ const createRating = async (ratingInput) => {
 
     // יצירת הדירוג בשכבת הנתונים
     const newRating = await ratingController.create(ratingData);
-    
+
     if (!newRating) {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
+    await addRecipeRatedNotification(recipeId);
     return newRating._id;
 };
 
@@ -126,7 +128,7 @@ const deleteRating = async (ratingInput) => {
 
     // מחיקת הדירוג
     const deletedRating = await ratingController.del(filterObject);
-    
+
     if (!deletedRating) {
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
@@ -146,7 +148,7 @@ const deleteRating = async (ratingInput) => {
 //     try {
 //         const { userId, recipeId, rating, review } = ratingInput;
 //         console.log(userId,recipeId );
-        
+
 //         // ולידציה
 //         if (!userId || !recipeId) {
 //             return {
@@ -182,7 +184,7 @@ const deleteRating = async (ratingInput) => {
 
 //         // הכנת נתוני העדכון
 //         const updateData = { };
-        
+
 //         if (rating) updateData.rating = parseInt(rating);
 //         if (review !== undefined) updateData.review = review;
 
@@ -217,7 +219,7 @@ const updateRating = async (ratingInput) => {
     }
 
     // בדיקה שהדירוג קיים ושייך למשתמש
-    const existingRating = await ratingController.readOne({userId, recipeId});
+    const existingRating = await ratingController.readOne({ userId, recipeId });
     if (!existingRating) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
@@ -231,7 +233,7 @@ const updateRating = async (ratingInput) => {
     }
 
     // ולידציה של הביקורת (אם קיימת)
-    if (review !== undefined && review !== null && 
+    if (review !== undefined && review !== null &&
         (typeof review !== 'string' || review.length > 1000)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
@@ -243,7 +245,7 @@ const updateRating = async (ratingInput) => {
 
     // הכנת נתוני העדכון
     const updateData = {};
-    
+
     if (rating !== undefined && rating !== null) {
         updateData.rating = parseInt(rating);
     }
@@ -252,8 +254,8 @@ const updateRating = async (ratingInput) => {
     }
 
     // עדכון הדירוג
-    const updatedRating = await ratingController.update({_id: existingRating._id}, updateData);
-    
+    const updatedRating = await ratingController.update({ _id: existingRating._id }, updateData);
+
     if (!updatedRating) {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }

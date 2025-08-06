@@ -1,7 +1,8 @@
 const adminController = require("../DL/controllers/admin.controller.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
-const SavedRecipeService = require("../BL/savedRecipe.service.js");
+const SavedRecipeService = require("./savedRecipe.service.js");
+const { addRecipeApprovedNotification, addRecipeRejectedNotification } = require("./notification.service.js");
 const bcrypt = require('bcrypt');
 const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -61,7 +62,7 @@ async function getAllRecipes() {
 
 
 const updateRecipeStatus = async (recipeId, status) => {
-    // ولידציות בסיסיות במשולב
+    // ולידציות בסיסיות במשולב
     if (!recipeId || !status) {
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
@@ -90,13 +91,16 @@ const updateRecipeStatus = async (recipeId, status) => {
 
     // עדכון הסטטוס
     const updatedRecipe = await recipeController.update(
-        { _id: recipeId }, 
+        { _id: recipeId },
         { status: status }
     );
-
+    
     if (!updatedRecipe) {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
+
+    if (status === 'rejected') { await addRecipeRejectedNotification(recipeId); }
+    if (status === 'active') { await addRecipeApprovedNotification(recipeId); }
 
     return {
         data: {
@@ -130,8 +134,8 @@ const deleteRecipe = async (recipeId, adnimId) => {
     // מחיקת המתכון מכל המשתמשים ששמרו אותו
     try {
         // שליפת כל המשתמשים ששמרו את המתכון
-        const usersWithSavedRecipe = await userController.read({ 
-            savedRecipes: recipeId 
+        const usersWithSavedRecipe = await userController.read({
+            savedRecipes: recipeId
         });
 
         // מחיקת המתכון מכל המשתמשים שמרו אותו
@@ -140,10 +144,10 @@ const deleteRecipe = async (recipeId, adnimId) => {
                 usersWithSavedRecipe.map(async (user) => {
                     try {
                         await SavedRecipeService.removeSavedRecipe(user._id.toString(), recipeId);
-                        
-                        
+
+
                     } catch (error) {
-                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
+                        throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
                     }
                 })
             );
@@ -180,13 +184,13 @@ const getAllUsers = async () => {
     const safeUsers = users.map(user => {
         // המרה לאובייקט רגיל (אם Mongoose document)
         const userObj = user.toObject ? user.toObject() : { ...user };
-        
+
         // הסרת הסיסמה
         const { passwordHash, ...safeUser } = userObj;
-        
+
         // הוספת שם מלא
         safeUser.fullName = `${userObj.firstName} ${userObj.lastName}`;
-        
+
         return safeUser;
     });
 
@@ -224,7 +228,7 @@ const updateUserStatus = async (userId, status) => {
 
     // עדכון הסטטוס
     const updatedUser = await userController.update(
-        { _id: userId }, 
+        { _id: userId },
         { status: status }
     );
 
