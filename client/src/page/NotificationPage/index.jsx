@@ -11,6 +11,25 @@ export default function NotificationPage() {
     defaultValue: []
   });
 
+// מה שקורל עשתה -------------------------------------
+async function markAsRead() {
+    const body = {
+            notificationIds: [
+                "6890f58ab07387c3dd488f97",
+                "6890f58ab07387c3dd488f9b"
+            ]
+        }
+    const res = await axiosRequest({ url: "/notification/markAsRead", method: "PUT", body: body })
+    console.log(res)
+  }
+
+async function renoveNotification(){} // מחכה שפנינה תיצור את הבקשה בשרת 
+
+// מה שקורל עשתה -------------------------------------
+
+
+
+
   React.useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);

@@ -1,9 +1,37 @@
 import React, { useState } from 'react';
 import './style.scss';
+import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isLoading, setIsLoading] = useState(false);
+
+
+// מה שקורל עשתה ------------------------------------- 
+const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: [], method: "GET" })
+
+async function changeUserDetails() {
+      const body =  {
+            fullName: "fullName",
+            email: "email"
+        };
+      const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body }) 
+      console.log(res)
+    }
+
+async function changeUserPassword() {
+      const body =  {
+            oldPass: "oldPass",
+            newPass: "newPass",
+            checPass: "checPass"
+        };
+      const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body }) 
+      console.log(res)
+    }
+// מה שקורל עשתה ------------------------------------- 
+  
+
   
   // Profile form state
   const [profileForm, setProfileForm] = useState({

@@ -26,6 +26,33 @@ export default function RecipeDetailPage() {
   const [showCommentActions, setShowCommentActions] = useState(false);
   const {id } = useParams()
   const { data , loading} = useAxiosRequest({ url: `recipe/getById?id=${id}` , method:"GET" });
+  //מה שקורל עשתה -------------------------------
+  async function addRating() {
+      const body= {
+            recipeId: "recipeId",
+            rating: "rating",
+            review: "review"
+        };
+      const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
+      console.log(res)
+    }
+
+  async function addComment(){}
+
+  async function saveRecipe(){
+    const body = {
+      recipeId: "recipeId"
+    }
+    const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
+    console.log(res)
+  }
+
+  async function unsaveRecipe(){
+    const res = await axiosRequest({ url: "/savedRecipe/remove/:recipeId", method: "DELETE"}) // הערה: שים לב שמה ששלחתי מגיע כפרמטר, ובנוסף פנינה שמה בבאדי את היוזר של המשתמש אבל אני מניחה שזה היזר שמגיע מהקוקי ולכן לא שמתי אותו בבקשה
+    console.log(res)
+  }
+ //מה שקורל עשתה -------------------------------
+  
 
   const getDifficultyText = (level) => {
     switch (level) {

@@ -15,6 +15,17 @@ export default function NewRecipePage() {
   const [errors, setErrors] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
 
+
+// מה שקורל עשתה -------------------------------------
+async function createRecipe() {
+    const body = { } // הערה: לא כתבתי מה הבאדי כי עדיין לא ידוע הפורמט בגלל התמונות
+    const res = await axiosRequest({ url: "/recipe/create", method: "POST", body: body }) 
+    console.log(res)
+  }
+
+// מה שקורל עשתה -------------------------------------
+
+
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
