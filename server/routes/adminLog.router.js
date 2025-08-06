@@ -10,7 +10,7 @@ router.get("/getAll", async (req, res) => {
         const result = await service.getAllLogs(req.query); // support filters via query params
         res.status(200).send({ success: true, data: result });
     } catch (error) {
-        console.error('RouteName: adminLog , Path: get/ , error message: ', error.message);
+        console.error('RouteName: adminLog , Path: /getAll , error message: ', error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError

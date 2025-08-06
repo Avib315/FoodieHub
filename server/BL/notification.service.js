@@ -37,8 +37,8 @@ async function addRecipeRatedNotification(recipeId) {
     const notification = await notificationController.create({
         userId: recipe.userId,
         type: 'recipe_rated',
-        title: 'Your recipe was rated!',
-        message: 'Someone just rated your recipe. Check out the feedback!',
+        title: 'המתכון שלך דורג!',
+        message: 'מישהו דירג את המתכון שלך. בדוק את המשוב!',
         relatedId: recipeId
     });
 
@@ -68,8 +68,8 @@ async function addRecipeCommentedNotification(recipeId) {
     const notification = await notificationController.create({
         userId: recipe.userId,
         type: 'recipe_commented',
-        title: 'New comment on your recipe',
-        message: 'Someone commented on your recipe. Take a look!',
+        title: 'תגובה חדשה על המתכון שלך',
+        message: 'מישהו הגיב על המתכון שלך. שווה לבדוק!',
         relatedId: recipeId
     });
 
@@ -99,8 +99,8 @@ async function addRecipeApprovedNotification(recipeId) {
     const notification = await notificationController.create({
         userId: recipe.userId,
         type: 'recipe_approved',
-        title: 'Recipe Approved',
-        message: 'Congratulations! Your recipe has been approved.',
+        title: 'המתכון אושר',
+        message: 'מזל טוב! המתכון שלך אושר.',
         relatedId: recipeId
     });
 
@@ -130,8 +130,8 @@ async function addRecipeRejectedNotification(recipeId) {
     const notification = await notificationController.create({
         userId: recipe.userId,
         type: 'recipe_rejected',
-        title: 'Recipe Rejected',
-        message: 'Unfortunately, your recipe was not approved. Please review it and try again.',
+        title: 'המתכון נדחה',
+        message: 'לצערנו, המתכון שלך לא אושר. בדוק אותו ונסה שוב.',
         relatedId: recipeId
     });
 

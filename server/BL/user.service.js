@@ -42,7 +42,7 @@ async function login(userInput) {
         throw new Error(ApiMessages.errorMessages.invalidCredentials);
     }
 
-    const token = loginAuth({ id: user._id , role:"user"});
+    const token = loginAuth({ id: user._id, role: "user" });
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.tokenInvalid);
@@ -122,8 +122,8 @@ async function register(body) {
 
     await addSystemNotification(
         user._id,
-        "New user registered",
-        "Thank you for registering! We hope you enjoy our platform."
+        'משתמש חדש נרשם',
+        'תודה שנרשמת! אנו מקווים שתהנה מהפלטפורמה שלנו.',
     );
 
     const result = {

@@ -20,10 +20,15 @@ const del = async (filter) => {
     return await commentModel.findOneAndDelete(filter);
 }
 
+const deleteMany = async (filter) => {
+    return await commentModel.deleteMany(filter);
+};
+
 module.exports = {
     create,
     read,
     readOne,
     update,
-    del
+    del,
+    deleteMany
 }
