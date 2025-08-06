@@ -24,7 +24,7 @@ router.get("/getAll", auth, async (req, res) => {
     }
 })
 
-router.get("/getById", async (req, res) => {
+router.get("/getById",auth, async (req, res) => {
     try {
         const { id } = req.query;
         const result = await service.getRecipeById(id);
@@ -43,7 +43,7 @@ router.get("/getById", async (req, res) => {
 
 
 
-router.post("/create", upload.single('image') , async (req, res) => {
+router.post("/create",auth, upload.single('image') , async (req, res) => {
     try {
         
         const recipeInput = {
@@ -72,7 +72,7 @@ router.post("/create", upload.single('image') , async (req, res) => {
 });
 
 
-router.put("/update/:id", async (req, res) => {
+router.put("/update/:id",auth, async (req, res) => {
     try {
         const recipeId = req.params.id;
         const currentUserId = req.body?.userId;
@@ -103,7 +103,7 @@ router.put("/update/:id", async (req, res) => {
 });
 
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",auth, async (req, res) => {
     try {
         const recipeId = req.params.id;
         const currentUserId = req.body?.userId;
@@ -123,7 +123,7 @@ router.delete("/delete/:id", async (req, res) => {
 
 
 
-router.get("/myRecipes", async (req, res) => {
+router.get("/myRecipes",auth, async (req, res) => {
     try {
         const currentUserId = req.body?.userId; // מהאותנטיקציה
         
@@ -141,7 +141,7 @@ router.get("/myRecipes", async (req, res) => {
 });
 
 // קבלת המתכונים של משתמש מסוים (רק active)
-router.get("/userRecipes/:userId", async (req, res) => {
+router.get("/userRecipes/:userId",auth, async (req, res) => {
     try {
         const targetUserId = req.params.userId;
 

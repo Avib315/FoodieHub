@@ -1,42 +1,131 @@
 [
     {
         "router": "user",
-        "method": "GET",
-        "path": "/user/getUserData",
-        "params": [
+        "method": "POST",
+        "path": "/user/login",
+        "body": [
             {
-                "name": "userId"
+                "email": "email",
+                "password": "password"
             }
         ]
     },
     {
         "router": "user",
-        "method": "PUT",
-        "path": "/user/changePassword",
-        "body": {}
+        "method": "POST",
+        "path": "/user/register",
+        "body": [
+            {
+                "firstName": "firstName",
+                "lastName": "lastName",
+                "username": "username",
+                "email": "email",
+                "password": "password"
+            }
+        ]
     },
     {
-        "method": "POST",
-        "path": "/user/login",
+        "router": "user",
+        "method": "GET",
+        "path": "/user/getUserData"
+    },
+    {
+        "router": "user",
+        "method": "GET",
+        "path": "/user/isAuthenticated"
+    },
+    {
+        "router": "user",
+        "method": "PUT",
+        "path": "/user/changePassword",
         "body": {
-            "email": "avi@example.com",
-            "password": "123456"
+            "oldPass": "oldPass",
+            "newPass": "newPass",
+            "checPass": "checPass"
         }
     },
     {
-        "method": "POST",
-        "path": "/user/register"
+        "router": "user",
+        "method": "PUT",
+        "path": "/user/changeDetails",
+        "body": {
+            "fullName": "fullName",
+            "email": "email"
+        }
     },
+
+
+
+
     {
+        "router": "recipe",
         "method": "GET",
-        "path": "/user/logout"
+        "path": "/recipe/getAll"
     },
     {
         "router": "recipe",
+        "method": "GET",
+        "path": "/recipe/getById?id=6892737b09aaf0aab630d950",
+        "params": {
+            "id": "id"
+        }   
+    },
+    {
+        "router": "recipe",
+        "method": "DELETE",
+        "path": "/recipe/delete/6892737b09aaf0aab630d950"
+    },
+    {
+        "router": "recipe",
+        "method": "GET",
+        "path": "/recipe/myRecipes"
+    },
+    {
+        "router": "recipe",
+        "method": "GET",
+        "path": "/recipe/userRecipes/6890f585b07387c3dd488f5e"
+    },
+
+
+
+
+    {
+        "router": "rating",
+        "method": "GET",
+        "path": "/rating/getAll?recipeId=6890f588b07387c3dd488f73",      
+        "params": {
+            "recipeId": "recipeId"
+        } 
+    },
+    {
+        "router": "rating",
         "method": "POST",
-        "path": "/recipe/getRecipe",
+        "path": "/rating/create",
         "body": {
-            "name": "userId"
+            "recipeId": "recipeId",
+            "rating": "rating",
+            "review": "review"
+        }
+    },
+    {
+        "router": "rating",
+        "method": "PUT",
+        "path": "/rating/delete",
+        "body": {
+            "ratingId": "ratingId"
+        }
+    },
+    {
+        "router": "rating",
+        "method": "PUT",
+        "path": "/rating/update",
+        "body": {
+            "recipeId": "recipeId",
+            "rating": "rating",
+            "review": "review"
         }
     }
+
+
+
 ]
