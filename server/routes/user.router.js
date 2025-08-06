@@ -36,7 +36,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/getUserData', async (req, res) => {
+router.get('/getUserData',auth, async (req, res) => {
     try {
         const userId = req.body.userId
         const result = await service.getUser(userId);
@@ -55,7 +55,7 @@ router.get('/isAuthenticated', auth, async (req, res) => {
     }
 });
 
-router.put('/changePassword', async (req, res) => {
+router.put('/changePassword',auth, async (req, res) => {
     try {
         const userInput = {
             userId: req.body.userId,
@@ -71,7 +71,7 @@ router.put('/changePassword', async (req, res) => {
     }
 }); 
 
-router.put('/changeDetails', async (req, res) => {
+router.put('/changeDetails',auth, async (req, res) => {
     try {
         const userInput = {
             userId: req.body.userId,
