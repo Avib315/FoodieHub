@@ -1,0 +1,516 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Main Container
+.recipes-panel {
+  direction: rtl;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: $bg-lighter;
+  min-height: 100vh;
+  padding: $spacing-lg;
+}
+
+// Header Section
+.panel-header {
+  @include flex-between;
+  @include card;
+  @include gradient-bg($primary-color, $primary-dark);
+  color: $text-white;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-xl;
+
+  .header-content {
+    h1 {
+      margin: 0 0 $spacing-xs 0;
+      font-size: $font-3xl;
+      font-weight: $font-bold;
+    }
+
+    p {
+      margin: 0;
+      font-size: $font-base;
+      opacity: 0.9;
+    }
+  }
+
+  .add-recipe-btn {
+    @include button-base;
+    background: rgba($text-white, 0.2);
+    color: $text-white;
+    border: 2px solid rgba($text-white, 0.3);
+    font-size: $font-base;
+    font-weight: $font-medium;
+    padding: $spacing-sm $spacing-lg;
+    
+    span {
+      margin-left: $spacing-xs;
+    }
+
+    &:hover {
+      background: rgba($text-white, 0.3);
+      border-color: rgba($text-white, 0.5);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Filters Section
+.filters-section {
+  @include card;
+  @include flex-between;
+  margin-bottom: $spacing-lg;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+
+  .search-box {
+    flex: 1;
+    min-width: 250px;
+
+    .search-input {
+      @include input-base;
+      width: 100%;
+      font-size: $font-base;
+      background: $bg-white;
+      
+      &::placeholder {
+        color: $text-lighter;
+      }
+    }
+  }
+
+  .filter-controls {
+    display: flex;
+    gap: $spacing-md;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .filter-select {
+      @include input-base;
+      background: $bg-white;
+      cursor: pointer;
+      min-width: 120px;
+    }
+
+    .clear-filters-btn {
+      @include button-secondary;
+      font-size: $font-sm;
+      padding: $spacing-xs $spacing-md;
+      white-space: nowrap;
+    }
+  }
+}
+
+// Statistics Row
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.stat-card {
+  @include card;
+  @include flex-center;
+  @include flex-column;
+  text-align: center;
+  padding: $spacing-lg;
+  background: $bg-white;
+  @include transition();
+
+  &:hover {
+    @include shadow(medium);
+    transform: translateY(-2px);
+  }
+
+  .stat-number {
+    font-size: $font-3xl;
+    font-weight: $font-bold;
+    color: $primary-color;
+    margin-bottom: $spacing-xs;
+  }
+
+  .stat-label {
+    font-size: $font-sm;
+    color: $text-lighter;
+    font-weight: $font-medium;
+  }
+}
+
+// Main Content
+.panel-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: $spacing-xl;
+  align-items: start;
+}
+
+// Table Section
+.table-section {
+  @include card;
+  overflow: hidden;
+}
+
+// Recipe Actions in Table
+.recipe-actions {
+  display: flex;
+  gap: $spacing-xs;
+  justify-content: center;
+
+  .action-btn {
+    @include button-base;
+    padding: $spacing-xs;
+    border-radius: $radius-md;
+    font-size: $font-sm;
+    width: 32px;
+    height: 32px;
+    @include flex-center;
+    @include transition();
+
+    span {
+      font-size: 14px;
+    }
+
+    &.view-btn {
+      background: rgba($info-color, 0.1);
+      border: 1px solid rgba($info-color, 0.3);
+      color: $info-color;
+
+      &:hover {
+        background: rgba($info-color, 0.2);
+      }
+    }
+
+    &.edit-btn {
+      background: rgba($warning-color, 0.1);
+      border: 1px solid rgba($warning-color, 0.3);
+      color: $warning-color;
+
+      &:hover {
+        background: rgba($warning-color, 0.2);
+      }
+    }
+
+    &.delete-btn {
+      background: rgba($error-color, 0.1);
+      border: 1px solid rgba($error-color, 0.3);
+      color: $error-color;
+
+      &:hover {
+        background: rgba($error-color, 0.2);
+      }
+    }
+  }
+}
+
+// Recipe Details Sidebar
+.recipe-details {
+  @include card;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: sticky;
+  top: $spacing-lg;
+
+  .details-header {
+    @include flex-between;
+    padding: $spacing-lg;
+    border-bottom: 1px solid $border-light;
+    @include gradient-bg($secondary-color, $secondary-dark);
+    color: $text-white;
+    margin: (-$spacing-lg) (-$spacing-lg) 0;
+
+    h2 {
+      margin: 0;
+      font-size: $font-xl;
+      font-weight: $font-semibold;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      color: $text-white;
+      font-size: $font-lg;
+      cursor: pointer;
+      padding: $spacing-xs;
+      border-radius: $radius-sm;
+      @include transition();
+
+      &:hover {
+        background: rgba($text-white, 0.2);
+      }
+    }
+  }
+
+  .details-content {
+    padding: $spacing-lg;
+  }
+
+  .recipe-info {
+    margin-bottom: $spacing-lg;
+
+    .info-item {
+      @include flex-between;
+      margin-bottom: $spacing-md;
+      padding-bottom: $spacing-sm;
+      border-bottom: 1px solid $border-light;
+
+      strong {
+        color: $text-color;
+        font-weight: $font-medium;
+        font-size: $font-sm;
+      }
+
+      span {
+        font-size: $font-sm;
+      }
+    }
+  }
+
+  .recipe-description,
+  .recipe-ingredients {
+    margin-bottom: $spacing-lg;
+
+    h3 {
+      margin: 0 0 $spacing-md 0;
+      font-size: $font-lg;
+      font-weight: $font-semibold;
+      color: $text-color;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+      color: $text-light;
+      font-size: $font-sm;
+    }
+
+    ul {
+      margin: 0;
+      padding-right: $spacing-lg;
+      color: $text-light;
+
+      li {
+        margin-bottom: $spacing-xs;
+        font-size: $font-sm;
+      }
+    }
+  }
+
+  .recipe-actions-full {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    .view-full-btn {
+      @include button-primary;
+      text-decoration: none;
+      text-align: center;
+      font-size: $font-sm;
+    }
+
+    .edit-full-btn {
+      @include button-secondary;
+      font-size: $font-sm;
+    }
+  }
+}
+
+// Badge Styles
+.category-badge,
+.difficulty-badge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-2xl;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  text-transform: uppercase;
+
+  &.עיקרי {
+    background: rgba($primary-color, 0.15);
+    color: darken($primary-color, 10%);
+  }
+
+  &.סלטים {
+    background: rgba($success-color, 0.15);
+    color: darken($success-color, 10%);
+  }
+
+  &.קינוחים {
+    background: rgba($secondary-color, 0.15);
+    color: darken($secondary-color, 10%);
+  }
+
+  &.מרקים {
+    background: rgba($warning-color, 0.15);
+    color: darken($warning-color, 20%);
+  }
+
+  &.קל {
+    background: rgba($success-color, 0.15);
+    color: darken($success-color, 10%);
+  }
+
+  &.בינוני {
+    background: rgba($warning-color, 0.15);
+    color: darken($warning-color, 20%);
+  }
+
+  &.קשה {
+    background: rgba($error-color, 0.15);
+    color: darken($error-color, 10%);
+  }
+}
+
+// Custom scrollbar for recipe details
+.recipe-details {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-light;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-medium;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $text-lighter;
+    }
+  }
+}
+
+// Responsive Design
+@include tablet {
+  .recipes-panel {
+    padding: $spacing-md;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    gap: $spacing-lg;
+    text-align: center;
+  }
+
+  .filters-section {
+    flex-direction: column;
+    gap: $spacing-md;
+
+    .filter-controls {
+      justify-content: center;
+    }
+  }
+
+  .panel-content {
+    grid-template-columns: 1fr;
+    gap: $spacing-lg;
+  }
+
+  .recipe-details {
+    width: 100%;
+    position: static;
+    max-height: none;
+  }
+
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include mobile {
+  .recipes-panel {
+    padding: $spacing-sm;
+  }
+
+  .panel-header {
+    padding: $spacing-lg $spacing-md;
+
+    .header-content h1 {
+      font-size: $font-2xl;
+    }
+
+    .add-recipe-btn {
+      padding: $spacing-xs $spacing-md;
+      font-size: $font-sm;
+    }
+  }
+
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-actions {
+    flex-direction: column;
+    gap: 2px;
+
+    .action-btn {
+      width: 100%;
+      height: 28px;
+    }
+  }
+
+  .filters-section {
+    .search-box {
+      min-width: 100%;
+    }
+
+    .filter-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  .recipe-details {
+    .details-header {
+      padding: $spacing-md;
+
+      h2 {
+        font-size: $font-lg;
+      }
+    }
+
+    .details-content {
+      padding: $spacing-md;
+    }
+  }
+}
+
+// Loading and empty states
+.panel-loading {
+  @include flex-center;
+  @include flex-column;
+  min-height: 400px;
+  color: $text-lighter;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba($primary-color, 0.3);
+    border-top: 3px solid $primary-color;
+    border-radius: $radius-full;
+    animation: spin 1s linear infinite;
+    margin-bottom: $spacing-md;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .stat-card,
+  .table-section,
+  .recipe-details {
+    border: 2px solid $text-color;
+  }
+}
