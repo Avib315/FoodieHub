@@ -40,7 +40,7 @@ router.get('/getUserData',auth, async (req, res) => {
     try {
         const userId = req.body.userId
         const result = await service.getUser(userId);
-       res.status(200).send({success: true, result});
+       res.status(200).send({success: true, data:result});
     } catch (error) {
         console.error("RouteName: user : getUserData : error message:", error.message);
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });

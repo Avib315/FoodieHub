@@ -25,6 +25,8 @@ const useApiRequest = (
         
         if (response?.data?.success) {
           const data = response.data.data
+          console.log(response);
+          
           if (response?.data) {
             setData(data);
           }

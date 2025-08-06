@@ -12,7 +12,7 @@ export default function PersonalAreaPage() {
  
  // הערה: מהערך המוחזר אפשר לשלוף גם את כמות המתכונים השמורים ואת כמות המתכונים שהמשתמש יצר
 
-const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: [], method: "GET" })
+const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
 
   // מה שקורל עשתה ------------------------------------- 
 
@@ -43,14 +43,14 @@ const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultVal
       to: '/favorites',
       icon: '❤️',
       title: 'מועדפים',
-      subtitle: `${userData.stats.savedRecipes} מתכונים`,
+      subtitle: `${data.savedRecipesCount} מתכונים`,
       color: 'secondary'
     },
     {
       to: '/my-recipes',
       icon: '📝',
       title: 'המתכונים שלי',
-      subtitle: `${userData.stats.myRecipes} מתכונים`,
+      subtitle: `${data.createdRecipesCount} מתכונים`,
       color: 'success'
     },
     {
@@ -62,32 +62,7 @@ const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultVal
     }
   ];
 
-  const recentActivity = [
-    {
-      id: 1,
-      type: 'recipe_added',
-      title: 'הוספת מתכון חדש',
-      description: 'פסטה ברוטב עגבניות',
-      time: 'לפני יום',
-      icon: '🍝'
-    },
-    {
-      id: 2,
-      type: 'recipe_rated',
-      title: 'קיבלת דירוג חדש',
-      description: 'המתכון "עוגת שוקולד" קיבל 5 כוכבים',
-      time: 'לפני יומיים',
-      icon: '⭐'
-    },
-    {
-      id: 3,
-      type: 'recipe_saved',
-      title: 'שמרת מתכון',
-      description: 'סלט קיסר קלאסי',
-      time: 'לפני 3 ימים',
-      icon: '💾'
-    }
-  ];
+
 
   return (
     <>
@@ -97,11 +72,11 @@ const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultVal
         <div className="profile-header">
           <div className="profile-card">
             <div className="profile-avatar">
-              <span>{userData.avatar}</span>
+              <span>{data.avatar}</span>
             </div>
             <div className="profile-info">
-              <h1 className="profile-name">{userData.name}</h1>
-              <p className="profile-email">{userData.email}</p>
+              <h1 className="profile-name">{data.name}</h1>
+              <p className="profile-email">{data.email}</p>
               <p className="profile-join-date">חבר מאז {userData.joinDate}</p>
             </div>
             <Link to="/settings" className="edit-profile-btn">
@@ -115,12 +90,12 @@ const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultVal
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-icon">📝</div>
-              <div className="stat-number">{userData.stats.myRecipes}</div>
+              <div className="stat-number">{data.createdRecipesCount}</div>
               <div className="stat-label">המתכונים שלי</div>
             </div>
             <div className="stat-card">
               <div className="stat-icon">❤️</div>
-              <div className="stat-number">{userData.stats.savedRecipes}</div>
+              <div className="stat-number">{data.savedRecipesCount}</div>
               <div className="stat-label">מועדפים</div>
             </div>
      

@@ -9,29 +9,33 @@ import {
 } from 'react-icons/ai'
 import { MdSignalCellularAlt } from 'react-icons/md'
 import './style.scss'
-
+import difLevel from '../../data/difLevel'
 export default function RecipeCard({ recipe }) {
   const [isSaved, setIsSaved] = useState(false)
   
   // Destructure recipe data with fallbacks
   const { 
-    userName = 'משתמש לא ידוע', 
+    username = 'משתמש לא ידוע', 
     title = 'מתכון ללא שם', 
     imageUrl = '', 
-    dateCreated = 'לא ידוע', 
+    updatedAt = 'לא ידוע', 
     description = 'אין תיאור', 
-    time = '0 דק\'', 
-    level = 'לא ידוע', 
-    stars = 0, 
-    meals = 1,
+    prepTime = '0 דק\'', 
+    difficultyLevel = 'לא ידוע', 
+    averageRating = 0, 
+    servings = 1,
     totalRatings = 0
   } = recipe || {}
+
 
   // Get user's first letter for avatar
   const getUserInitial = (name) => {
     return name ? name.charAt(0) : '?'
   }
-
+  const difLevelMap = ()=>{
+    const level = difLevel.find(level => level.value === difficultyLevel);
+    return level ? level.text : 'לא ידוע';
+  }
   // Format time display
   const formatTime = (timeValue) => {
     if (typeof timeValue === 'number') {
@@ -40,17 +44,21 @@ export default function RecipeCard({ recipe }) {
     return timeValue || '0 דק\''
   }
 
-  // Format date display
-  const formatDate = (date) => {
-    if (!date) return 'לא ידוע'
-    // You can add more sophisticated date formatting here
-    return date
-  }
+const formatDate = (date) => {
+  if (!date) return 'לא ידוע';
+  
+  const d = new Date(date);  // Convert the string to a Date object
+  const year = d.getFullYear(); // Get the full year (yyyy)
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // Get the month (mm), pad with leading zero if necessary
+  const day = String(d.getDate()).padStart(2, '0'); // Get the day (dd), pad with leading zero if necessary
+  
+  return `${year}/${month}/${day}`; // Return the formatted string
+};
 
   // Generate star rating
   const renderStars = () => {
     const starElements = []
-    const fullStars = Math.floor(stars)
+    const fullStars = Math.floor(averageRating)
     
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
@@ -91,11 +99,11 @@ export default function RecipeCard({ recipe }) {
     <div className="recipe-card">
       <div className="card-header">
         <div className="user-avatar">
-          {getUserInitial(userName)}
+          {getUserInitial(username)}
         </div>
         <div className="user-info">
-          <h3>{userName}</h3>
-          <span>{formatDate(dateCreated)}</span>
+          <h3>{username}</h3>
+          <span>{formatDate(updatedAt)}</span>
         </div>
       </div>
 
@@ -115,15 +123,15 @@ export default function RecipeCard({ recipe }) {
         <div className="recipe-meta">
           <div className="meta-item">
             <AiOutlineClockCircle />
-            <span>{formatTime(time)}</span>
+            <span>{formatTime(prepTime)}</span>
           </div>
           <div className="meta-item">
             <AiOutlineUser />
-            <span>{meals} מנות</span>
+            <span>{servings} מנות</span>
           </div>
           <div className="meta-item">
             <MdSignalCellularAlt />
-            <span>{level}</span>
+            <span>{difLevelMap(difficultyLevel)}</span>
           </div>
         </div>
 
@@ -133,7 +141,7 @@ export default function RecipeCard({ recipe }) {
               {renderStars()}
             </div>
             <span className="rating-text">
-              {stars.toFixed(1)} ({totalRatings} דירוגים)
+              {averageRating.toFixed(1)} ({totalRatings} דירוגים)
             </span>
           </div>
           <button 

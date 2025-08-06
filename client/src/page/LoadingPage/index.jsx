@@ -6,7 +6,7 @@ export default function LoadingPage() {
   return (
     <div className="loading-page">
   <FloatingElements theme='loading'/>
-      <div className="loading-spinner">
+      <div className="loading">
         <h2>טוען...</h2>
         <p>אנא המתן בזמן שאנחנו מכינים הכל בשבילך</p>
       </div>
