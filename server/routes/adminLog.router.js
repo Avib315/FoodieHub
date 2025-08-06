@@ -5,7 +5,7 @@ const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
 // GET all logs (optionally with filters)
-router.get("/", async (req, res) => {
+router.get("/getAll", async (req, res) => {
     try {
         const result = await service.getAllLogs(req.query); // support filters via query params
         res.status(200).send({ success: true, data: result });
@@ -33,7 +33,7 @@ router.post("/create", async (req, res) => {
 });
 
 // GET logs by admin ID
-router.get("/byAdmin", async (req, res) => {
+router.get("/byAdmin", auth, async (req, res) => {
     try {
         const { userId } = req.body;
         const result = await service.getLogsByAdminId(userId);

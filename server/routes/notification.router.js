@@ -4,12 +4,9 @@ const service = require('../BL/notification.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
-router.get("/getAll",auth ,async (req, res) => {
+router.get("/getAll", auth, async (req, res) => {
     try {
-        const { userId } = req.body;
-        console.log(userId);
-        
-        console.log("Received ID:", userId);
+        const { userId } = req.body;        
 
         const result = await service.getNotificationByUserId(userId);
         res.status(200).send({ success: true, data: result });
@@ -21,7 +18,6 @@ router.get("/getAll",auth ,async (req, res) => {
         });
     }
 });
-
 
 router.put("/markAsRead", async (req, res) => {
     try {
@@ -38,7 +34,7 @@ router.put("/markAsRead", async (req, res) => {
     }
 });
 
-router.get("/countUnread", async (req, res) => {
+router.get("/countUnread", auth, async (req, res) => {
     try {
         const { userId } = req.body;
         const count = await service.countUnreadNotifications(userId);

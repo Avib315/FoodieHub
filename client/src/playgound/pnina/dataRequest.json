@@ -1,10 +1,237 @@
 [
     {
-        "routerName": "user",
+        "routerName": "savedRecipe",
         "method": "GET",
-        "path":"/user/getData",
-        "returnSuccessData":{
-            
+        "path": "/savedRecipe/getAll",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "6890f588b07387c3dd488f7b",
+                    "title": "פסטה עם שום ושמן זית",
+                    "description": "מנה איטלקית קלאסית וטעימה",
+                    "prepTime": 10,
+                    "servings": 2,
+                    "difficultyLevel": 2,
+                    "imageUrl": "https://example.com/recipes/pasta-aglio.jpg",
+                    "status": "active"
+                },
+                {
+                    "_id": "6892737909aaf0aab630d90b",
+                    "title": "Grilled Chicken Breast",
+                    "description": "Simple grilled chicken with herbs.",
+                    "prepTime": 25,
+                    "servings": 2,
+                    "difficultyLevel": 2,
+                    "imageUrl": null,
+                    "status": "active"
+                }
+            ]
+        }
+    },
+    {
+        "routerName": "savedRecipe",
+        "method": "GET",
+        "path": "/savedRecipe/count",
+        "returnSuccessData": {
+            "success": true,
+            "data": 2
+        }
+    },
+    {
+        "router": "notification",
+        "method": "GET",
+        "path": "notification/getAll/",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "6890f58ab07387c3dd488f97",
+                    "userId": "6890f583b07387c3dd488f5b",
+                    "type": "recipe_rated",
+                    "title": "המתכון שלך קיבל דירוג חדש",
+                    "message": "המתכון 'סלט עגבניות ובצל' קיבל דירוג של 5 כוכבים",
+                    "relatedId": "6890f588b07387c3dd488f73",
+                    "isRead": false,
+                    "createdAt": "2025-08-04T18:01:46.050Z",
+                    "updatedAt": "2025-08-04T18:01:46.050Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "6890f58ab07387c3dd488f9b",
+                    "userId": "6890f583b07387c3dd488f5b",
+                    "type": "system",
+                    "title": "ברוכים הבאים לאתר המתכונים",
+                    "message": "תודה על ההצטרפות! כאן תוכלו למצוא מתכונים נפלאים ולשתף את שלכם",
+                    "relatedId": null,
+                    "isRead": false,
+                    "createdAt": "2025-08-04T18:01:46.389Z",
+                    "updatedAt": "2025-08-04T18:01:46.389Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "68921bf2c5906aa480aa9fc1",
+                    "userId": "6890f583b07387c3dd488f5b",
+                    "type": "recipe_rated",
+                    "title": "Your recipe was rated!",
+                    "message": "Someone just rated your recipe. Check out the feedback!",
+                    "relatedId": "6890f588b07387c3dd488f73",
+                    "isRead": false,
+                    "createdAt": "2025-08-05T14:57:54.026Z",
+                    "updatedAt": "2025-08-05T14:57:54.026Z",
+                    "__v": 0
+                }
+            ]
+        }
+    },
+    {
+        "router": "notification",
+        "method": "GET",
+        "path": "notification/countUnread/",
+        "returnSuccessData": {
+            "success": true,
+            "data": 2
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/getAll/",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "6890f58ab07387c3dd488fa1",
+                    "adminId": "6890f68746284df6cf1b9ff9",
+                    "action": "recipe_approved",
+                    "targetType": "recipe",
+                    "targetId": "6890f588b07387c3dd488f73",
+                    "details": {
+                        "recipeName": "סלט עגבניות ובצל",
+                        "previousStatus": "pending",
+                        "newStatus": "active"
+                    },
+                    "ipAddress": "192.168.1.100",
+                    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "createdAt": "2025-08-04T18:01:46.902Z",
+                    "updatedAt": "2025-08-04T18:01:46.902Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "6890f58bb07387c3dd488fa3",
+                    "adminId": "6890f586b07387c3dd488f61",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "6890f585b07387c3dd488f5e",
+                    "details": {
+                        "userName": "miriam_levi",
+                        "reason": "Multiple spam reports",
+                        "duration": "7 days"
+                    },
+                    "ipAddress": "192.168.1.100",
+                    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "createdAt": "2025-08-04T18:01:47.068Z",
+                    "updatedAt": "2025-08-04T18:01:47.068Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "6890ffd0064fd251ebf495ff",
+                    "adminId": "6890f68746284df6cf1b9ff9",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "6890f585b07387c3dd488f5e",
+                    "details": {
+                        "reason": "Suspicious activity"
+                    },
+                    "ipAddress": "127.0.0.1",
+                    "userAgent": "PostmanRuntime/7.36.1",
+                    "createdAt": "2025-08-04T18:45:36.079Z",
+                    "updatedAt": "2025-08-04T18:45:36.079Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "6891e7b96d3a9795e4efd65f",
+                    "adminId": "64e4f812d264df001d55f111",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "64e4f812d264df001d55f222",
+                    "details": {
+                        "reason": "Violation of terms"
+                    },
+                    "ipAddress": "192.168.1.1",
+                    "userAgent": "PostmanRuntime/7.32.3",
+                    "createdAt": "2025-08-05T11:15:05.527Z",
+                    "updatedAt": "2025-08-05T11:15:05.527Z",
+                    "__v": 0
+                }
+            ]
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/byAdmin/",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "6891e7b96d3a9795e4efd65f",
+                    "adminId": "6890f583b07387c3dd488f5b",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "64e4f812d264df001d55f222",
+                    "details": {
+                        "reason": "Violation of terms"
+                    },
+                    "ipAddress": "192.168.1.1",
+                    "userAgent": "PostmanRuntime/7.32.3",
+                    "createdAt": "2025-08-05T11:15:05.527Z",
+                    "updatedAt": "2025-08-05T11:15:05.527Z",
+                    "__v": 0
+                }
+            ]
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/byTarget/:type/:id",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "6890f58bb07387c3dd488fa3",
+                    "adminId": "6890f586b07387c3dd488f61",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "6890f585b07387c3dd488f5e",
+                    "details": {
+                        "userName": "miriam_levi",
+                        "reason": "Multiple spam reports",
+                        "duration": "7 days"
+                    },
+                    "ipAddress": "192.168.1.100",
+                    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                    "createdAt": "2025-08-04T18:01:47.068Z",
+                    "updatedAt": "2025-08-04T18:01:47.068Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "6890ffd0064fd251ebf495ff",
+                    "adminId": "6890f68746284df6cf1b9ff9",
+                    "action": "user_blocked",
+                    "targetType": "user",
+                    "targetId": "6890f585b07387c3dd488f5e",
+                    "details": {
+                        "reason": "Suspicious activity"
+                    },
+                    "ipAddress": "127.0.0.1",
+                    "userAgent": "PostmanRuntime/7.36.1",
+                    "createdAt": "2025-08-04T18:45:36.079Z",
+                    "updatedAt": "2025-08-04T18:45:36.079Z",
+                    "__v": 0
+                }
+            ]
         }
     }
 ]

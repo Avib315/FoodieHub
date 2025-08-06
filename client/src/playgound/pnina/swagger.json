@@ -1,31 +1,93 @@
 [
     {
-        "method": "GET",
-        "path": "/user/getData",
-        "params":[
-            {
-                "name": "userId"
-            }
-        ]
-    },
-    {
-        "method": "GET",
-        "path": "/user/changePassword"
-    },
-    {
+        "router": "savedRecipe",
         "method": "POST",
-        "path": "/user/login",
+        "path": "savedRecipe/add/",
         "body": {
-            "username": "string",
-            "password": "string"
+            "recipeId": "6892737909aaf0aab630d90b"
         }
     },
     {
-        "method": "POST",
-        "path": "/user/register"
+        "router": "savedRecipe",
+        "method": "GET",
+        "path": "savedRecipe/getAll/",
+        "body": {
+            "userId": "userId"
+        }
     },
     {
+        "router": "savedRecipe",
+        "method": "DELETE",
+        "path": "savedRecipe/remove/6891f6d88449228fcdd5c70e",
+        "body": {
+            "userId": "userId"
+        }
+    },
+    {
+        "router": "savedRecipe",
         "method": "GET",
-        "path": "/user/logout"
+        "path": "savedRecipe/count/",
+        "body": {
+            "userId": "userId"
+        }
+    },
+    {
+        "router": "notification",
+        "method": "GET",
+        "path": "notification/getAll/",
+        "body": {
+            "userId": "userId"
+        }
+    },
+    {
+        "router": "notification",
+        "method": "PUT",
+        "path": "notification/markAsRead/",
+        "body": {
+            "notificationIds": [
+                "6890f58ab07387c3dd488f97",
+                "6890f58ab07387c3dd488f9b"
+            ]
+        }
+    },
+    {
+        "router": "notification",
+        "method": "GET",
+        "path": "notification/countUnread/",
+        "body": {
+            "userId": "userId"
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/getAll/",
+        "params": [
+            {}
+        ]
+    },
+    {
+        "router": "adminLog",
+        "method": "POST",
+        "path": "adminLog/create/",
+        "body": {
+            "adminId": "6890f586b07387c3dd488f61",
+            "action": "user_blocked",
+            "targetType": "user",
+            "targetId": "64e4f812d264df001d55f222"
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/byAdmin/",
+        "body": {
+            "userId": ""
+        }
+    },
+    {
+        "router": "adminLog",
+        "method": "GET",
+        "path": "adminLog/byTarget/user/6890f585b07387c3dd488f5e"
     }
 ]
