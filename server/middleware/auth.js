@@ -21,8 +21,12 @@ async function auth(req, res, next) {
 }
 
  function loginAuth(data) {
-    const token = jwt.sign(data, process.env.JWT_SECRET, { expiresIn: "5d" });
+    const token = jwt.sign({...data, role:"user"}, process.env.JWT_SECRET, { expiresIn: "36h" });
+    return token;
+}
+ function loginAdminAuth(data) {
+    const token = jwt.sign({...data, role:"admin"}, process.env.JWT_SECRET, { expiresIn: "36h" });
     return token;
 }
 
-module.exports = { auth, loginAuth };
+module.exports = { auth, loginAuth , loginAdminAuth };

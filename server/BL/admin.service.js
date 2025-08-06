@@ -27,7 +27,7 @@ async function login(adminInput) {
     const passwordMatch = await bcrypt.compare(adminInput.password, admin?.passwordHash);
     if (!passwordMatch) { throw new Error(ApiMessages.errorMessages.invalidCredentials); }
 
-    const token = loginAuth({ id: admin._id });
+    const token = loginAuth({ id: admin._id , role: "admin" });
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.serverError);
