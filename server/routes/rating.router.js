@@ -4,7 +4,7 @@ const service = require('../BL/rating.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
-router.get("/getAll", async (req, res) => {
+router.get("/getAll",auth, async (req, res) => {
     try {
         const recipeId = req.query.recipeId; 
         const result = await service.getAllRatings(recipeId);
@@ -21,7 +21,7 @@ router.get("/getAll", async (req, res) => {
     }
 });
 
-router.post("/create", async (req, res) => { // הוסף authentication
+router.post("/create",auth, async (req, res) => { // הוסף authentication
     try {   
         const ratingInput = {
             userId: req.body?.userId,
@@ -29,7 +29,7 @@ router.post("/create", async (req, res) => { // הוסף authentication
             rating: req.body?.rating,
             review: req.body?.review
         };
-        const result = await service.createRating(ratingInput); // תוקן: getAllRatings -> createRating
+        const result = await service.createRating(ratingInput);
         
         res.status(201).send({success: true, data: result});
     
@@ -42,7 +42,7 @@ router.post("/create", async (req, res) => { // הוסף authentication
     }
 });
 
-router.put("/delete", async (req, res) => { // הוסף authentication
+router.put("/delete",auth, async (req, res) => { // הוסף authentication
     try {
         const ratingInput = {
             userId: req.body?.userId,
@@ -62,7 +62,7 @@ router.put("/delete", async (req, res) => { // הוסף authentication
     }
 });
 
-router.put("/update", async (req, res) => { // הוסף authentication
+router.put("/update",auth, async (req, res) => { // הוסף authentication
     try {
         const ratingInput = {
             userId: req.body?.userId,
