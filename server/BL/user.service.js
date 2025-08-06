@@ -41,7 +41,7 @@ async function login(userInput) {
         throw new Error(ApiMessages.errorMessages.invalidCredentials);
     }
 
-    const token = loginAuth({ id: user._id });
+    const token = loginAuth({ id: user._id , role:"user"});
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.tokenInvalid);
