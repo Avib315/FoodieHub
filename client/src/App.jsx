@@ -25,6 +25,8 @@ import CoralSwaggerAPITester from './playgound/coral/coral.jsx'
 import PninaSwaggerAPITester from './playgound/pnina/pnina.jsx'
 import AdminLogin from './adminPages/AdmnLogin/index.jsx'
 import AdminPage from './adminPages/AdminPage/index.jsx'
+import RecipesPanel from './adminPages/RecipesPanel/index.jsx'
+import UserPanel from './adminPages/UsersPanel/index.jsx'
 
 function App() {
   return (
@@ -101,10 +103,6 @@ function App() {
         } />
 
 
-
-
-
-
         {/* Static/Info Pages */}
         <Route path="/about" element={
           <AuthPageLayout>
@@ -128,7 +126,10 @@ function App() {
           <AdminPage />
         } />
           <Route path="/admin-recipe-panel" element={
-          <AdminPage />
+          <RecipesPanel />
+        } />
+          <Route path="/admin-users-panel" element={
+          <UserPanel />
         } />
         {/* Utility Routes */}
         <Route path="/loading" element={<LoadingPage />} />
