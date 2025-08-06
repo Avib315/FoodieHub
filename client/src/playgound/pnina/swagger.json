@@ -59,6 +59,11 @@
         }
     },
     {
+        "router": "notification",
+        "method": "DELETE",
+        "path": "notification/delete/"
+    },
+    {
         "router": "adminLog",
         "method": "GET",
         "path": "adminLog/getAll/",
