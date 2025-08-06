@@ -3,7 +3,7 @@ import './style.scss';
 import { Link } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest';
 import categories from '../../data/categories';
-import difficultyLevel from '../../data/difLevel';
+import difLevel from '../../data/difLevel';
 import unitTypes from '../../data/unitTypes';
 
 export default function NewRecipePage() {
@@ -415,7 +415,7 @@ export default function NewRecipePage() {
               <div className="form-group">
                 <label>רמת קושי *</label>
                 <div className="difficulty-options">
-                  {difficultyLevel.map(difficulty => (
+                  {difLevel.map(difficulty => (
                     <div
                       key={difficulty.key}
                       className={`difficulty-option ${selectedDifficulty === difficulty.value ? 'selected' : ''} ${errors.difficulty ? 'error' : ''}`}

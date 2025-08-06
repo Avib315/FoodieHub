@@ -285,6 +285,7 @@ $transition-slow: 0.5s;
 }
 
 .recipe-title-overlay {
+  background-color: #3333334f;
   position: absolute;
   bottom: $spacing-lg;
   left: $spacing-lg;
@@ -299,6 +300,7 @@ $transition-slow: 0.5s;
   }
 
   h1 {
+    color: #fff;
     font-size: $font-2xl;
     font-weight: $font-bold;
     margin-bottom: $spacing-sm;
@@ -568,7 +570,19 @@ $transition-slow: 0.5s;
 // ===================================
 // Recipe Details
 // ===================================
+.recipe-section1 {
+  padding: $spacing-xl $spacing-lg;
+  border-bottom: 8px solid $bg-light;
+display: grid;
 
+  @include mobile {
+    padding: $spacing-lg $spacing-md;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
 .recipe-section {
   padding: $spacing-xl $spacing-lg;
   border-bottom: 8px solid $bg-light;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import LoadingPage from '../LoadingPage';
 
 // Mock data based on the provided structure
@@ -140,26 +140,31 @@ console.log(data)
 if(!data){
   return <></>
 }
+
+  const getImageStyle = (imageUrl) => {
+    if (imageUrl) {
+      return {
+        backgroundImage: `url(${imageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }
+    }
+    // Fallback gradient if no image
+    return {
+      backgroundImage: 'linear-gradient(45deg, #ff6b6b, #ee5a24)'
+    }
+  }
   return (
     <div className="recipe-detail-page">
       {/* Recipe Header Image */}
       <div className="recipe-header">
-        <div className="header-overlay"></div>
+        <div className="header-overlay" style={getImageStyle(data.imageUrl)}></div>
         <div className="header-controls">
+          <Link to={-1} className="back-btn">
           <button className="control-btn">
             <i className="fas fa-arrow-right"></i>
           </button>
-          <div className="header-controls-right">
-            <button className="control-btn" onClick={() => alert('שיתוף')}>
-              <i className="fas fa-share"></i>
-            </button>
-            <button
-              className={`control-btn ${saved ? 'saved' : ''}`}
-              onClick={() => setSaved(!saved)}
-            >
-              <i className={`${saved ? 'fas' : 'far'} fa-bookmark`}></i>
-            </button>
-          </div>
+          </Link>
         </div>
         <div className="recipe-title-overlay">
           <h1>{data?.title}</h1>
@@ -200,21 +205,12 @@ if(!data){
         {/* Actions Bar */}
         <div className="actions-bar">
           <div className="actions-left">
-            <button
-              className={`action-btn ${liked ? 'liked' : ''}`}
-              onClick={() => setLiked(!liked)}
-            >
-              <i className={`${liked ? 'fas' : 'far'} fa-heart`}></i>
-              <span className="like-count">{liked ? 24 : 23}</span>
-            </button>
+        
             <button className="action-btn">
               <i className="far fa-comment"></i>
               <span>{mockComments.length}</span>
             </button>
-            <button className="action-btn" onClick={() => alert('שיתוף')}>
-              <i className="fas fa-share"></i>
-              <span>שתף</span>
-            </button>
+     
           </div>
           <button
             className={`save-btn ${saved ? 'saved' : ''}`}
@@ -225,7 +221,7 @@ if(!data){
         </div>
 
         {/* Recipe Meta */}
-        <div className="recipe-section">
+        <div className="recipe-section1">
           <div className="recipe-meta">
             <div className="meta-card">
               <i className="fas fa-clock"></i>
@@ -242,11 +238,7 @@ if(!data){
               <div className="meta-value">{getDifficultyText(data.difficultyLevel)}</div>
               <div className="meta-label">רמת קושי</div>
             </div>
-            <div className="meta-card">
-              <i className="fas fa-fire"></i>
-              <div className="meta-value">120</div>
-              <div className="meta-label">קלוריות</div>
-            </div>
+         
           </div>
         </div>
 

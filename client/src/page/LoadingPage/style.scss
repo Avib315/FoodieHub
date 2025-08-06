@@ -345,35 +345,7 @@
     }
   }
 
-  // High contrast mode
-  @media (prefers-contrast: high) {
-    background: $bg-white;
 
-    .loading-spinner {
-      background: $bg-white;
-      border: 2px solid $text-color;
-
-      .spinner {
-        &::before {
-          border-color: $text-color;
-          border-top-color: $primary-color;
-        }
-
-        &::after {
-          border-color: $text-color;
-          border-bottom-color: $secondary-color;
-        }
-      }
-
-      h2 {
-        color: $text-color;
-      }
-
-      p {
-        color: $text-color;
-      }
-    }
-  }
 
   // Dark mode support
  

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
@@ -9,7 +9,7 @@ export default function SettingsPage() {
 
 
 // מה שקורל עשתה ------------------------------------- 
-const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: [], method: "GET" })
+const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
 
 async function changeUserDetails() {
       const body =  {
@@ -30,14 +30,15 @@ async function changeUserPassword() {
       console.log(res)
     }
 // מה שקורל עשתה ------------------------------------- 
-  
+
+
 
   
   // Profile form state
   const [profileForm, setProfileForm] = useState({
-    name: 'שרה כהן',
-    email: 'sarah.cohen@example.com',
-    avatar: 'ש'
+    name: data.name ,
+    email: data.email,
+    avatar: data.name?.slice(0, 1).toUpperCase() || 'U' // Default to 'U' if name is empty
   });
 
   // Password form state
@@ -46,7 +47,16 @@ async function changeUserPassword() {
     newPassword: '',
     confirmPassword: ''
   });
-
+  useEffect(() => {
+    // Set initial profile form values from user data
+    if (data.name || data.email) {
+      setProfileForm({
+        name: data.name || '',
+        email: data.email || '',
+        avatar: data.name?.slice(0, 1).toUpperCase() || 'U' // Default to 'U' if name is empty
+      });
+    }
+  }, [data.name || data.email]);
   // Form validation states
   const [profileErrors, setProfileErrors] = useState({});
   const [passwordErrors, setPasswordErrors] = useState({});
