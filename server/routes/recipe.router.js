@@ -14,38 +14,54 @@ router.get("/getAll", auth, async (req, res) => {
         res.status(200).send({
             success: true,
             data: result
-      });
+        });
     } catch (error) {
         console.error("RouteName: recipe , Path: getAll , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 })
 
-router.get("/getById",auth, async (req, res) => {
+router.get("/getById", auth, async (req, res) => {
     try {
         const { id } = req.query;
         const result = await service.getRecipeById(id);
         res.status(200).send({
             success: true,
             data: result
-      });
+        });
     } catch (error) {
         console.error("RouteName: recipe , Path: getById , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });
 
 
 
-router.post("/create",auth, upload.single('image') , async (req, res) => {
+router.post("/create", auth, async (req, res) => {
     try {
-        
+        console.log('Received file:', req.file); // Debug log
+        console.log('Received body:', req.body); // Debug log
+
+        // Parse JSON strings from formData
+        let ingredients, instructions;
+
+        try {
+            ingredients = req.body.ingredients ? JSON.parse(req.body.ingredients) : [];
+            instructions = req.body.instructions ? JSON.parse(req.body.instructions) : [];
+        } catch (parseError) {
+            console.error('JSON parsing error:', parseError);
+            return res.status(400).send({
+                success: false,
+                message: 'Invalid data format'
+            });
+        }
+
         const recipeInput = {
             userId: req.body?.userId,
             category: req.body?.category,
@@ -56,27 +72,27 @@ router.post("/create",auth, upload.single('image') , async (req, res) => {
             prepTime: req.body?.prepTime,
             servings: req.body?.servings,
             difficultyLevel: req.body?.difficultyLevel,
-            image: req.body?.image
+            image: req.file
         };
         const result = await service.createRecipe(recipeInput);
-        
-        res.status(201).send({success: true, data: result});
-    
+
+        res.status(201).send({ success: true, data: result });
+
     } catch (error) {
         console.error("RouteName: recipe , Path: create , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });
 
 
-router.put("/update/:id",auth, async (req, res) => {
+router.put("/update/:id", auth, async (req, res) => {
     try {
         const recipeId = req.params.id;
         const currentUserId = req.body?.userId;
-        
+
         const updateData = {
             category: req.body?.category,
             title: req.body?.title,
@@ -90,70 +106,70 @@ router.put("/update/:id",auth, async (req, res) => {
         };
 
         const result = await service.updateRecipe(recipeId, updateData, currentUserId);
-        
-        res.status(200).send({success: true});
+
+        res.status(200).send({ success: true });
 
     } catch (error) {
         console.error("RouteName: recipe , Path: update , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });
 
 
-router.delete("/delete/:id",auth, async (req, res) => {
+router.delete("/delete/:id", auth, async (req, res) => {
     try {
         const recipeId = req.params.id;
         const currentUserId = req.body?.userId;
-        
+
         const result = await service.deleteRecipe(recipeId, currentUserId);
-        
-        res.status(200).send({success: true});
+
+        res.status(200).send({ success: true });
 
     } catch (error) {
         console.error("RouteName: recipe , Path: delete , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });
 
 
 
-router.get("/myRecipes",auth, async (req, res) => {
+router.get("/myRecipes", auth, async (req, res) => {
     try {
         const currentUserId = req.body?.userId; // מהאותנטיקציה
-        
+
         const result = await service.getRecipesByUser(currentUserId, 'currentUser');
-        
-        res.status(200).send({success: true, data: result});
+
+        res.status(200).send({ success: true, data: result });
 
     } catch (error) {
         console.error("RouteName: recipe , Path: myRecipes , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });
 
 // קבלת המתכונים של משתמש מסוים (רק active)
-router.get("/userRecipes/:userId",auth, async (req, res) => {
+router.get("/userRecipes/:userId", auth, async (req, res) => {
     try {
         const targetUserId = req.params.userId;
 
         const result = await service.getRecipesByUser(targetUserId, 'otherUser');
-        
-        res.status(200).send({success: true, data: result});
+
+        res.status(200).send({ success: true, data: result });
 
     } catch (error) {
         console.error("RouteName: recipe , Path: userRecipes , error message:", error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError 
+            message: error.message || ApiMessages.errorMessages.serverError
         });
     }
 });

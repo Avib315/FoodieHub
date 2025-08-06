@@ -1,13 +1,14 @@
-const unitsArray = [
-  { hebrew: 'גרם', english: 'gram' },
-  { hebrew: 'קילוגרם', english: 'kilogram' },
-  { hebrew: 'מ"ל', english: 'ml' },
-  { hebrew: 'ליטר', english: 'liter' },
-  { hebrew: 'כף', english: 'tablespoon' },
-  { hebrew: 'כפית', english: 'teaspoon' },
-  { hebrew: 'כוס', english: 'cup' },
-  { hebrew: 'יחידה', english: 'unit' },
-  { hebrew: 'קורט', english: 'quart' }
+const unitTypes = [
+  { value: 'gram', label: 'גרם' },
+  { value: 'kilogram', label: 'קילוגרם' },
+  { value: 'ml', label: 'מ"ל' },
+  { value: 'liter', label: 'ליטר' },
+  { value: 'tablespoon', label: 'כף גדולה' },
+  { value: 'teaspoon', label: 'כפית' },
+  { value: 'cup', label: 'כוס' },
+  { value: 'unit', label: 'יחידה' },
+  { value: 'quart', label: 'רבע' }
+
 ];
 
-export { unitsArray };
+export default unitTypes;

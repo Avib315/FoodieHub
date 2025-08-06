@@ -78,9 +78,7 @@
 
 // Input field
 .input-field {
-  @include input-base;
   width: 100%;
-  background-color: $bg-white;
   color: $text-color;
   box-sizing: border-box;
   text-align: right;
@@ -96,9 +94,6 @@
     @include shadow(light);
   }
 
-  &:hover:not(:focus):not(:disabled) {
-    border-color: $border-medium;
-  }
 
   &.error {
     border-color: $error-color;
@@ -273,7 +268,7 @@
 // High contrast mode support
 @media (prefers-contrast: high) {
   .input-field {
-    border-width: 3px;
+    border:none;
   }
 
   .login-button {

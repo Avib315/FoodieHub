@@ -66,9 +66,6 @@ function App() {
           <ProtectedPage element={<RecipesPage />} />
         } />
 
-        <Route path="/home" element={
-          <ProtectedPage element={<RecipesPage />} />
-        } />
 
         <Route path="/recipe/:id" element={
           <ProtectedPage element={<RecipeDetailPage />} />

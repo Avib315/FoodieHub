@@ -94,7 +94,10 @@ const createRecipe = async (recipeInput) => {
 
     await cloudinaryService.connect();
 
-    const imageResult = await cloudinaryService.uploadImage(image, "recipesImages");
+    await cloudinaryService.connect();
+
+    // Upload image using the file path
+    const imageResult = await cloudinaryService.uploadImage(image.path, "recipesImages");
     if (!imageResult || !imageResult.url) {
         throw new Error(ApiMessages.errorMessages.imageUploadFailed);
     }
@@ -357,8 +360,8 @@ const deleteRecipe = async (recipeId, currentUserId) => {
     // מחיקת המתכון מכל המשתמשים ששמרו אותו
     try {
         // שליפת כל המשתמשים ששמרו את המתכון
-        const usersWithSavedRecipe = await userController.read({ 
-            savedRecipes: recipeId 
+        const usersWithSavedRecipe = await userController.read({
+            savedRecipes: recipeId
         });
 
         // מחיקת המתכון מכל המשתמשים שמרו אותו
@@ -369,7 +372,7 @@ const deleteRecipe = async (recipeId, currentUserId) => {
                         await SavedRecipeService.removeSavedRecipe(user._id.toString(), recipeId);
                     } catch (error) {
                         // לוג השגיאה אבל לא עוצר את התהליך
-                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
+                        throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
                     }
                 })
             );

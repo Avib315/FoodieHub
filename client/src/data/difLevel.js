@@ -1,19 +1,7 @@
 const difficultyLevel = [
-{
-    name:"קל",
-    icon:'thumbs-up',
-    key:"easy"
-},
-{
-    name:'בינוני',
-    icon:'balance-scale',
-    key:"medium"
-},
-{
-    name:'קינוח',
-    icon:'fire',
-    key:"hard"
-},
+    { key: 'easy', icon: 'thumbs-up', text: 'קל' },
+    { key: 'medium', icon: 'balance-scale', text: 'בינוני' },
+    { key: 'hard', icon: 'fire', text: 'מאתגר' }
 ]
 
-export default  difficultyLevel
+export default difficultyLevel

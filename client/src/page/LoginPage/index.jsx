@@ -72,7 +72,7 @@ export default function LoginPage() {
 
           setSuccessMessage('התחברת בהצלחה!')
           setTimeout(()=>{
-            nav("/home")
+            nav("/")
           },800)
         }
         else{

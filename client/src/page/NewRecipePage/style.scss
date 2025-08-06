@@ -490,6 +490,214 @@
       padding: $spacing-md $spacing-lg;
     }
   }
+  // Add these styles to your existing .new-recipe-page styles
+
+// Ingredient Items
+.ingredient-item {
+  background: $bg-white;
+  border: 1px solid $border-light;
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+  position: relative;
+  @include transition();
+  
+  &:hover {
+    @include shadow(light);
+    border-color: $border-medium;
+  }
+  
+  .ingredient-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.5fr 2fr;
+    gap: $spacing-sm;
+    align-items: end;
+    
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-xs;
+    }
+    
+    @include tablet {
+      grid-template-columns: 1fr 1fr;
+      gap: $spacing-sm;
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 0;
+    
+    label {
+      font-size: $font-xs;
+      color: $text-light;
+      margin-bottom: 2px;
+      font-weight: $font-medium;
+    }
+    
+    input, select {
+      @include input-base;
+      font-size: $font-sm;
+      padding: $spacing-xs $spacing-sm;
+      height: 36px;
+      
+      &:focus {
+        border-color: $primary-color;
+        @include shadow(light);
+      }
+    }
+    
+    select {
+      background: $bg-white;
+      cursor: pointer;
+      
+      option {
+        padding: $spacing-xs;
+      }
+    }
+  }
+  
+  .ingredient-name {
+    .ingredient-input {
+      font-weight: $font-medium;
+    }
+  }
+  
+  .ingredient-quantity {
+    .ingredient-input {
+      text-align: center;
+    }
+  }
+  
+  .ingredient-unit {
+    .ingredient-select {
+      font-size: $font-sm;
+    }
+  }
+  
+  .ingredient-notes {
+    .ingredient-input {
+      font-style: italic;
+      color: $text-light;
+      
+      &::placeholder {
+        font-style: italic;
+        color: $text-lighter;
+      }
+    }
+  }
+  
+  .remove-btn {
+    position: absolute;
+    top: $spacing-xs;
+    left: $spacing-xs;
+    background: $error-color;
+    color: $text-white;
+    border: none;
+    border-radius: $radius-full;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    @include transition();
+    @include flex-center;
+    font-size: $font-xs;
+    opacity: 0.7;
+    
+    &:hover {
+      opacity: 1;
+      background: darken($error-color, 10%);
+      transform: scale(1.1);
+    }
+    
+    @include mobile {
+      position: static;
+      margin-top: $spacing-sm;
+      width: 100%;
+      height: 32px;
+      border-radius: $radius-md;
+    }
+  }
+}
+
+// Enhanced Dynamic Lists for ingredients
+.dynamic-list {
+  .ingredient-item:last-child {
+    margin-bottom: $spacing-sm;
+  }
+}
+
+// Mobile responsiveness for ingredient items
+@include mobile {
+  .ingredient-item {
+    padding: $spacing-sm;
+    
+    .ingredient-row {
+      .form-group {
+        margin-bottom: $spacing-xs;
+        
+        label {
+          margin-bottom: 1px;
+        }
+      }
+    }
+    
+    .remove-btn {
+      @include flex-center;
+      gap: $spacing-xs;
+      
+      &::after {
+        content: "הסר רכיב";
+        font-size: $font-xs;
+        font-family: inherit;
+      }
+    }
+  }
+}
+
+// Tablet responsiveness 
+@include tablet {
+  .ingredient-item {
+    .ingredient-row {
+      .ingredient-name,
+      .ingredient-notes {
+        grid-column: span 1;
+      }
+      
+      .ingredient-quantity,
+      .ingredient-unit {
+        grid-column: span 1;
+      }
+    }
+  }
+}
+
+// Error states for ingredient fields
+.ingredient-input.error,
+.ingredient-select.error {
+  border-color: $error-color;
+  background: rgba($error-color, 0.05);
+}
+
+// Enhanced add button for ingredients
+.add-btn {
+  @include button-secondary;
+  width: 100%;
+  margin-top: $spacing-sm;
+  @include flex-center;
+  gap: $spacing-xs;
+  padding: $spacing-sm;
+  border: 2px dashed $border-medium;
+  background: transparent;
+  
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    background: rgba($primary-color, 0.05);
+  }
+  
+  i {
+    font-size: $font-sm;
+  }
+}
 }
 
 // RTL Support
