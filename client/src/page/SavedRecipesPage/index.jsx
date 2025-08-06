@@ -2,13 +2,29 @@ import React from 'react'
 import './style.scss'
 import RecipeCard from '../../component/RecipeCard'
 import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 
 export default function SavedRecipesPage() {
+
+   // מה שקורל עשתה ------------------------------------- 
   const { data, loading } = useAxiosRequest({
-    url: '/recipe/getAll', 
+    url: '/savedRecipe/getAll', 
     method: 'get',
     defaultValue: []
   });
+
+  async function addSaveRecipe() {
+      const body =  {recipeId: "6892737909aaf0aab630d90b"} 
+      const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body }) 
+      console.log(res)
+    }
+
+  async function removeSaveRecipe() {
+      const res = await axiosRequest({ url: "/savedRecipe/remove/:recipeId", method: "DELETE"}) 
+      console.log(res)
+    }
+ // מה שקורל עשתה ------------------------------------- 
+
 
   return (
     <div className='saved-recipes-page'>
