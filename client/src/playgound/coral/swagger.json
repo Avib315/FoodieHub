@@ -1,23 +1,26 @@
 [
     {
+        "router": "user",
         "method": "GET",
-        "path": "/user/getData",
-        "params":[
+        "path": "/user/getUserData",
+        "params": [
             {
                 "name": "userId"
             }
         ]
     },
     {
-        "method": "GET",
-        "path": "/user/changePassword"
+        "router": "user",
+        "method": "PUT",
+        "path": "/user/changePassword",
+        "body": {}
     },
     {
         "method": "POST",
         "path": "/user/login",
         "body": {
-            "username": "string",
-            "password": "string"
+            "email": "avi@example.com",
+            "password": "123456"
         }
     },
     {
@@ -27,5 +30,13 @@
     {
         "method": "GET",
         "path": "/user/logout"
+    },
+    {
+        "router": "recipe",
+        "method": "POST",
+        "path": "/recipe/getRecipe",
+        "body": {
+            "name": "userId"
+        }
     }
 ]
