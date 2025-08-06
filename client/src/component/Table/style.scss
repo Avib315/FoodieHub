@@ -1,0 +1,347 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+// Table Container
+.table-container {
+  width: 100%;
+  direction: rtl;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  &.bordered {
+    border: 1px solid $border-light;
+    border-radius: $radius-lg;
+    overflow: hidden;
+  }
+}
+
+// Table Wrapper for horizontal scroll
+.table-wrapper {
+  overflow-x: auto;
+  @include shadow(light);
+  border-radius: $radius-lg;
+  background: $bg-white;
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $bg-light;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $border-medium;
+    border-radius: $radius-sm;
+
+    &:hover {
+      background: $text-lighter;
+    }
+  }
+}
+
+// Main Table Styles
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: $bg-white;
+  font-size: $font-sm;
+
+  // Table Header
+  thead {
+    background: linear-gradient(135deg, $primary-color, $primary-dark);
+    color: $text-white;
+
+    th {
+      padding: $spacing-md $spacing-lg;
+      text-align: right;
+      font-weight: $font-semibold;
+      font-size: $font-base;
+      border-bottom: 2px solid $primary-dark;
+      white-space: nowrap;
+      
+      &:first-child {
+        border-top-right-radius: $radius-lg;
+      }
+      
+      &:last-child {
+        border-top-left-radius: $radius-lg;
+      }
+    }
+  }
+
+  // Table Body
+  tbody {
+    tr {
+      @include transition(background-color);
+      border-bottom: 1px solid $border-light;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      td {
+        padding: $spacing-md $spacing-lg;
+        text-align: right;
+        vertical-align: middle;
+        color: $text-color;
+        font-size: $font-sm;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  // Striped rows
+  &.striped {
+    tbody tr:nth-child(even) {
+      background-color: $bg-lighter;
+    }
+  }
+
+  // Hoverable rows
+  &.hoverable {
+    tbody tr:hover {
+      background-color: rgba($primary-color, 0.08);
+      @include transition();
+    }
+  }
+
+  // Bordered table
+  &.bordered {
+    border: 1px solid $border-light;
+    
+    th, td {
+      border-right: 1px solid $border-light;
+      
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+}
+
+// Column-specific styling
+.column-number {
+  text-align: center !important;
+  font-family: monospace;
+  font-weight: $font-medium;
+}
+
+.column-boolean {
+  text-align: center !important;
+}
+
+.column-date {
+  text-align: center !important;
+  font-family: monospace;
+  color: $text-light;
+}
+
+.column-link {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.column-badge {
+  text-align: center !important;
+}
+
+// Boolean Indicator
+.boolean-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: $radius-full;
+  font-weight: $font-bold;
+  font-size: $font-sm;
+
+  &.true {
+    background-color: rgba($success-color, 0.2);
+    color: $success-color;
+    border: 1px solid rgba($success-color, 0.3);
+  }
+
+  &.false {
+    background-color: rgba($error-color, 0.2);
+    color: $error-color;
+    border: 1px solid rgba($error-color, 0.3);
+  }
+}
+
+// Table Link
+.table-link {
+  color: $primary-color;
+  text-decoration: none;
+  font-weight: $font-medium;
+  @include transition();
+  
+  &:hover {
+    color: $primary-dark;
+    text-decoration: underline;
+  }
+  
+  &:visited {
+    color: $secondary-color;
+  }
+}
+
+// Status Badge
+.status-badge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-2xl;
+  font-size: $font-xs;
+  font-weight: $font-medium;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  
+  &.active {
+    background-color: rgba($success-color, 0.15);
+    color: darken($success-color, 10%);
+    border: 1px solid rgba($success-color, 0.3);
+  }
+  
+  &.inactive {
+    background-color: rgba($error-color, 0.15);
+    color: darken($error-color, 10%);
+    border: 1px solid rgba($error-color, 0.3);
+  }
+  
+  &.pending {
+    background-color: rgba($warning-color, 0.15);
+    color: darken($warning-color, 20%);
+    border: 1px solid rgba($warning-color, 0.3);
+  }
+}
+
+// Loading State
+.table-loading {
+  @include flex-center;
+  @include flex-column;
+  padding: $spacing-xxl;
+  color: $text-lighter;
+  
+  p {
+    margin-top: $spacing-md;
+    font-size: $font-base;
+  }
+}
+
+// Loading Spinner
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba($primary-color, 0.3);
+  border-top: 3px solid $primary-color;
+  border-radius: $radius-full;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Empty State
+.table-empty {
+  @include flex-center;
+  padding: $spacing-xxl;
+  color: $text-lighter;
+  background: $bg-lighter;
+  border: 2px dashed $border-medium;
+  border-radius: $radius-lg;
+  
+  p {
+    margin: 0;
+    font-size: $font-base;
+    font-style: italic;
+  }
+}
+
+// Responsive Design
+@include tablet {
+  .data-table {
+    font-size: $font-xs;
+    
+    thead th {
+      padding: $spacing-sm $spacing-md;
+      font-size: $font-sm;
+    }
+    
+    tbody td {
+      padding: $spacing-sm $spacing-md;
+      font-size: $font-xs;
+    }
+  }
+  
+  .column-link {
+    max-width: 150px;
+  }
+}
+
+@include mobile {
+  .table-wrapper {
+    border-radius: $radius-md;
+  }
+  
+  .data-table {
+    thead th {
+      padding: $spacing-xs $spacing-sm;
+      font-size: $font-xs;
+    }
+    
+    tbody td {
+      padding: $spacing-xs $spacing-sm;
+      font-size: $font-xs;
+    }
+  }
+  
+  .column-link {
+    max-width: 100px;
+  }
+  
+  .status-badge {
+    padding: 2px $spacing-xs;
+    font-size: 10px;
+  }
+}
+
+// Accessibility improvements
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation: none;
+  }
+  
+  .data-table {
+    tr, td, th {
+      transition: none;
+    }
+  }
+}
+
+// High contrast support
+@media (prefers-contrast: high) {
+  .data-table {
+    border: 2px solid $text-color;
+    
+    thead {
+      background: $text-color;
+    }
+    
+    th, td {
+      border: 1px solid $text-color;
+    }
+  }
+  
+  .boolean-indicator {
+    border-width: 2px;
+  }
+  
+  .status-badge {
+    border-width: 2px;
+  }
+}
