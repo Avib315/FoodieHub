@@ -1,6 +1,7 @@
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const ratingController = require("../BL/rating.service.js");
+const SavedRecipeService = require("../BL/savedRecipe.service.js");
 const ApiMessages = require("../common/apiMessages.js");
 const cloudinaryService = require('../imageServer/cloudinary.service.js');
 
@@ -331,7 +332,6 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 };
 
 
-
 const deleteRecipe = async (recipeId, currentUserId) => {
     // ولידציות בסיסיות במשולב
     if (!recipeId || !currentUserId) {
@@ -354,7 +354,32 @@ const deleteRecipe = async (recipeId, currentUserId) => {
         throw new Error(ApiMessages.errorMessages.unauthorized);
     }
 
-    // מחיקת המתכון
+    // מחיקת המתכון מכל המשתמשים ששמרו אותו
+    try {
+        // שליפת כל המשתמשים ששמרו את המתכון
+        const usersWithSavedRecipe = await userController.read({ 
+            savedRecipes: recipeId 
+        });
+
+        // מחיקת המתכון מכל המשתמשים שמרו אותו
+        if (usersWithSavedRecipe && usersWithSavedRecipe.length > 0) {
+            await Promise.all(
+                usersWithSavedRecipe.map(async (user) => {
+                    try {
+                        await SavedRecipeService.removeSavedRecipe(user._id.toString(), recipeId);
+                    } catch (error) {
+                        // לוג השגיאה אבל לא עוצר את התהליך
+                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
+                    }
+                })
+            );
+        }
+    } catch (error) {
+        // לוג השגיאה אבל לא עוצר את מחיקת המתכון
+        throw new Error(`Error removing recipe ${recipeId} from saved lists:`, error.message);
+    }
+
+    // מחיקת המתכון עצמו
     const deletedRecipe = await recipeController.del({ _id: recipeId });
 
     if (!deletedRecipe) {
