@@ -29,14 +29,14 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const result = await service.register(req.body);
-        res.status(200).send({success: true, result});
+        res.status(200).send({success: true});
     } catch (error) {
         console.error("RouteName: user : register : error message:", error.message);
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 
-router.get('/getUserData', async (req, res) => {
+router.get('/getUserData',auth, async (req, res) => {
     try {
         const userId = req.body.userId
         const result = await service.getUser(userId);
@@ -55,7 +55,7 @@ router.get('/isAuthenticated', auth, async (req, res) => {
     }
 });
 
-router.put('/changePassword', async (req, res) => {
+router.put('/changePassword',auth, async (req, res) => {
     try {
         const userInput = {
             userId: req.body.userId,
@@ -71,7 +71,7 @@ router.put('/changePassword', async (req, res) => {
     }
 }); 
 
-router.put('/changeDetails', async (req, res) => {
+router.put('/changeDetails',auth, async (req, res) => {
     try {
         const userInput = {
             userId: req.body.userId,

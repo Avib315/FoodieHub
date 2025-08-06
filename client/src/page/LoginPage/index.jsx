@@ -66,9 +66,9 @@ export default function LoginPage() {
       // Simulate API call
 
       const data = await axiosRequest({ url: "user/login", method: "POST", body: formData })
-      console.log(data);
-      if (data) { 
-        if (data?.success === true){
+      console.log(data.data);
+      if (data.data) { 
+        if (data?.data.success === true){
 
           setSuccessMessage('התחברת בהצלחה!')
           setTimeout(()=>{

@@ -23,6 +23,8 @@ import ProtectedPage from './common/ProtectedPage.jsx'
 import SavedRecipesPage from './page/SavedRecipesPage/index.jsx'
 import CoralSwaggerAPITester from './playgound/coral/coral.jsx'
 import PninaSwaggerAPITester from './playgound/pnina/pnina.jsx'
+import AdminLogin from './adminPages/AdmnLogin/index.jsx'
+import AdminPage from './adminPages/AdminPage/index.jsx'
 
 function App() {
   return (
@@ -110,13 +112,23 @@ function App() {
           </AuthPageLayout>
         } />
 
-  <Route path="/coral" element={
-      <CoralSwaggerAPITester/>
+        <Route path="/coral" element={
+          <CoralSwaggerAPITester />
         } />
 
 
-  <Route path="/pnina" element={
-      <PninaSwaggerAPITester/>
+        <Route path="/pnina" element={
+          <PninaSwaggerAPITester />
+        } />
+
+          <Route path="/admin-login" element={
+          <AdminLogin />
+        } />
+          <Route path="/admin-panel" element={
+          <AdminPage />
+        } />
+          <Route path="/admin-recipe-panel" element={
+          <AdminPage />
         } />
         {/* Utility Routes */}
         <Route path="/loading" element={<LoadingPage />} />
