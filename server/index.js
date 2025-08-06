@@ -17,6 +17,7 @@ app.use(cookieParser());
 
 app.use("/api/user", require("./routes/user.router.js"));
 app.use("/api/recipe", require("./routes/recipe.router.js"));
+app.use("/api/savedRecipe", require("./routes/savedRecipe.router.js"));
 app.use("/api/rating", require("./routes/rating.router.js"))
 app.use("/api/categories", require("./routes/categories.router.js"));
 app.use("/api/notification", require("./routes/notification.router.js"));

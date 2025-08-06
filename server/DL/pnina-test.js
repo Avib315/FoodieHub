@@ -8,18 +8,15 @@ const adminController = require("./controllers/admin.controller.js");
 const recipeController = require("./controllers/recipe.controller.js");
 
 const runTest = async () => {
-    const hashedPassword = await bcrypt.hash("123456", 10);
-    console.log("Hashed password:", hashedPassword);
-    const admin = await adminController.create({
-        username: "aviTheBoss",
-        email: "avi@a.com",
-        passwordHash: hashedPassword,
-        firstName: "Avi",
-        lastName: "TheBoss",
-    }  );
-    
-    console.log("admin created:", admin);
-}
+    try {
+        const userId = "6890f583b07387c3dd488f5b";
+        const recipeId = "6890f588b07387c3dd488f73";
 
+        const notificationId = await notificationService.addRecipeRatedNotification(userId, recipeId);
+        console.log("Notification created successfully. ID:", notificationId);
+    } catch (error) {
+        console.error("Error creating notification:", error.message);
+    }
+};
 
-runTest()
+runTest();

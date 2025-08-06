@@ -33,7 +33,7 @@ router.post("/create", async (req, res) => {
 });
 
 // GET logs by admin ID
-router.get("/byAdmin/:id", async (req, res) => {
+router.get("/byAdmin", async (req, res) => {
     try {
         const { userId } = req.body;
         const result = await service.getLogsByAdminId(userId);
