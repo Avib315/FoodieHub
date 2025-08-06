@@ -130,34 +130,6 @@ async function register(body) {
 
 
 
-// async function getUser(userId) {
-//     if (!userId) {
-//         throw new Error(ApiMessages.errorMessages.invalidData);
-//     }
-
-//     if (typeof userId !== 'string' || !userId.match(/^[0-9a-fA-F]{24}$/)) {
-//         throw new Error(ApiMessages.errorMessages.invalidData);
-//     }
-
-//     // שליפת המשתמש
-//     const user = await userController.readOne({ _id: userId });
-//     if (!user) {
-//         throw new Error(ApiMessages.errorMessages.badRequest);
-//     }
-
-//     if (user.status === 'blocked' || user.status === 'inactive') {
-//         throw new Error(ApiMessages.errorMessages.forbidden);
-//     }
-
-//     const savedCount = await savedRecipeController.count(userId);
-//     const userObj = user.toObject ? user.toObject() : { ...user };
-//     userObj.savedRecipeCount = savedCount;
-//     const { passwordHash, ...safeUser } = userObj;
-//     return safeUser;
-// }
-
-
-
 async function getUser(userId) {
     if (!userId) {
         throw new Error(ApiMessages.errorMessages.invalidData);
@@ -193,4 +165,166 @@ async function getUser(userId) {
 }
 
 
-module.exports = { login, register, getUser };
+
+
+const changePassword = async (userInput) => {
+    // ולידציות בסיסיות במשולב
+    console.log("userInput:", userInput);
+    if (!userInput || !userInput.userId || !userInput.oldPass || 
+        !userInput.newPass || !userInput.checPass) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+    
+    
+
+    const { userId, oldPass, newPass, checPass } = userInput;
+
+    // ולידציה של פורמט userId
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // ולידציות סיסמאות
+    if (newPass.length < 6 || checPass.length < 6) {
+        throw new Error(ApiMessages.errorMessages.passwordTooWeak);
+    }
+
+    // בדיקה שהסיסמה החדשה והאישור זהים
+    if (newPass !== checPass) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // שליפת המשתמש
+    const user = await userController.readOne({ _id: userId });
+    if (!user) {
+        throw new Error(ApiMessages.errorMessages.userNotFound);
+    }
+
+    // בדיקת סטטוס המשתמש
+    if (user.status === 'blocked' || user.status === 'inactive') {
+        throw new Error(ApiMessages.errorMessages.forbidden);
+    }
+
+    // בדיקה שהסיסמה הנוכחית נכונה
+    const passwordMatch = await bcrypt.compare(oldPass, user.passwordHash);
+    if (!passwordMatch) {
+        throw new Error(ApiMessages.errorMessages.invalidCredentials);
+    }
+
+    // הצפנת הסיסמה החדשה
+    const newPasswordHash = await bcrypt.hash(newPass, 10);
+
+    // עדכון הסיסמה במסד הנתונים
+    const updatedUser = await userController.update(
+        { _id: userId }, 
+        { passwordHash: newPasswordHash }
+    );
+
+    if (!updatedUser) {
+        throw new Error(ApiMessages.errorMessages.updateFailed);
+    }
+
+    return {
+        data: { userId: userId }
+    };
+};
+
+
+const changeDetails = async (userInput) => {
+    // ולידציות בסיסיות
+    if (!userInput || !userInput.userId) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+
+    const { userId, fullName, newEmail } = userInput;
+
+    // בדיקה שיש לפחות שדה אחד לעדכון
+    if (!fullName && !newEmail) {
+        throw new Error(ApiMessages.errorMessages.badRequest);
+    }
+
+    // ולידציה של פורמט userId
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // שליפת המשתמש
+    const user = await userController.readOne({ _id: userId });
+    if (!user) {
+        throw new Error(ApiMessages.errorMessages.userNotFound);
+    }
+
+    // בדיקת סטטוס המשתמש
+    if (user.status === 'blocked' || user.status === 'inactive') {
+        throw new Error(ApiMessages.errorMessages.forbidden);
+    }
+
+    const updateData = {};
+
+    // טיפול בעדכון השם המלא
+    if (fullName && fullName.trim()) {
+        const nameParts = fullName.trim().split(' ');
+        
+        // בדיקה שיש לפחות שני חלקים (שם פרטי ומשפחה)
+        if (nameParts.length < 2) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+
+        // החלק הראשון הוא השם הפרטי, השאר הם שם משפחה
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ');
+
+        // ולידציות אורך
+        if (firstName.length < 2 || firstName.length > 50 || 
+            lastName.length < 2 || lastName.length > 50) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+
+        updateData.firstName = firstName;
+        updateData.lastName = lastName;
+    }
+
+    // טיפול בעדכון האימייל
+    if (newEmail && newEmail.trim()) {
+        const email = newEmail.trim().toLowerCase();
+        
+        // ולידציה של פורמט אימייל
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email) || email.length > 100) {
+            throw new Error(ApiMessages.errorMessages.invalidEmail);
+        }
+
+        // בדיקה שהאימייל לא קיים במערכת (אם הוא שונה מהנוכחי)
+        if (email !== user.email.toLowerCase()) {
+            const existingUser = await userController.readOne({ email: email });
+            if (existingUser) {
+                throw new Error(ApiMessages.errorMessages.emailAlreadyExists);
+            }
+            updateData.email = email;
+        }
+    }
+
+    // בדיקה שיש משהו לעדכן
+    if (Object.keys(updateData).length === 0) {
+        throw new Error(ApiMessages.errorMessages.badRequest);
+    }
+
+    // עדכון הפרטים במסד הנתונים
+    const updatedUser = await userController.update({ _id: userId }, updateData);
+
+    if (!updatedUser) {
+        throw new Error(ApiMessages.errorMessages.updateFailed);
+    }
+
+    return {
+        data: {
+            userId: userId,
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email
+        }
+    };
+};
+
+
+module.exports = { login, register, getUser, changePassword, changeDetails };
