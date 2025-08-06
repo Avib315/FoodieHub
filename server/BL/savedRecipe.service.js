@@ -50,6 +50,7 @@ async function getSavedRecipes(userId) {
 // Delete recipe from saved list
 async function removeSavedRecipe(userId, recipeId) {
     if (!userId || !recipeId) {
+        
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {

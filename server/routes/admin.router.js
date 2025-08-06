@@ -39,4 +39,97 @@ router.get('/isAuthenticated', auth, async (req, res) => {
     }
 });
 
+
+router.get("/getAllRecipes", async (req, res) => {
+    try {
+        const result = await service.getAllRecipes();
+        res.status(200).send({
+            success: true,
+            data: result
+      });
+    } catch (error) {
+        console.error("RouteName: admin , Path: getAllRecipes , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
+    }
+})
+
+
+router.put("/updateRecipeStatus", async (req, res) => {
+    try {
+
+        const recipeId =  req.body.id;
+        const status =  req.body?.status;
+        
+        const result = await service.updateRecipeStatus(recipeId, status);
+        
+        res.status(200).send({success: true});
+
+    } catch (error) {
+        console.error("RouteName: admin , Path: updateRecipeStatus , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
+    }
+});
+
+
+router.delete("/deleteRecipe/:id", async (req, res) => {
+    try {
+        const recipeId = req.params.id;
+        const adnimId = req.body?.userId;
+        
+        const result = await service.deleteRecipe(recipeId, adnimId);
+        
+        res.status(200).send({success: true});
+
+    } catch (error) {
+        console.error("RouteName: admin , Path: deleteRecipe , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
+    }
+});
+
+
+router.get("/getAllUsers", async (req, res) => {
+    try {
+        const result = await service.getAllUsers();
+        res.status(200).send({
+            success: true,
+            data: result
+      });
+    } catch (error) {
+        console.error("RouteName: admin , Path: getAllUsers , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
+    }
+})
+
+
+router.put("/updateUserStatus", async (req, res) => {
+    try {
+
+        const userId =  req.body.id;
+        const status =  req.body?.status;
+        
+        const result = await service.updateUserStatus(userId, status);
+        
+        res.status(200).send({success: true});
+
+    } catch (error) {
+        console.error("RouteName: admin , Path: updateUserStatus , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError 
+        });
+    }
+});
+
 module.exports = router;
