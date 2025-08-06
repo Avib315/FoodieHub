@@ -1,4 +1,5 @@
 const notificationController = require("../DL/controllers/notification.controller.js");
+const recipeController = require("../DL/controllers/recipe.controller.js");
 const ApiMessages = require("../common/apiMessages.js");
 
 async function getNotificationByUserId(userId) {
@@ -17,16 +18,24 @@ async function getNotificationByUserId(userId) {
     return notification;
 }
 
-async function addRecipeRatedNotification(userId, recipeId) {
-    if (!userId || !recipeId) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+async function addRecipeRatedNotification(recipeId) {
+    if (!recipeId) {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        return false;
     }
-    if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log(ApiMessages.errorMessages.invalidData);
+        return false;
+    }
+
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (!recipe) {
+        console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
 
     const notification = await notificationController.create({
-        userId,
+        userId: recipe.userId,
         type: 'recipe_rated',
         title: 'Your recipe was rated!',
         message: 'Someone just rated your recipe. Check out the feedback!',
@@ -34,21 +43,30 @@ async function addRecipeRatedNotification(userId, recipeId) {
     });
 
     if (!notification) {
-        throw new Error(ApiMessages.errorMessages.creationFailed);
+        console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return notification._id;
 }
 
-async function addRecipeCommentedNotification(userId, recipeId) {
-    if (!userId || !recipeId) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+async function addRecipeCommentedNotification(recipeId) {
+    if (!recipeId) {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        return false;
     }
-    if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log(ApiMessages.errorMessages.invalidData);
+        return false;
+    }
+
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (!recipe) {
+        console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
 
     const notification = await notificationController.create({
-        userId,
+        userId: recipe.userId,
         type: 'recipe_commented',
         title: 'New comment on your recipe',
         message: 'Someone commented on your recipe. Take a look!',
@@ -56,21 +74,30 @@ async function addRecipeCommentedNotification(userId, recipeId) {
     });
 
     if (!notification) {
-        throw new Error(ApiMessages.errorMessages.creationFailed);
+        console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return notification._id;
 }
 
-async function addRecipeApprovedNotification(userId, recipeId) {
-    if (!userId || !recipeId) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+async function addRecipeApprovedNotification(recipeId) {
+    if (!recipeId) {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        return false;
     }
-    if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log(ApiMessages.errorMessages.invalidData);
+        return false;
+    }
+
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (!recipe) {
+        console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
 
     const notification = await notificationController.create({
-        userId,
+        userId: recipe.userId,
         type: 'recipe_approved',
         title: 'Recipe Approved',
         message: 'Congratulations! Your recipe has been approved.',
@@ -78,21 +105,30 @@ async function addRecipeApprovedNotification(userId, recipeId) {
     });
 
     if (!notification) {
-        throw new Error(ApiMessages.errorMessages.creationFailed);
+        console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return notification._id;
 }
 
-async function addRecipeRejectedNotification(userId, recipeId) {
-    if (!userId || !recipeId) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+async function addRecipeRejectedNotification(recipeId) {
+    if (!recipeId) {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        return false;
     }
-    if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log(ApiMessages.errorMessages.invalidData);
+        return false;
+    }
+
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (!recipe) {
+        console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
 
     const notification = await notificationController.create({
-        userId,
+        userId: recipe.userId,
         type: 'recipe_rejected',
         title: 'Recipe Rejected',
         message: 'Unfortunately, your recipe was not approved. Please review it and try again.',
@@ -100,18 +136,22 @@ async function addRecipeRejectedNotification(userId, recipeId) {
     });
 
     if (!notification) {
-        throw new Error(ApiMessages.errorMessages.creationFailed);
+        console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return notification._id;
 }
 
 async function addSystemNotification(userId, title, message) {
-    if (!userId || !recipeId || !title || !message) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    if (!userId || !title || !message) {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        return false;
     }
-    if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/) ||
+
+    if (!userId.toString().match(/^[0-9a-fA-F]{24}$/) ||
         typeof title !== 'string' || typeof message !== 'string') {
-        throw new Error(ApiMessages.errorMessages.invalidData);
+        console.log(ApiMessages.errorMessages.invalidData);
+        return false;
     }
 
     const notification = await notificationController.create({
@@ -122,12 +162,13 @@ async function addSystemNotification(userId, title, message) {
     });
 
     if (!notification) {
-        throw new Error(ApiMessages.errorMessages.creationFailed);
+        console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return notification._id;
 }
 
-async function markNotificationsAsRead(notificationIds) {
+async function markNotificationsAsRead(userId, notificationIds) {
     if (!Array.isArray(notificationIds)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
@@ -139,6 +180,16 @@ async function markNotificationsAsRead(notificationIds) {
     const isValidIds = notificationIds.every(id => /^[0-9a-fA-F]{24}$/.test(id));
     if (!isValidIds) {
         throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // Check if all notifications belong to the user
+    const count = await notificationController.count({
+        _id: { $in: notificationIds },
+        userId: userId
+    });
+
+    if (count !== notificationIds.length) {
+        throw new Error(ApiMessages.errorMessages.unauthorized);
     }
 
     const result = await notificationController.updateMany(

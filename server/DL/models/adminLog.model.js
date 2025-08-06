@@ -5,7 +5,6 @@ const adminLogSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: [
-      'user_created',
       'user_blocked', 'user_unblocked', 'user_deleted',
       'recipe_approved', 'recipe_rejected', 'recipe_deleted',
       'comment_added', 'comment_deleted',

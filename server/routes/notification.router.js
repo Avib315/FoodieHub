@@ -6,7 +6,7 @@ const ApiMessages = require('../common/apiMessages.js');
 
 router.get("/getAll", auth, async (req, res) => {
     try {
-        const { userId } = req.body;        
+        const { userId } = req.body;
 
         const result = await service.getNotificationByUserId(userId);
         res.status(200).send({ success: true, data: result });
@@ -19,10 +19,10 @@ router.get("/getAll", auth, async (req, res) => {
     }
 });
 
-router.put("/markAsRead", async (req, res) => {
+router.put("/markAsRead", auth, async (req, res) => {
     try {
-        const { notificationIds } = req.body;
-        const result = await service.markNotificationsAsRead(notificationIds);
+        const { userId, notificationIds } = req.body;
+        const result = await service.markNotificationsAsRead(userId, notificationIds);
         res.status(200).send({ success: result }); // will be true since didn't throw
 
     } catch (error) {

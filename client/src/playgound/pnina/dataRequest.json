@@ -170,31 +170,6 @@
     {
         "router": "adminLog",
         "method": "GET",
-        "path": "adminLog/byAdmin/",
-        "returnSuccessData": {
-            "success": true,
-            "data": [
-                {
-                    "_id": "6891e7b96d3a9795e4efd65f",
-                    "adminId": "6890f583b07387c3dd488f5b",
-                    "action": "user_blocked",
-                    "targetType": "user",
-                    "targetId": "64e4f812d264df001d55f222",
-                    "details": {
-                        "reason": "Violation of terms"
-                    },
-                    "ipAddress": "192.168.1.1",
-                    "userAgent": "PostmanRuntime/7.32.3",
-                    "createdAt": "2025-08-05T11:15:05.527Z",
-                    "updatedAt": "2025-08-05T11:15:05.527Z",
-                    "__v": 0
-                }
-            ]
-        }
-    },
-    {
-        "router": "adminLog",
-        "method": "GET",
         "path": "adminLog/byTarget/:type/:id",
         "returnSuccessData": {
             "success": true,

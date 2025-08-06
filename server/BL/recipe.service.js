@@ -1,7 +1,8 @@
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
-const ratingController = require("../BL/rating.service.js");
-const SavedRecipeService = require("../BL/savedRecipe.service.js");
+const ratingController = require("./rating.service.js");
+const SavedRecipeService = require("./savedRecipe.service.js");
+const adminLogService = require("./adminLog.service.js");
 const ApiMessages = require("../common/apiMessages.js");
 const cloudinaryService = require('../imageServer/cloudinary.service.js');
 
@@ -388,6 +389,12 @@ const deleteRecipe = async (recipeId, currentUserId) => {
     if (!deletedRecipe) {
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
+
+    await adminLogService.createLog({
+        action: 'recipe_deleted',
+        targetType: 'recipe',
+        targetId: recipeId
+    });
 
     return {
         data: { id: recipeId },

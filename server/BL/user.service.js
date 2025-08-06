@@ -1,6 +1,7 @@
 const userController = require("../DL/controllers/user.controller");
 const savedRecipeController = require("../DL/controllers/savedRecipe.controller");
 const recipeController = require("../DL/controllers/recipe.controller");
+const { addSystemNotification } = require("./notification.service.js");
 const bcrypt = require('bcrypt');
 const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -20,8 +21,8 @@ async function login(userInput) {
         throw new Error(ApiMessages.errorMessages.passwordTooWeak);
     }
 
-    const user = await userController.readOne({ 
-        email: userInput.email.trim().toLowerCase() 
+    const user = await userController.readOne({
+        email: userInput.email.trim().toLowerCase()
     });
 
     if (!user) {
@@ -47,7 +48,7 @@ async function login(userInput) {
         throw new Error(ApiMessages.errorMessages.tokenInvalid);
     }
 
-    return { 
+    return {
         token,
         user: {
             username: user.username,
@@ -67,10 +68,10 @@ async function register(body) {
     }
 
     // בדיקות שדות חובה במשולב
-    if (!body.firstName || !body.firstName.trim() || 
-        !body.lastName || !body.lastName.trim() || 
-        !body.username || !body.username.trim() || 
-        !body.email || !body.email.trim() || 
+    if (!body.firstName || !body.firstName.trim() ||
+        !body.lastName || !body.lastName.trim() ||
+        !body.username || !body.username.trim() ||
+        !body.email || !body.email.trim() ||
         !body.password || !body.password.trim()) {
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
@@ -81,7 +82,7 @@ async function register(body) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
- 
+
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(body.email.trim()) || !usernameRegex.test(body.username.trim())) {
@@ -119,12 +120,18 @@ async function register(body) {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
-    const result = { 
-        user: { 
+    await addSystemNotification(
+        user._id,
+        "New user registered",
+        "Thank you for registering! We hope you enjoy our platform."
+    );
+
+    const result = {
+        user: {
             id: user._id,
-        } 
+        }
     };
-    
+
     return result;
 }
 
@@ -170,12 +177,12 @@ async function getUser(userId) {
 const changePassword = async (userInput) => {
     // ולידציות בסיסיות במשולב
     console.log("userInput:", userInput);
-    if (!userInput || !userInput.userId || !userInput.oldPass || 
+    if (!userInput || !userInput.userId || !userInput.oldPass ||
         !userInput.newPass || !userInput.checPass) {
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
-    
-    
+
+
 
     const { userId, oldPass, newPass, checPass } = userInput;
 
@@ -216,7 +223,7 @@ const changePassword = async (userInput) => {
 
     // עדכון הסיסמה במסד הנתונים
     const updatedUser = await userController.update(
-        { _id: userId }, 
+        { _id: userId },
         { passwordHash: newPasswordHash }
     );
 
@@ -264,7 +271,7 @@ const changeDetails = async (userInput) => {
     // טיפול בעדכון השם המלא
     if (fullName && fullName.trim()) {
         const nameParts = fullName.trim().split(' ');
-        
+
         // בדיקה שיש לפחות שני חלקים (שם פרטי ומשפחה)
         if (nameParts.length < 2) {
             throw new Error(ApiMessages.errorMessages.invalidData);
@@ -275,7 +282,7 @@ const changeDetails = async (userInput) => {
         const lastName = nameParts.slice(1).join(' ');
 
         // ולידציות אורך
-        if (firstName.length < 2 || firstName.length > 50 || 
+        if (firstName.length < 2 || firstName.length > 50 ||
             lastName.length < 2 || lastName.length > 50) {
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
@@ -287,7 +294,7 @@ const changeDetails = async (userInput) => {
     // טיפול בעדכון האימייל
     if (newEmail && newEmail.trim()) {
         const email = newEmail.trim().toLowerCase();
-        
+
         // ולידציה של פורמט אימייל
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email) || email.length > 100) {
