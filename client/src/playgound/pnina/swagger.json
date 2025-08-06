@@ -80,14 +80,6 @@
     {
         "router": "adminLog",
         "method": "GET",
-        "path": "adminLog/byAdmin/",
-        "body": {
-            "userId": ""
-        }
-    },
-    {
-        "router": "adminLog",
-        "method": "GET",
         "path": "adminLog/byTarget/user/6890f585b07387c3dd488f5e"
     }
 ]

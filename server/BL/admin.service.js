@@ -2,6 +2,7 @@ const adminController = require("../DL/controllers/admin.controller.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const SavedRecipeService = require("./savedRecipe.service.js");
+const activityNotifierService = require(".//activityNotifier.service.js");
 const { addRecipeApprovedNotification, addRecipeRejectedNotification } = require("./notification.service.js");
 const bcrypt = require('bcrypt');
 const { loginAuth } = require("../middleware/auth.js");
@@ -28,7 +29,7 @@ async function login(adminInput) {
     const passwordMatch = await bcrypt.compare(adminInput.password, admin?.passwordHash);
     if (!passwordMatch) { throw new Error(ApiMessages.errorMessages.invalidCredentials); }
 
-    const token = loginAuth({ id: admin._id , role: "admin" });
+    const token = loginAuth({ id: admin._id, role: "admin" });
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.serverError);
@@ -94,13 +95,17 @@ const updateRecipeStatus = async (recipeId, status) => {
         { _id: recipeId },
         { status: status }
     );
-    
+
     if (!updatedRecipe) {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
-    if (status === 'rejected') { await addRecipeRejectedNotification(recipeId); }
-    if (status === 'active') { await addRecipeApprovedNotification(recipeId); }
+    // if (status === 'rejected') { await addRecipeRejectedNotification(recipeId); }
+    // if (status === 'active') { await addRecipeApprovedNotification(recipeId); }
+
+    if (status === 'rejected' || status === 'active') {
+        await activityNotifierService.notifyRecipeStatus(recipeId, status);
+    }
 
     return {
         data: {
