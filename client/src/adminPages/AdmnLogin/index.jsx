@@ -41,11 +41,11 @@ export default function AdminLogin() {
     setLoading(true);
     
  
-      const response = await axiosRequest.post({url:'/admin/login', body:{
+      const response = await axiosRequest({url:'/admin/login', body:{
         email: email.trim(),
         password
       }});
-      if(response.success === false) {
+      if(response?.success === false) {
         setLoading(false);
         setMessage(response.message || 'התחברות נכשלה, אנא נסה שוב');
         return;
