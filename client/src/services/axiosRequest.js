@@ -11,7 +11,7 @@ export default async function axiosRequest({ method = "POST", body = {}, url = "
             baseURL: API_BASE_URL,
             withCredentials: true
         })
-        return data.data
+        return data
     }
     catch (err) {
         console.error(err)

@@ -22,12 +22,11 @@ const useApiRequest = (
           method,
           body:body
         });
-        if (response?.success) {
-          if (response?.data?.$values) {
-            setData(response.data.$values);
-          }
-          else {
-            setData(response.data);
+        
+        if (response?.data?.success) {
+          const data = response.data.data
+          if (response?.data) {
+            setData(data);
           }
         }
         else {
