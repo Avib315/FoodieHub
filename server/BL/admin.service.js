@@ -247,7 +247,7 @@ const updateUserStatus = async (userId, status) => {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
-    if (status === 'blocked') {
+    if (status === 'blocked' || status === 'inactive') {
         await adminLogService.createLog({
             action: 'user_blocked',
             targetType: 'user',

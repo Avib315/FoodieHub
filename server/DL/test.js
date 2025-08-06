@@ -65,6 +65,56 @@ const insertUsers = async () => {
     }
 };
 
+// Test data insertion for admins
+const insertAdmins = async () => {
+   try {
+        console.log("========================= ADMINS TEST BEGIN =========================");
+        const hashedPassword = await bcrypt.hash("123456", 10);
+        console.log("Hashed password:", hashedPassword);
+
+        const users = [
+            {
+                username: "avi_hershkovitz",
+                email: "avi@example.com",
+                passwordHash: hashedPassword, // Should be properly hashed in real app
+                firstName: "אבי",
+                lastName: "הרשקוביץ",
+                status: "active",
+                savedRecipes:[]
+            },
+            {
+                username: "coral286",
+                email: "admin1@example.com",
+                passwordHash:hashedPassword,
+                firstName: "קורל",
+                lastName: "שמואלוביץ",
+                status: "active",
+                   savedRecipes:[]
+            },
+            {
+                username: "pnina",
+                email: "pnina@example.com",
+                passwordHash:hashedPassword,
+                firstName: "פנינה",
+                lastName: "כהן",
+                status: "active",
+                   savedRecipes:[]
+            }
+        ];
+        
+        for (const user of users) {
+            const result = await userController.create(user);
+            console.log("User created:", result.username);
+        }
+        
+        console.log("========================= USERS TEST END =========================\n");
+        return users;
+    } catch (error) {
+        console.error("Users error:", error);
+        throw error;
+    }
+};
+
 // Test data insertion for categories
 const insertCategories = async () => {
     try {
