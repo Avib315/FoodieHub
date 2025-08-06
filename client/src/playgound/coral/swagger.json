@@ -73,7 +73,7 @@
     {
         "router": "recipe",
         "method": "DELETE",
-        "path": "/recipe/delete/6892737b09aaf0aab630d950"
+        "path": "/recipe/delete/6892737509aaf0aab630d8ee"
     },
     {
         "router": "recipe",
