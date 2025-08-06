@@ -61,7 +61,7 @@
     {
         "router": "notification",
         "method": "DELETE",
-        "path": "notification/delete/"
+        "path": "notification/delete/68939c22955ba4f33b5b44cf"
     },
     {
         "router": "adminLog",

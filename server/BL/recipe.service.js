@@ -395,11 +395,11 @@ const deleteRecipe = async (recipeId, currentUserId) => {
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
 
-    await adminLogService.createLog({
-        action: 'recipe_deleted',
-        targetType: 'recipe',
-        targetId: recipeId
-    });
+    // await adminLogService.createLog({
+    //     action: 'recipe_deleted',
+    //     targetType: 'recipe',
+    //     targetId: recipeId
+    // });
 
     return {
         data: { id: recipeId },
