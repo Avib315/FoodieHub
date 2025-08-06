@@ -1,0 +1,10 @@
+[
+    {
+        "routerName": "user",
+        "method": "GET",
+        "path":"/user/getData",
+        "returnSuccessData":{
+            
+        }
+    }
+]

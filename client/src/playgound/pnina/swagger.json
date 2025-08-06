@@ -1,0 +1,31 @@
+[
+    {
+        "method": "GET",
+        "path": "/user/getData",
+        "params":[
+            {
+                "name": "userId"
+            }
+        ]
+    },
+    {
+        "method": "GET",
+        "path": "/user/changePassword"
+    },
+    {
+        "method": "POST",
+        "path": "/user/login",
+        "body": {
+            "username": "string",
+            "password": "string"
+        }
+    },
+    {
+        "method": "POST",
+        "path": "/user/register"
+    },
+    {
+        "method": "GET",
+        "path": "/user/logout"
+    }
+]
