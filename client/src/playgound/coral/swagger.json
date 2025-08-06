@@ -3,18 +3,18 @@
         "router": "user",
         "method": "POST",
         "path": "/user/login",
-        "body": [
+        "body": 
             {
                 "email": "email",
                 "password": "password"
             }
-        ]
+        
     },
     {
         "router": "user",
         "method": "POST",
         "path": "/user/register",
-        "body": [
+        "body": 
             {
                 "firstName": "firstName",
                 "lastName": "lastName",
@@ -22,7 +22,6 @@
                 "email": "email",
                 "password": "password"
             }
-        ]
     },
     {
         "router": "user",
@@ -124,8 +123,59 @@
             "rating": "rating",
             "review": "review"
         }
+    },  
+
+
+
+    {
+        "router": "admin",
+        "method": "POST",
+        "path": "/admin/login",
+        "body": {
+            "email": "avi@a.com",
+            "password": "123456"
+        }
+    },
+    {
+        "router": "admin",
+        "method": "GET",
+        "path": "/admin/isAuthenticated"
+    },
+    {
+        "router": "admin",
+        "method": "GET",
+        "path": "/admin/getAllRecipes"
+    },
+    {
+        "router": "admin",
+        "method": "PUT",
+        "path": "/admin/updateRecipeStatus",
+        "body": {
+            "id": "recipeId",
+            "status": "status"
+        }
+    },
+    {
+        "router": "admin",
+        "method": "DELETE",
+        "path": "/admin/deleteRecipe/:id",
+        "body": {
+            "userId": "userId"
+        }
+    },
+    {
+        "router": "admin",
+        "method": "GET",
+        "path": "/admin/getAllUsers"
+    },
+    {
+        "router": "admin",
+        "method": "PUT",
+        "path": "/admin/updateUserStatus",
+        "body": {
+            "id": "userId",
+            "status": "status"
+        }
     }
-
-
 
 ]
