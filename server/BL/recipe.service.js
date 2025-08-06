@@ -77,7 +77,6 @@ const createRecipe = async (recipeInput) => {
     if (!recipeInput) {
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
-
     const {
         userId,
         category,
@@ -92,72 +91,76 @@ const createRecipe = async (recipeInput) => {
     } = recipeInput;
     if (!image)
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    
 
+    
     await cloudinaryService.connect();
-
-    await cloudinaryService.connect();
-
+    
     // Upload image using the file path
     const imageResult = await cloudinaryService.uploadImage(image.path, "recipesImages");
     if (!imageResult || !imageResult.url) {
         throw new Error(ApiMessages.errorMessages.imageUploadFailed);
     }
+ 
     // ולידציות בסיסיות במשולב
     if (!userId || !category || !title || !description || !instructions ||
         !ingredients || prepTime === undefined || servings === undefined ||
         difficultyLevel === undefined) {
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
-    }
-
-    // ולידציות פורמט ObjectId במשולב
-    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+            throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+        }
+        
+        // ולידציות פורמט ObjectId במשולב
+        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
-
+    
     if (category !== undefined) {
         const validCategories = ['main', 'appetizer', 'soup', 'salad', 'dessert', 'drink'];
         if (!validCategories.includes(category)) {
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-
+  
     // ולידציות מערכים במשולב
     if (!Array.isArray(instructions) || instructions.length === 0 ||
         !Array.isArray(ingredients) || ingredients.length === 0) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
-    }
-
-    // ולידציות ערכים מספריים במשולב
-    if (prepTime < 0 || servings < 1 || difficultyLevel < 1 || difficultyLevel > 5) {
-        throw new Error(ApiMessages.errorMessages.invalidData);
-    }
-
-    // ולידציה של הוראות הכנה
-    for (let i = 0; i < instructions.length; i++) {
-        const instruction = instructions[i];
-        if (!instruction.stepNumber || !instruction.text || !instruction.text.trim()) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+        
+        // ולידציות ערכים מספריים במשולב
+        if (prepTime < 0 || servings < 1 || difficultyLevel < 1 || difficultyLevel > 5) {
+            throw new Error(ApiMessages.errorMessages.invalidData);
+        }
+ 
+        // ולידציה של הוראות הכנה
+        for (let i = 0; i < instructions.length; i++) {
+            const instruction = instructions[i];
+            if (!instruction.stepNumber || !instruction.text || !instruction.text.trim()) {
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-
+    
     // ולידציה של רכיבים
-    const validUnits = ['גרם', 'קילוגרם', 'מ"ל', 'ליטר', 'כף', 'כפית', 'כוס', 'יחידה', 'קורט'];
-
+    const validUnits = ['gram', 'kilogram', 'ml', 'liter', 'tablespoon', 'teaspoon', 'cup', 'unit', 'quart'];
+    
     for (let i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
         if (!ingredient.name || !ingredient.name.trim() ||
-            ingredient.quantity === undefined || ingredient.quantity <= 0 ||
-            !ingredient.unit || !validUnits.includes(ingredient.unit)) {
+        ingredient.quantity === undefined || ingredient.quantity <= 0 ||
+        !ingredient.unit || !validUnits.includes(ingredient.unit)) {
+            console.log('---', !ingredient.name ,  !ingredient.name.trim() , ingredient.quantity === undefined , ingredient.quantity <= 0 , !ingredient.unit , !validUnits.includes(ingredient.unit));
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-
+    
     if (title.trim().length < 3 || title.trim().length > 100 ||
-        description.trim().length < 10 || description.trim().length > 500) {
+    description.trim().length < 5 || description.trim().length > 500) {
+        
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
-
-
+    
+    
+    
     // הכנת נתוני המתכון
     const recipeData = {
         userId,
@@ -180,13 +183,14 @@ const createRecipe = async (recipeInput) => {
         imageUrl: imageResult.url || null,
         status: 'pending'
     };
-
+    
+    console.log(1111);
     // יצירת המתכון
     const newRecipe = await recipeController.create(recipeData);
     if (!newRecipe) {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
-
+    
     return {
         id: newRecipe._id
     };
@@ -199,6 +203,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
     if (!recipeId || !currentUserId || !updateData) {
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
+  
 
     // ولידציות פורמט ObjectId במשולב
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/) || !currentUserId.match(/^[0-9a-fA-F]{24}$/)) {
@@ -216,7 +221,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
     if (!existingRecipe) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
-
+    
     if (existingRecipe.userId.toString() !== currentUserId.toString()) {
         throw new Error(ApiMessages.errorMessages.unauthorized);
     }

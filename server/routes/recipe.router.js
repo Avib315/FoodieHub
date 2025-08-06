@@ -43,12 +43,11 @@ router.get("/getById", auth, async (req, res) => {
 
 
 
-router.post("/create", auth, async (req, res) => {
+router.post("/create", auth, upload.single('image'), async (req, res) => {
     try {
-        console.log('Received file:', req.file); // Debug log
-        console.log('Received body:', req.body); // Debug log
 
-        // Parse JSON strings from formData
+    
+
         let ingredients, instructions;
 
         try {
@@ -63,17 +62,19 @@ router.post("/create", auth, async (req, res) => {
         }
 
         const recipeInput = {
-            userId: req.body?.userId,
+            userId: req.user.id,
             category: req.body?.category,
             title: req.body?.title,
             description: req.body?.description,
-            instructions: req.body?.instructions,
-            ingredients: req.body?.ingredients,
+            instructions: instructions,
+            ingredients: ingredients,
             prepTime: req.body?.prepTime,
             servings: req.body?.servings,
             difficultyLevel: req.body?.difficultyLevel,
             image: req.file
         };
+        console.log('Recipe input: ============', recipeInput); // Debug log
+        
         const result = await service.createRecipe(recipeInput);
 
         res.status(201).send({ success: true, data: result });
@@ -94,6 +95,7 @@ router.put("/update/:id", auth, async (req, res) => {
         const currentUserId = req.body?.userId;
 
         const updateData = {
+            userId: req.body.userId,
             category: req.body?.category,
             title: req.body?.title,
             description: req.body?.description,

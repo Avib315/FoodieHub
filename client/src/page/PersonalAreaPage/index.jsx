@@ -2,9 +2,22 @@ import React, { useState } from 'react';
 import './style.scss';
 import { Link } from 'react-router-dom';
 import FloatingElements from '../../component/FloatingElements';
+import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 
 export default function PersonalAreaPage() {
-  // Sample user data - this could come from context or API
+ 
+
+ // מה שקורל עשתה ------------------------------------- 
+ 
+ // הערה: מהערך המוחזר אפשר לשלוף גם את כמות המתכונים השמורים ואת כמות המתכונים שהמשתמש יצר
+
+const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: [], method: "GET" })
+
+  // מה שקורל עשתה ------------------------------------- 
+
+
+ // Sample user data - this could come from context or API
   const userData = {
     name: 'שרה כהן',
     avatar: "ש",
