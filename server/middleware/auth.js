@@ -30,7 +30,7 @@ async function adminAuth(req, res, next) {
             if (err) {
                 return res.status(403).send({ message: 'Failed to authenticate token.' });
             }
-            console.log("User Role:", user); // Debugging line
+            console.log(user.role);
             
             if (user.role !== 'admin') {
                 return res.status(403).send({ message: 'Access denied. Admin role required.' });

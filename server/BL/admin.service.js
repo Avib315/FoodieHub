@@ -3,7 +3,7 @@ const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const SavedRecipeService = require("../BL/savedRecipe.service.js");
 const bcrypt = require('bcrypt');
-const { loginAuth } = require("../middleware/auth.js");
+const { loginAdminAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
 
 async function login(adminInput) {
@@ -27,7 +27,7 @@ async function login(adminInput) {
     const passwordMatch = await bcrypt.compare(adminInput.password, admin?.passwordHash);
     if (!passwordMatch) { throw new Error(ApiMessages.errorMessages.invalidCredentials); }
 
-    const token = loginAuth({ id: admin._id , role: "admin" });
+    const token = loginAdminAuth({ id: admin._id});
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.serverError);
