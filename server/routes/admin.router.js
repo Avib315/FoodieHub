@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const service = require('../BL/admin.service.js');
-const { auth, loginAuth } = require('../middleware/auth.js');
+const {  adminAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
 router.post('/login', async (req, res) => {
@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/isAuthenticated', auth, async (req, res) => {
+router.get('/isAuthenticated', adminAuth, async (req, res) => {
     try {
         res.status(200).send(true);
     } catch (error) {
@@ -40,7 +40,7 @@ router.get('/isAuthenticated', auth, async (req, res) => {
 });
 
 
-router.get("/getAllRecipes", async (req, res) => {
+router.get("/getAllRecipes", adminAuth, async (req, res) => {
     try {
         const result = await service.getAllRecipes();
         res.status(200).send({
@@ -57,7 +57,7 @@ router.get("/getAllRecipes", async (req, res) => {
 })
 
 
-router.put("/updateRecipeStatus", async (req, res) => {
+router.put("/updateRecipeStatus",adminAuth, async (req, res) => {
     try {
 
         const recipeId =  req.body.id;
@@ -77,7 +77,7 @@ router.put("/updateRecipeStatus", async (req, res) => {
 });
 
 
-router.delete("/deleteRecipe/:id", async (req, res) => {
+router.delete("/deleteRecipe/:id",adminAuth, async (req, res) => {
     try {
         const recipeId = req.params.id;
         const adnimId = req.body?.userId;
@@ -96,7 +96,7 @@ router.delete("/deleteRecipe/:id", async (req, res) => {
 });
 
 
-router.get("/getAllUsers", async (req, res) => {
+router.get("/getAllUsers",adminAuth,  async (req, res) => {
     try {
         const result = await service.getAllUsers();
         res.status(200).send({
@@ -113,7 +113,7 @@ router.get("/getAllUsers", async (req, res) => {
 })
 
 
-router.put("/updateUserStatus", async (req, res) => {
+router.put("/updateUserStatus",adminAuth, async (req, res) => {
     try {
 
         const userId =  req.body.id;
