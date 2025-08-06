@@ -698,6 +698,41 @@
     font-size: $font-sm;
   }
 }
+.error-banner {
+  background: rgba($error-color, 0.1);
+  border: 1px solid $error-color;
+  color: $error-color;
+  padding: $spacing-sm $spacing-md;
+  margin: $spacing-sm;
+  border-radius: $radius-md;
+  @include flex-center;
+  gap: $spacing-xs;
+  
+  i {
+    font-size: $font-lg;
+  }
+}
+
+.selected-image {
+  @include flex-center;
+  flex-direction: column;
+  gap: $spacing-xs;
+  
+  .success-icon {
+    color: $success-color;
+    font-size: $font-2xl;
+  }
+  
+  .upload-text {
+    font-weight: $font-medium;
+    color: $success-color;
+  }
+  
+  .upload-hint {
+    font-size: $font-sm;
+    color: $text-lighter;
+  }
+}
 }
 
 // RTL Support

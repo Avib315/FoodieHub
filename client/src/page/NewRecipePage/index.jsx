@@ -2,57 +2,55 @@ import React, { useState } from 'react';
 import './style.scss';
 import { Link } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest';
-import categories from '../../data/categories'; // Assuming you have a categories data file
+import categories from '../../data/categories';
 import difficultyLevel from '../../data/difLevel';
-import  unitTypes  from '../../data/unitTypes'; // Assuming you have a unit options data file
+import unitTypes from '../../data/unitTypes';
+
 export default function NewRecipePage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
-  const [ingredients, setIngredients] = useState(['']);
+  
+  // FIXED: Initialize ingredients as objects, not strings
+  const [ingredients, setIngredients] = useState([{
+    name: '',
+    quantity: '',
+    unit: '',
+    notes: ''
+  }]);
+  
   const [instructions, setInstructions] = useState(['']);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [errors, setErrors] = useState({});
   const [selectedImage, setSelectedImage] = useState(null);
 
-
-// מה שקורל עשתה -------------------------------------
-async function createRecipe() {
-    const body = { } // הערה: לא כתבתי מה הבאדי כי עדיין לא ידוע הפורמט בגלל התמונות
-    const res = await axiosRequest({ url: "/recipe/create", method: "POST", body: body }) 
-    console.log(res)
-  }
-
-// מה שקורל עשתה -------------------------------------
-
-
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-    if (!validTypes.includes(file.type)) {
-      setErrors(prev => ({ ...prev, image: 'נא לבחור קובץ תמונה תקין (JPG, PNG, WEBP)' }));
-      return;
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        setErrors(prev => ({ ...prev, image: 'נא לבחור קובץ תמונה תקין (JPG, PNG, WEBP)' }));
+        return;
+      }
+      
+      // Validate file size (e.g., max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        setErrors(prev => ({ ...prev, image: 'גודל התמונה חייב להיות פחות מ-5MB' }));
+        return;
+      }
+      
+      setSelectedImage(file);
+      
+      // Clear image error if exists
+      if (errors.image) {
+        setErrors(prev => ({ ...prev, image: null }));
+      }
+      
+      console.log('Image selected:', file.name, 'Size:', file.size, 'Type:', file.type);
     }
-    
-    // Validate file size (e.g., max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-      setErrors(prev => ({ ...prev, image: 'גודל התמונה חייב להיות פחות מ-5MB' }));
-      return;
-    }
-    
-    setSelectedImage(file);
-    
-    // Clear image error if exists
-    if (errors.image) {
-      setErrors(prev => ({ ...prev, image: null }));
-    }
-    
-    console.log('Image selected:', file.name, 'Size:', file.size, 'Type:', file.type);
-  }
-};
+  };
 
   const triggerFileInput = () => {
     document.getElementById('recipeImage').click();
@@ -60,7 +58,6 @@ const handleImageUpload = (event) => {
 
   const selectCategory = (category) => {
     setSelectedCategory(category);
-    // Clear category error when selected
     if (errors.category) {
       setErrors(prev => ({ ...prev, category: null }));
     }
@@ -68,14 +65,19 @@ const handleImageUpload = (event) => {
 
   const selectDifficulty = (difficulty) => {
     setSelectedDifficulty(difficulty);
-    // Clear difficulty error when selected
     if (errors.difficulty) {
       setErrors(prev => ({ ...prev, difficulty: null }));
     }
   };
 
+  // FIXED: Add ingredient as object
   const addIngredient = () => {
-    setIngredients([...ingredients, '']);
+    setIngredients([...ingredients, {
+      name: '',
+      quantity: '',
+      unit: '',
+      notes: ''
+    }]);
   };
 
   const removeIngredient = (index) => {
@@ -84,10 +86,21 @@ const handleImageUpload = (event) => {
     }
   };
 
-  const updateIngredient = (index, value) => {
+  // FIXED: Update ingredient with field-specific updates
+  const updateIngredient = (index, field, value) => {
     const newIngredients = [...ingredients];
-    newIngredients[index] = value;
+    
+    // Ensure the ingredient object exists
+    if (!newIngredients[index] || typeof newIngredients[index] !== 'object') {
+      newIngredients[index] = { name: '', quantity: '', unit: '', notes: '' };
+    }
+    
+    newIngredients[index][field] = value;
     setIngredients(newIngredients);
+    
+    // Debug log
+    console.log(`Updated ingredient ${index}.${field} to:`, value);
+    console.log('Full ingredient object:', newIngredients[index]);
   };
 
   const addInstruction = () => {
@@ -106,17 +119,21 @@ const handleImageUpload = (event) => {
     setInstructions(newInstructions);
   };
 
+  // FIXED: Updated validation for new ingredient structure
   const validateForm = (formData) => {
     const newErrors = {};
 
     // Check recipe name
-    const recipeName = formData.get('recipeName');
+    const recipeName = formData.get('title');
     if (!recipeName || recipeName.trim().length < 3) {
       newErrors.recipeName = 'שם המתכון חייב להכיל לפחות 3 תווים';
     }
-  if (!selectedImage) {
-    newErrors.image = 'יש לבחור תמונה למתכון';
-  }
+
+    // Check image
+    if (!selectedImage) {
+      newErrors.image = 'יש לבחור תמונה למתכון';
+    }
+
     // Check category
     if (!selectedCategory) {
       newErrors.category = 'יש לבחור קטגוריה';
@@ -127,10 +144,27 @@ const handleImageUpload = (event) => {
       newErrors.difficulty = 'יש לבחור רמת קושי';
     }
 
-    // Check ingredients
-    const validIngredients = ingredients.filter(ing => ing.trim().length > 0);
+    // FIXED: Check ingredients with new structure
+    const validIngredients = ingredients.filter(ing => 
+      ing && typeof ing === 'object' &&
+      ing.name && ing.name.trim().length > 0 && 
+      ing.quantity && 
+      !isNaN(parseFloat(ing.quantity)) &&
+      parseFloat(ing.quantity) > 0 && 
+      ing.unit && ing.unit.trim().length > 0
+    );
+    
     if (validIngredients.length === 0) {
-      newErrors.ingredients = 'יש להוסיף לפחות רכיב אחד';
+      newErrors.ingredients = 'יש להוסיף לפחות רכיב אחד מלא (שם, כמות ויחידת מידה)';
+    }
+
+    // Check for invalid quantities in ingredients
+    for (let ing of ingredients) {
+      if (ing && typeof ing === 'object' && ing.name && ing.name.trim() && 
+          ing.quantity && (isNaN(ing.quantity) || parseFloat(ing.quantity) <= 0)) {
+        newErrors.ingredients = 'כמות הרכיב חייבת להיות מספר חיובי';
+        break;
+      }
     }
 
     // Check instructions
@@ -154,12 +188,10 @@ const handleImageUpload = (event) => {
     return newErrors;
   };
 
-  
-
+  // FIXED: Updated submit function with proper ingredient formatting
   const submitRecipe = async (e) => {
     e.preventDefault();
 
-    // Get the form element properly
     const form = e.target.form || document.getElementById('recipeForm');
     const formData = new FormData(form);
 
@@ -167,15 +199,53 @@ const handleImageUpload = (event) => {
     formData.append('category', selectedCategory);
     formData.append('difficultyLevel', selectedDifficulty);
 
-    // Add ingredients and instructions arrays to formData
-    const validIngredients = ingredients.filter(ing => ing.trim().length > 0);
-    const validInstructions = instructions.filter(inst => inst.trim().length > 0);
+    // FIXED: Prepare ingredients according to your model
+    const validIngredients = ingredients.filter(ing => 
+      ing && typeof ing === 'object' &&
+      ing.name && ing.name.trim().length > 0 && 
+      ing.quantity && 
+      !isNaN(parseFloat(ing.quantity)) &&
+      parseFloat(ing.quantity) > 0 && 
+      ing.unit && ing.unit.trim().length > 0
+    ).map(ing => ({
+      name: ing.name.trim(),
+      quantity: parseFloat(ing.quantity),
+      unit: ing.unit.trim(),
+      notes: ing.notes && ing.notes.trim() ? ing.notes.trim() : ""
+    }));
 
+    // Prepare instructions with step numbers
+    const validInstructions = instructions.filter(inst => inst.trim().length > 0)
+      .map((inst, index) => ({
+        stepNumber: index + 1,
+        text: inst.trim()
+      }));
+
+    // Add arrays as JSON strings
     formData.append('ingredients', JSON.stringify(validIngredients));
     formData.append('instructions', JSON.stringify(validInstructions));
 
+    // Log what we're about to send for debugging
+    console.log('=== Recipe Submission Debug ===');
+    console.log('Raw ingredients state:', ingredients);
+    console.log('Filtered valid ingredients:', validIngredients);
+    console.log('Valid instructions:', validInstructions);
+    console.log('Selected image:', selectedImage?.name);
+    console.log('Category:', selectedCategory);
+    console.log('Difficulty:', selectedDifficulty);
+    
+    // Debug each ingredient individually
+    ingredients.forEach((ing, index) => {
+      console.log(`Ingredient ${index}:`, {
+        name: ing?.name,
+        quantity: ing?.quantity,
+        unit: ing?.unit,
+        notes: ing?.notes,
+        typeof: typeof ing
+      });
+    });
 
-    // Validate form
+    // Validate form before submission
     const validationErrors = validateForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
@@ -199,6 +269,14 @@ const handleImageUpload = (event) => {
       setShowSuccess(true);
     } catch (error) {
       console.error('Error creating recipe:', error);
+      // Handle specific error types
+      if (error.response?.status === 413) {
+        setErrors({ image: 'התמונה גדולה מדי. נא לבחור תמונה קטנה יותר' });
+      } else if (error.response?.status === 400) {
+        setErrors({ general: error.response?.data?.message || 'נתונים שגויים. נא לבדוק את הטופס' });
+      } else {
+        setErrors({ general: 'שגיאה ביצירת המתכון. נסה שוב' });
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -206,7 +284,6 @@ const handleImageUpload = (event) => {
 
   const closeSuccess = () => {
     setShowSuccess(false);
-    // Navigate back to personal area
   };
 
   return (
@@ -239,12 +316,22 @@ const handleImageUpload = (event) => {
                   accept="image/*"
                   onChange={handleImageUpload}
                 />
-                <div className="upload-content">
-                  <i className="fas fa-cloud-upload-alt upload-icon"></i>
-                  <div className="upload-text">הוסף תמונה למתכון</div>
-                  <div className="upload-hint">לחץ כדי לבחור תמונה מהמכשיר</div>
-                </div>
+                {/* Show selected image name or upload content */}
+                {selectedImage ? (
+                  <div className="selected-image">
+                    <i className="fas fa-check-circle success-icon"></i>
+                    <div className="upload-text">נבחרה: {selectedImage.name}</div>
+                    <div className="upload-hint">לחץ כדי לשנות תמונה</div>
+                  </div>
+                ) : (
+                  <div className="upload-content">
+                    <i className="fas fa-cloud-upload-alt upload-icon"></i>
+                    <div className="upload-text">הוסף תמונה למתכון</div>
+                    <div className="upload-hint">לחץ כדי לבחור תמונה מהמכשיר</div>
+                  </div>
+                )}
               </div>
+              {errors.image && <span className="error-message">{errors.image}</span>}
             </div>
           </div>
 
@@ -259,7 +346,7 @@ const handleImageUpload = (event) => {
                 <input
                   type="text"
                   id="recipeName"
-                  name="recipeName"
+                  name="title"
                   placeholder="לדוגמה: עוגת שוקולד ביתית"
                   required
                   className={errors.recipeName ? 'error' : ''}
@@ -331,8 +418,8 @@ const handleImageUpload = (event) => {
                   {difficultyLevel.map(difficulty => (
                     <div
                       key={difficulty.key}
-                      className={`difficulty-option ${selectedDifficulty === difficulty.key ? 'selected' : ''} ${errors.difficulty ? 'error' : ''}`}
-                      onClick={() => selectDifficulty(difficulty.key)}
+                      className={`difficulty-option ${selectedDifficulty === difficulty.value ? 'selected' : ''} ${errors.difficulty ? 'error' : ''}`}
+                      onClick={() => selectDifficulty(difficulty.value)}
                     >
                       <i className={`fas fa-${difficulty.icon} difficulty-icon`}></i>
                       <span className="difficulty-text">{difficulty.text}</span>
@@ -344,6 +431,7 @@ const handleImageUpload = (event) => {
             </div>
           </div>
 
+          {/* FIXED: Ingredients Section */}
           <div className="form-section">
             <div className="section-header">
               <h3><i className="fas fa-list"></i>רכיבים *</h3>
@@ -359,7 +447,7 @@ const handleImageUpload = (event) => {
                           type="text"
                           placeholder="לדוגמה: קמח"
                           className={`ingredient-input ${errors.ingredients ? 'error' : ''}`}
-                          value={ingredient.name}
+                          value={ingredient.name || ''}
                           onChange={(e) => updateIngredient(index, 'name', e.target.value)}
                         />
                       </div>
@@ -372,7 +460,7 @@ const handleImageUpload = (event) => {
                           min="0"
                           step="0.1"
                           className={`ingredient-input ${errors.ingredients ? 'error' : ''}`}
-                          value={ingredient.quantity}
+                          value={ingredient.quantity || ''}
                           onChange={(e) => updateIngredient(index, 'quantity', e.target.value)}
                         />
                       </div>
@@ -381,7 +469,7 @@ const handleImageUpload = (event) => {
                         <label>יחידת מידה *</label>
                         <select
                           className={`ingredient-select ${errors.ingredients ? 'error' : ''}`}
-                          value={ingredient.unit}
+                          value={ingredient.unit || ''}
                           onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
                         >
                           <option value="">בחר יחידה</option>
@@ -399,7 +487,7 @@ const handleImageUpload = (event) => {
                           type="text"
                           placeholder="קצוץ דק, מבושל..."
                           className="ingredient-input"
-                          value={ingredient.notes}
+                          value={ingredient.notes || ''}
                           onChange={(e) => updateIngredient(index, 'notes', e.target.value)}
                         />
                       </div>
@@ -423,7 +511,6 @@ const handleImageUpload = (event) => {
               </button>
             </div>
           </div>
-
 
           {/* Instructions Section */}
           <div className="form-section">
@@ -475,6 +562,14 @@ const handleImageUpload = (event) => {
           <div className="spinner"></div>
         </button>
       </div>
+
+      {/* Show general errors */}
+      {errors.general && (
+        <div className="error-banner">
+          <i className="fas fa-exclamation-triangle"></i>
+          {errors.general}
+        </div>
+      )}
 
       {showSuccess && (
         <>

@@ -10,7 +10,10 @@ async function auth(req, res, next) {
             if (err) {
                 return res.status(403).send({ message: 'Failed to authenticate token.' });
             } else {
+                req.user = user;
                 req.body.userId = user.id; 
+
+                
                 next();
             }
         });

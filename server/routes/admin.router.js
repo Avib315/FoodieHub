@@ -80,9 +80,9 @@ router.put("/updateRecipeStatus",adminAuth, async (req, res) => {
 router.delete("/deleteRecipe/:id",adminAuth, async (req, res) => {
     try {
         const recipeId = req.params.id;
-        const adminId = req.body?.userId;
+        const adnimId = req.body?.userId;
         
-        const result = await service.deleteRecipe(recipeId, adminId);
+        const result = await service.deleteRecipe(recipeId, adnimId);
         
         res.status(200).send({success: true});
 
