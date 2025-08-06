@@ -127,6 +127,9 @@ function App() {
           <Route path="/admin-panel" element={
           <AdminPage />
         } />
+          <Route path="/admin-recipe-panel" element={
+          <AdminPage />
+        } />
         {/* Utility Routes */}
         <Route path="/loading" element={<LoadingPage />} />
 
