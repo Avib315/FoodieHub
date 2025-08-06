@@ -136,12 +136,11 @@ const insertCategories = async () => {
 
 
 // Test data insertion for recipes
-const insertRecipes = async (users, categories) => {
+const insertRecipes = async (users, categories = []) => {
     try {
         console.log("========================= RECIPES TEST BEGIN =========================");
         
-        const mainDishCategory = categories.find(cat => cat.name === "מנות עיקריות");
-        const saladCategory = categories.find(cat => cat.name === "סלטים");
+
         const user1 = users[0];
         const user2 = users[1];
 
@@ -149,7 +148,7 @@ const insertRecipes = async (users, categories) => {
         const recipes = [
             {
                 userId: user1._id,
-                categoryId: saladCategory._id,
+                category:"salad",
                 title: "סלט עגבניות ובצל",
                 description: "סלט פשוט וטעים עם עגבניות ובצל טרי",
                 instructions: [
@@ -173,24 +172,23 @@ const insertRecipes = async (users, categories) => {
                     {
                         name:"עגבניות",
                         quantity: 500,
-                        unit: "גרם",
+                        unit: "gram",
                         notes: "עגבניות בשלות"
                     },
                     {
                         name:"בצל",
                         quantity: 1,
-                        unit: "יחידה",
+                        unit: "gram",
                         notes: "בצל אדום עדיף"
                     },
                     {
                         name:"שמן זית",
                         quantity: 2,
-                        unit: "כף",
+                        unit: "gram",
                         notes: null
                     }
                 ],
                 prepTime: 15,
-                cookTime: 0,
                 servings: 4,
                 difficultyLevel: 1,
                 imageUrl: "https://example.com/recipes/tomato-salad.jpg",
@@ -201,7 +199,6 @@ const insertRecipes = async (users, categories) => {
                         isPrimary: true
                     }
                 ],
-                tags: ["סלט", "טבעוני", "קל", "מהיר"],
                 isPublic: true,
                 status: "active",
                 viewCount: 142,
@@ -210,7 +207,7 @@ const insertRecipes = async (users, categories) => {
             },
             {
                 userId: user2._id,
-                categoryId: mainDishCategory._id,
+                category: "appetizer",
                 title: "פסטה עם שום ושמן זית",
                 description: "מנה איטלקית קלאסית וטעימה",
                 instructions: [
@@ -234,13 +231,13 @@ const insertRecipes = async (users, categories) => {
                     {
                         name:"שום",
                         quantity: 4,
-                        unit: "יחידה",
+                        unit: "gram",
                         notes: "שיני שום טריות"
                     },
                     {
                         name:"שמן זית",
                         quantity: 4,
-                        unit: "כף",
+                        unit: "gram",
                         notes: "שמן זית איכותי"
                     }
                 ],
@@ -520,10 +517,10 @@ const runCompleteTest = async () => {
         
         // Insert data in correct order (dependencies)
         const users1 = await insertUsers();
-        const categories1 = await insertCategories();
+        // const categories1 = await insertCategories();
         const users = await userController.read({})
-        const categories = await categoryController.read({})        
-        const recipes1 = await insertRecipes(users, categories);
+        // const categories = await categoryController.read({})        
+        const recipes1 = await insertRecipes(users);
         const recipes = await recipeController.read({})
         const ratings = await insertRatings(users, recipes);
         const savedRecipes = await insertSavedRecipes(users, recipes);
