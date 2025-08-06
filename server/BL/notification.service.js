@@ -220,6 +220,23 @@ async function countUnreadNotifications(userId) {
     return count;
 }
 
+async function deleteNotification(id) {
+    if (!id) {
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    const result = await notificationController.del({ _id: id });
+
+    if (result.deletedCount === 0) {
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+    return true;
+}
+
 
 module.exports = {
     getNotificationByUserId,
@@ -229,5 +246,6 @@ module.exports = {
     addRecipeRejectedNotification,
     addSystemNotification,
     markNotificationsAsRead,
-    countUnreadNotifications
+    countUnreadNotifications,
+    deleteNotification
 };

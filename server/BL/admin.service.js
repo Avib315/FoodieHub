@@ -2,8 +2,8 @@ const adminController = require("../DL/controllers/admin.controller.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const SavedRecipeService = require("./savedRecipe.service.js");
-const activityNotifierService = require(".//activityNotifier.service.js");
-const { addRecipeApprovedNotification, addRecipeRejectedNotification } = require("./notification.service.js");
+const activityNotifierService = require("./activityNotifier.service.js");
+const adminLogService = require("./adminLog.service.js");
 const bcrypt = require('bcrypt');
 const { loginAdminAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -29,7 +29,7 @@ async function login(adminInput) {
     const passwordMatch = await bcrypt.compare(adminInput.password, admin?.passwordHash);
     if (!passwordMatch) { throw new Error(ApiMessages.errorMessages.invalidCredentials); }
 
-    const token = loginAdminAuth({ id: admin._id});
+    const token = loginAdminAuth({ id: admin._id });
 
     if (!token) {
         throw new Error(ApiMessages.errorMessages.serverError);
@@ -168,6 +168,12 @@ const deleteRecipe = async (recipeId, adnimId) => {
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
 
+    await adminLogService.createLog({
+        action: 'recipe_deleted',
+        targetType: 'recipe',
+        targetId: recipeId
+    });
+
     return {
         data: { id: recipeId },
         message: ApiMessages.successMessages.dataDeleted
@@ -240,6 +246,24 @@ const updateUserStatus = async (userId, status) => {
     if (!updatedUser) {
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
+
+    if (status === 'blocked') {
+        await adminLogService.createLog({
+            action: 'user_blocked',
+            targetType: 'user',
+            targetId: userId
+        });
+    }
+
+    if (status === 'active') {
+        await adminLogService.createLog({
+            action: 'user_unblocked',
+            targetType: 'user',
+            targetId: userId
+        });
+    }
+
+    // if (status === 'inactive') {}
 
     return {
         data: {

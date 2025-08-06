@@ -49,5 +49,19 @@ router.get("/countUnread", auth, async (req, res) => {
     }
 });
 
+router.delete("/delete/:id", auth, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await service.deleteNotification(id);
+        res.status(200).send({ success: result }); // will be true since didn't throw
+
+    } catch (error) {
+        console.error('RouteName: notification , Path: delete/:id , error message: ', error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError
+        });
+    }
+});
 
 module.exports = router;
