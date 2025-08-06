@@ -35,16 +35,17 @@ router.post('/register', async (req, res) => {
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
+
 router.get('/getUserData', async (req, res) => {
     try {
         const userId = req.body.userId
         const result = await service.getUser(userId);
-        res.status(200).send(result);
+       res.status(200).send({success: true, result});
     } catch (error) {
         console.error("RouteName: user : getUserData : error message:", error.message);
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
-});
+}); 
 
 router.get('/isAuthenticated', auth, async (req, res) => {
     try {
@@ -53,5 +54,36 @@ router.get('/isAuthenticated', auth, async (req, res) => {
         res.status(500).send({ isAuthenticated: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
+
+router.put('/changePassword', async (req, res) => {
+    try {
+        const userInput = {
+            userId: req.body.userId,
+            oldPass: req.body?.oldPass,
+            newPass: req.body?.newPass,
+            checPass: req.body?.checPass
+        }
+        const result = await service.changePassword(userInput);
+       res.status(200).send({success: true});
+    } catch (error) {
+        console.error("RouteName: user : changePass : error message:", error.message);
+        res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
+    }
+}); 
+
+router.put('/changeDetails', async (req, res) => {
+    try {
+        const userInput = {
+            userId: req.body.userId,
+            fullName: req.body?.fullName,
+            newEmail: req.body?.newEmail
+        }
+        const result = await service.changeDetails(userInput);
+       res.status(200).send({success: true});
+    } catch (error) {
+        console.error("RouteName: user : changeDetails : error message:", error.message);
+        res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
+    }
+}); 
 
 module.exports = router;
