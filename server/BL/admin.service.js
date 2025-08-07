@@ -72,35 +72,37 @@ async function getAllRecipes() {
 
 
 const updateRecipeStatus = async (recipeId, status) => {
+    console.log(`function updateRecipeStatus: Updating status for recipe ${recipeId} to ${status}`);
+
     // ולידציות בסיסיות במשולב
     if (!recipeId || !status) {
-        log("function updateRecipeStatus: Missing required fields: recipeId or status");
+        console.log("function updateRecipeStatus: Missing required fields: recipeId or status");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     // ולידציה של פורמט ObjectId
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
-        log("function updateRecipeStatus: Invalid recipeId format provided");
+        console.log("function updateRecipeStatus: Invalid recipeId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // ולידציה של הסטטוס
     const validStatuses = ['active', 'pending', 'rejected', 'draft'];
     if (!validStatuses.includes(status)) {
-        log("function updateRecipeStatus: Invalid status provided");
+        console.log("function updateRecipeStatus: Invalid status provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שהמתכון קיים
     const existingRecipe = await recipeController.readOne({ _id: recipeId });
     if (!existingRecipe) {
-        log("function updateRecipeStatus: Recipe not found with the provided ID");
+        console.log("function updateRecipeStatus: Recipe not found with the provided ID");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
     // בדיקה אם הסטטוס כבר זהה
     if (existingRecipe.status === status) {
-        log("function updateRecipeStatus: Recipe already has the requested status");
+        console.log("function updateRecipeStatus: Recipe already has the requested status");
         throw new Error(ApiMessages.errorMessages.conflict);
     }
 
@@ -111,7 +113,7 @@ const updateRecipeStatus = async (recipeId, status) => {
     );
 
     if (!updatedRecipe) {
-        log("function updateRecipeStatus: Failed to update recipe status");
+        console.log("function updateRecipeStatus: Failed to update recipe status");
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
@@ -135,20 +137,20 @@ const updateRecipeStatus = async (recipeId, status) => {
 const deleteRecipe = async (recipeId, adnimId) => {
     // ولידציות בסיסיות במשולב
     if (!recipeId || !adnimId) {
-        log("function deleteRecipe: Missing required fields: recipeId or adnimId");
+        console.log("function deleteRecipe: Missing required fields: recipeId or adnimId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     // ولידציות פורמט ObjectId במשולב
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/) || !adnimId.match(/^[0-9a-fA-F]{24}$/)) {
-        log("function deleteRecipe: Invalid recipeId or adnimId format provided");
+        console.log("function deleteRecipe: Invalid recipeId or adnimId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שהמתכון קיים
     const existingRecipe = await recipeController.readOne({ _id: recipeId });
     if (!existingRecipe) {
-        log("function deleteRecipe: Recipe not found with the provided ID");
+        console.log("function deleteRecipe: Recipe not found with the provided ID");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -168,14 +170,14 @@ const deleteRecipe = async (recipeId, adnimId) => {
 
 
                     } catch (error) {
-                        log(`Error removing saved recipe ${recipeId} from user ${user._id}:`, error.message);
+                        console.log(`Error removing saved recipe ${recipeId} from user ${user._id}:`, error.message);
                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
                     }
                 })
             );
         }
     } catch (error) {
-        log(`Error removing recipe ${recipeId} from saved lists:`, error.message);
+        console.log(`Error removing recipe ${recipeId} from saved lists:`, error.message);
         throw new Error(`Error removing recipe ${recipeId} from saved lists:`, error.message);
     }
 
@@ -183,7 +185,7 @@ const deleteRecipe = async (recipeId, adnimId) => {
     const deletedRecipe = await recipeController.del({ _id: recipeId });
 
     if (!deletedRecipe) {
-        log("function deleteRecipe: Failed to delete recipe");
+        console.log("function deleteRecipe: Failed to delete recipe");
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
 

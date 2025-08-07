@@ -130,7 +130,7 @@ export default function AdminPage() {
               <div className="action-arrow">←</div>
             </Link>
             
-            <Link to="/admin-recipes-panel" className="action-card recipes">
+            <Link to="/admin-recipe-panel" className="action-card recipes">
               <div className="action-icon">🍳</div>
               <div className="action-content">
                 <h3>ניהול מתכונים</h3>
