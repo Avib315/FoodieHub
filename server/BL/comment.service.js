@@ -7,15 +7,18 @@ const ApiMessages = require("../common/apiMessages.js");
 // Get all comments for a given recipe
 async function getRecipeComments(recipeId) {
     if (!recipeId) {
+        console.log("function getRecipeComments: Missing required field: recipeId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("function getRecipeComments: Invalid recipeId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     const comments = await commentController.read({ recipeId });
 
     if (!comments || comments.length === 0) {
+        console.log("function getRecipeComments: No comments found for the given recipeId");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -57,16 +60,19 @@ async function getRecipeComments(recipeId) {
 // Create a new comment
 async function createComment({ userId, recipeId, content }) {
     if (!userId || !recipeId || !content || !content.trim()) {
+        console.log("function createComment: Missing required fields: userId, recipeId, or content");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (![userId, recipeId].every(id => id.match(/^[0-9a-fA-F]{24}$/)) ||
         typeof content !== 'string' || content.length > 1000) {
+        console.log("function createComment: Invalid data provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     const comment = await commentController.create({ userId, recipeId, content: content.trim() });
 
     if (!comment) {
+        console.log("function createComment: Comment creation failed");
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
@@ -79,13 +85,16 @@ async function createComment({ userId, recipeId, content }) {
 // Delete all comments related to a specific recipe
 async function deleteCommentsByRecipeId(userId, recipeId) { // maybe recieve userId to confirm recipe belongs to user
     if (!userId || !recipeId) {
+        console.log("function deleteCommentsByRecipeId: Missing required fields: userId or recipeId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (![userId, recipeId].every(id => id.match(/^[0-9a-fA-F]{24}$/))) {
+        console.log("function deleteCommentsByRecipeId: Invalid userId or recipeId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
     const recipe = await recipeController.readOne({ _id: recipeId });
     if (!recipe || recipe.userId.toString() !== userId) {
+        console.log("function deleteCommentsByRecipeId: Unauthorized action or recipe not found");
         throw new Error(ApiMessages.errorMessages.unauthorized);
     }
 
@@ -93,6 +102,7 @@ async function deleteCommentsByRecipeId(userId, recipeId) { // maybe recieve use
     const result = await commentController.deleteMany({ recipeId });
 
     if (!result || result.deletedCount === 0) {
+        console.log("function deleteCommentsByRecipeId: No comments found for the given recipeId or deletion failed");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
