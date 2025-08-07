@@ -238,7 +238,7 @@ async function deleteNotification(id) {
     }
 
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-        console.log("deleteNotification: id is not a valid ObjectId");
+        console.log("deleteNotification: id is not a valid ObjectId" , id);
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
