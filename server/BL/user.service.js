@@ -117,6 +117,7 @@ async function register(body) {
 
     const user = await userController.create(userInput);
     if (!user) {
+        console.log("register: user creation failed");
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 

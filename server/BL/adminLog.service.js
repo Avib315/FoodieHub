@@ -12,8 +12,8 @@ const validTargetTypes = ['user', 'recipe', 'comment', 'system'];
 // Create a new admin log entry
 async function createLog(data) {
     if (!data.action || !data.targetType) {
+        console.log("function createLog: Missing required fields: action or targetType");
         return false;
-        console.log(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (
         typeof data.action !== 'string' ||
@@ -22,15 +22,16 @@ async function createLog(data) {
         !validTargetTypes.includes(data.targetType) ||
         (data.targetId && !data.targetId.match(/^[0-9a-fA-F]{24}$/))
     ) {
+        console.log("function createLog: Invalid data format or values provided");
         return false;
-        console.log(ApiMessages.errorMessages.invalidData);
+        
     }
 
     const result = await adminLogController.create(data);
 
     if (!result || !result._id) {
+        console.log("function createLog: Log creation failed or returned no ID");
         return false;
-        console.log(ApiMessages.errorMessages.creationFailed);
     }
     return result._id;
 }
@@ -39,26 +40,28 @@ async function createLog(data) {
 async function getAllLogs(filters = {}) {
     if (Object.keys(filters).includes('action')) {
         if (!validActions.includes(filters.action) || filters.action === '') {
+            console.log("function getAllLogs: Invalid action provided or action is empty");
             return false;
-            console.log(ApiMessages.errorMessages.invalidData);
+            
         }
     }
     if (Object.keys(filters).includes('targetType')) {
         if (!validTargetTypes.includes(filters.targetType) || filters.targetType === '') {
+            console.log("function getAllLogs: Invalid targetType provided or targetType is empty");
             return false;
-            console.log(ApiMessages.errorMessages.invalidData);
+            
         }
     }
     if (Object.keys(filters).includes('targetId') && !filters.targetId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("function getAllLogs: Invalid targetId format provided");
         return false;
-        console.log(ApiMessages.errorMessages.invalidData);
     }
 
     const logs = await adminLogController.read(filters);
 
     if (!logs || logs.length === 0) {
-        return false;
         console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
     return logs;
 }
@@ -67,23 +70,23 @@ async function getAllLogs(filters = {}) {
 async function getLogsByTarget(targetType, targetId) {
     if (targetType !== 'system') {
         if (!targetType || !targetId) {
+            console.log("function getLogsByTarget: Missing required fields: targetType or targetId");
             return false;
-            console.log(ApiMessages.errorMessages.missingRequiredFields);
         }
         if (!targetId.match(/^[0-9a-fA-F]{24}$/) ||
             typeof targetType !== 'string' ||
             !validTargetTypes.includes(targetType)
         ) {
+            console.log("function getLogsByTarget: Invalid targetId format or targetType value");
             return false;
-            console.log(ApiMessages.errorMessages.invalidData);
         }
     }
 
     const logs = await adminLogController.read({ targetType, targetId });
 
     if (!logs || logs.length === 0) {
+        console.log("function getLogsByTarget: No logs found for the specified target");
         return false;
-        console.log(ApiMessages.errorMessages.notFound);
     }
     return logs;
 }
