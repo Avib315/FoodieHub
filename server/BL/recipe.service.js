@@ -10,6 +10,8 @@ const savedRecipeController = require("../DL/controllers/savedRecipe.controller.
 async function getAllRecipes(filterByActive = true) {
     // ולידציה של הפרמטר
     if (typeof filterByActive !== 'boolean') {
+        console.log("getAllRecipes: filterByActive should be a boolean");
+        
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 

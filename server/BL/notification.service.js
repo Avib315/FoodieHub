@@ -205,16 +205,19 @@ async function markNotificationsAsRead(userId, notificationIds) {
 
 async function countUnreadNotifications(userId) {
     if (!userId) {
+        console.log("countUnreadNotifications: userId is required");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("countUnreadNotifications: userId is not a valid ObjectId");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     const count = await notificationController.count({ userId, isRead: false });
 
     if (count === null) {
+        console.log("countUnreadNotifications: Error counting notifications ");
         throw new Error(ApiMessages.errorMessages.serverError);
     }
     return count;
@@ -222,16 +225,19 @@ async function countUnreadNotifications(userId) {
 
 async function deleteNotification(id) {
     if (!id) {
+        console.log("deleteNotification: id is required");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("deleteNotification: id is not a valid ObjectId");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     const result = await notificationController.del({ _id: id });
 
     if (result.deletedCount === 0) {
+        console.log("deleteNotification: Notification not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
     return true;

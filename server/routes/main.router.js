@@ -12,8 +12,7 @@ router.get('/',auth, async (req, res) => {
         const userId = req.body.userId
         const data = {
             user: await userService.getUser(userId),
-            recipes: await recipeService.getAllRecipes(),
-            notification: await notificationService.countUnreadNotifications(),
+            notification: await notificationService.countUnreadNotifications(userId),
         }
        res.status(200).send({success: true, data});
     } catch (error) {
