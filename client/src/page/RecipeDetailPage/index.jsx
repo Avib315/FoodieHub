@@ -36,7 +36,6 @@ export default function RecipeDetailPage() {
       rating,
       review: ''
     };
-    console.log("im here");
     const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
     console.log(res)
   }

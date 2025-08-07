@@ -1,38 +1,40 @@
 import React, { useState } from 'react'
-import { 
-  AiOutlineClockCircle, 
-  AiOutlineUser, 
-  AiOutlineHeart, 
+import {
+  AiOutlineClockCircle,
+  AiOutlineUser,
+  AiOutlineHeart,
   AiFillHeart,
   AiFillStar,
-  AiOutlineStar 
+  AiOutlineStar
 } from 'react-icons/ai'
 import { MdSignalCellularAlt } from 'react-icons/md'
 import './style.scss'
 import difLevel from '../../data/difLevel'
+import { Link, useParams } from 'react-router-dom';
 export default function RecipeCard({ recipe }) {
   const [isSaved, setIsSaved] = useState(false)
-  
+
   // Destructure recipe data with fallbacks
-  const { 
-    username = 'משתמש לא ידוע', 
-    title = 'מתכון ללא שם', 
-    imageUrl = '', 
-    updatedAt = 'לא ידוע', 
-    description = 'אין תיאור', 
-    prepTime = '0 דק\'', 
-    difficultyLevel = 'לא ידוע', 
-    averageRating = 0, 
+  const {
+    username = 'משתמש לא ידוע',
+    title = 'מתכון ללא שם',
+    imageUrl = '',
+    updatedAt = 'לא ידוע',
+    description = 'אין תיאור',
+    prepTime = '0 דק\'',
+    difficultyLevel = 'לא ידוע',
+    averageRating = 0,
     servings = 1,
     totalRatings = 0
   } = recipe || {}
+  const { id } = useParams();
 
 
   // Get user's first letter for avatar
   const getUserInitial = (name) => {
     return name ? name.charAt(0) : '?'
   }
-  const difLevelMap = ()=>{
+  const difLevelMap = () => {
     const level = difLevel.find(level => level.value === difficultyLevel);
     return level ? level.text : 'לא ידוע';
   }
@@ -44,22 +46,35 @@ export default function RecipeCard({ recipe }) {
     return timeValue || '0 דק\''
   }
 
-const formatDate = (date) => {
-  if (!date) return 'לא ידוע';
-  
-  const d = new Date(date);  // Convert the string to a Date object
-  const year = d.getFullYear(); // Get the full year (yyyy)
-  const month = String(d.getMonth() + 1).padStart(2, '0'); // Get the month (mm), pad with leading zero if necessary
-  const day = String(d.getDate()).padStart(2, '0'); // Get the day (dd), pad with leading zero if necessary
-  
-  return `${year}/${month}/${day}`; // Return the formatted string
-};
+  const formatDate = (date) => {
+    if (!date) return 'לא ידוע';
+
+    const d = new Date(date);  // Convert the string to a Date object
+    const year = d.getFullYear(); // Get the full year (yyyy)
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Get the month (mm), pad with leading zero if necessary
+    const day = String(d.getDate()).padStart(2, '0'); // Get the day (dd), pad with leading zero if necessary
+
+    return `${year}/${month}/${day}`; // Return the formatted string
+  };
+
+  async function saveRecipe() {
+    const body = {
+      recipeId: id
+    }
+    const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
+    console.log(res)
+  }
+
+  async function unsaveRecipe() {
+    const res = await axiosRequest({ url: `/savedRecipe/remove/${id}`, method: "DELETE" })
+    console.log(res)
+  }
 
   // Generate star rating
   const renderStars = () => {
     const starElements = []
     const fullStars = Math.floor(averageRating)
-    
+
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
         starElements.push(
@@ -75,9 +90,18 @@ const formatDate = (date) => {
   }
 
   // Handle save/unsave functionality
-  const toggleSave = () => {
-    setIsSaved(!isSaved)
-    // You can add API call here to save/unsave recipe
+  async function toggleSave() {
+    try {
+      if (isSaved) {
+        await unsaveRecipe();
+        setIsSaved(false);
+      } else {
+        await saveRecipe();
+        setIsSaved(true);
+      }
+    } catch (error) {
+      console.error("Error toggling saved status:", error.message);
+    }
   }
 
   // Generate background image style
@@ -107,8 +131,8 @@ const formatDate = (date) => {
         </div>
       </div>
 
-      <div 
-        className="recipe-image" 
+      <div
+        className="recipe-image"
         style={getImageStyle()}
       >
         <div className="recipe-overlay">
@@ -119,7 +143,7 @@ const formatDate = (date) => {
       <div className="recipe-info">
         <h2 className="recipe-title">{title}</h2>
         <p className="recipe-description">{description}</p>
-        
+
         <div className="recipe-meta">
           <div className="meta-item">
             <AiOutlineClockCircle />
@@ -144,7 +168,7 @@ const formatDate = (date) => {
               {averageRating.toFixed(1)} ({totalRatings} דירוגים)
             </span>
           </div>
-          <button 
+          <button
             className={`save-btn ${isSaved ? 'saved' : ''}`}
             onClick={toggleSave}
             aria-label={isSaved ? 'בטל שמירה' : 'שמור מתכון'}
