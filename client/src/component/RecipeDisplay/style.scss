@@ -1,0 +1,399 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.recipes-page {
+  min-height: 100vh;
+  background: $bg-lighter;
+  padding: $spacing-lg;
+  
+  // Desktop and tablet layout
+  @include laptop-up {
+    margin-right: 240px; // Account for sidebar
+  }
+  
+  @include tablet {
+    padding: $spacing-md;
+    padding-bottom: 120px; // Account for bottom nav
+  }
+  
+  @include mobile {
+    padding: $spacing-sm;
+    padding-bottom: 120px;
+  }
+
+  // Page title
+  h1 {
+    font-size: $font-3xl;
+    font-weight: $font-bold;
+    color: $text-color;
+    margin-bottom: $spacing-xl;
+    text-align: center;
+    @include gradient-bg($primary-color, $primary-dark);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @include tablet {
+      font-size: $font-2xl;
+      margin-bottom: $spacing-lg;
+    }
+    
+    @include mobile {
+      font-size: $font-xl;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  // Filter container - visible on desktop/tablet
+  .filter-container {
+    position: relative;
+    z-index: 3;
+    background: $bg-white;
+    padding: $spacing-lg;
+    border-radius: $radius-xl;
+    @include shadow(light);
+    margin-bottom: $spacing-xl;
+    display: flex;
+    gap: $spacing-lg;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    
+    @include laptop {
+      gap: $spacing-md;
+      padding: $spacing-md;
+      margin-bottom: $spacing-lg;
+    }
+    
+    // Hide on mobile - will be replaced by floating button
+    @include mobile {
+      display: none;
+      
+      &.mobile-open {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: $z-modal;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        align-items: center;
+        justify-content: center;
+        padding: $spacing-lg;
+        border-radius:0 ;
+        height: 100vh;
+        
+        .filter-content {
+          background: $bg-white;
+          padding: $spacing-xl;
+          border-radius: $radius-xl;
+          @include shadow(dark);
+          width: 100%;
+          max-width: 400px;
+          max-height: 80vh;
+          overflow-y: auto;
+          position: relative;
+          
+          .close-filters {
+            position: absolute;
+            top: $spacing-md;
+            left: $spacing-md;
+            background: none;
+            border: none;
+            font-size: $font-2xl;
+            color: $text-lighter;
+            cursor: pointer;
+            @include transition();
+            
+            &:hover {
+              color: $primary-color;
+              transform: rotate(90deg);
+            }
+          }
+          
+          h3 {
+            font-size: $font-xl;
+            font-weight: $font-semibold;
+            color: $text-color;
+            margin-bottom: $spacing-lg;
+            text-align: center;
+          }
+          
+          > * {
+            margin-bottom: $spacing-md;
+            
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+    }
+    
+    // Responsive flex behavior
+    > * {
+      flex: 1;
+      min-width: 200px;
+      
+      @include laptop {
+        min-width: 150px;
+      }
+      
+      @include tablet {
+        min-width: 120px;
+      }
+    }
+  }
+
+  // Mobile floating filter button
+  .floating-filter-btn {
+    display: none;
+    
+    @include mobile {
+      display: flex;
+      position: fixed;
+      bottom: 100px; // Above bottom nav
+      left: $spacing-lg;
+      width: 60px;
+      height: 60px;
+      @include gradient-bg($primary-color, $primary-dark);
+      border: none;
+      border-radius: $radius-full;
+      @include flex-center;
+      color: $text-white;
+      font-size: $font-xl;
+      @include shadow(medium);
+      cursor: pointer;
+      z-index: $z-fixed;
+      @include transition();
+      
+      &:hover {
+        transform: scale(1.1);
+        @include shadow(dark);
+      }
+      
+      &:active {
+        transform: scale(0.95);
+      }
+      
+      // Badge for active filters
+      .filter-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: $badge-color;
+        color: $text-white;
+        border-radius: $radius-full;
+        width: 20px;
+        height: 20px;
+        font-size: $font-xs;
+        @include flex-center;
+        font-weight: $font-bold;
+      }
+    }
+  }
+
+  // Recipes grid
+  .recipes-list {
+    display: grid;
+    gap: $spacing-xl;
+    z-index: 2;
+    
+    // Desktop layout - 3 columns
+    @include desktop {
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-xxl;
+    }
+    
+    // Large laptop - 3 columns
+    @include laptop-up {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    // Regular laptop - 2 columns
+    @include laptop {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-lg;
+    }
+    
+    // Tablet - 2 columns
+    @include tablet {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $spacing-md;
+    }
+    
+    // Mobile - 1 column
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: $spacing-lg;
+    }
+  }
+
+  // Loading state (optional)
+  .loading-container {
+    @include flex-center;
+    height: 200px;
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid $border-light;
+      border-top: 4px solid $primary-color;
+      border-radius: $radius-full;
+      animation: spin 1s linear infinite;
+    }
+  }
+
+  // Empty state (optional)
+  .empty-state {
+    @include flex-center;
+    flex-direction: column;
+    height: 300px;
+    color: $text-lighter;
+    
+    .empty-icon {
+      font-size: $font-4xl;
+      margin-bottom: $spacing-lg;
+      opacity: 0.5;
+    }
+    
+    h3 {
+      font-size: $font-xl;
+      margin-bottom: $spacing-sm;
+    }
+    
+    p {
+      font-size: $font-base;
+      text-align: center;
+      max-width: 400px;
+    }
+  }
+
+  // Filter results info
+  .results-info {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+    padding: $spacing-md 0;
+    border-bottom: 1px solid $border-light;
+    
+    @include mobile {
+      flex-direction: column;
+      gap: $spacing-sm;
+      text-align: center;
+    }
+    
+    .results-count {
+      font-size: $font-sm;
+      color: $text-light;
+      
+      strong {
+        color: $primary-color;
+        font-weight: $font-semibold;
+      }
+    }
+    
+    .clear-filters {
+      background: none;
+      border: 1px solid $border-medium;
+      color: $text-light;
+      padding: $spacing-xs $spacing-sm;
+      border-radius: $radius-md;
+      font-size: $font-sm;
+      cursor: pointer;
+      @include transition();
+      
+      &:hover {
+        background: $primary-color;
+        color: $text-white;
+        border-color: $primary-color;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Apply animations
+.recipes-list .recipe-card {
+  animation: fadeIn 0.6s ease forwards;
+  
+  @for $i from 1 through 12 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+.filter-container {
+  animation: slideUp 0.5s ease forwards;
+  
+  &.mobile-open .filter-content {
+    animation: slideUp 0.3s ease forwards;
+  }
+}
+
+// Dark mode support
+// @media (prefers-color-scheme: dark) {
+//   .recipes-page {
+//     background: darken($bg-dark, 5%);
+    
+//     h1 {
+//       color: $text-white;
+//     }
+    
+//     .filter-container {
+//       background: $bg-dark;
+//       color: $text-white;
+      
+//       .filter-content {
+//         background: $bg-dark;
+//         color: $text-white;
+//       }
+//     }
+    
+//     .results-info {
+//       border-bottom-color: rgba($border-light, 0.2);
+      
+//       .results-count {
+//         color: $text-white;
+//       }
+      
+//       .clear-filters {
+//         color: $text-white;
+//         border-color: rgba($border-medium, 0.5);
+        
+//         &:hover {
+//           background: $primary-color;
+//           border-color: $primary-color;
+//         }
+//       }
+//     }
+//   }
+// }
