@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FloatingElements from '../../component/FloatingElements';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
@@ -8,7 +8,8 @@ import useUserStore from '../../store/userStore';
 
 export default function PersonalAreaPage() {
  
-const {user} = useUserStore()
+const {user, clearUser} = useUserStore()
+const navigate = useNavigate();
 const data = user;
  // מה שקורל עשתה ------------------------------------- 
  
@@ -20,7 +21,20 @@ const data = user;
   // מה שקורל עשתה ------------------------------------- 
 
 
- // Sample user data - this could come from context or API
+
+   const handleLogout = () => {
+    // מחיקת הטוקן מהקוקי
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    
+    // ניקוי נתוני המשתמש מה-store
+    clearUser();
+    
+    // מעבר לדף התחברות
+    navigate('/login');
+  };
+
+
+
   const userData = {
     name: 'שרה כהן',
     avatar: "ש",
@@ -85,6 +99,9 @@ const data = user;
             <Link to="/settings" className="edit-profile-btn">
               ✏️ ערוך פרופיל
             </Link>
+            <button onClick={handleLogout} className="logout-btn">
+                🚪 התנתק
+              </button>
           </div>
         </div>
 
