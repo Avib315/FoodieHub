@@ -2,10 +2,10 @@ const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const ratingController = require("./rating.service.js");
 const commentService = require("./comment.service.js");
-const SavedRecipeService = require("./savedRecipe.service.js");
 const adminLogService = require("./adminLog.service.js");
 const ApiMessages = require("../common/apiMessages.js");
 const cloudinaryService = require('../imageServer/cloudinary.service.js');
+const savedRecipeController = require("../DL/controllers/savedRecipe.controller.js");
 
 async function getAllRecipes(filterByActive = true) {
     // ולידציה של הפרמטר
@@ -36,6 +36,8 @@ async function getAllRecipes(filterByActive = true) {
 
 async function getRecipeById(id) {
     // ולידציות בסיסיות במשולב
+    console.log('id', id);
+    
     if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
@@ -380,7 +382,7 @@ const deleteRecipe = async (recipeId, currentUserId) => {
             await Promise.all(
                 usersWithSavedRecipe.map(async (user) => {
                     try {
-                        await SavedRecipeService.removeSavedRecipe(user._id.toString(), recipeId);
+                            const result = await savedRecipeController.del(user._id.toString(), recipeId);
                     } catch (error) {
                         // לוג השגיאה אבל לא עוצר את התהליך
                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
