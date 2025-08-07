@@ -17,7 +17,7 @@ router.get('/',auth, async (req, res) => {
         }
        res.status(200).send({success: true, data});
     } catch (error) {
-        console.error("RouteName: user : getUserData : error message:", error.message);
+        console.error("RouteName: main : error message:", error.message);
         res.status(500).send({ registered: false, message: error.message || ApiMessages.errorMessages.serverError });
     }
 }); 
