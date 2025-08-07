@@ -4,6 +4,7 @@ import RecipeCard from '../../component/RecipeCard'
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import RecipesDisplay from '../../component/RecipeDisplay';
+import HeaderTitle from '../../component/HeaderTitle';
 
 export default function SavedRecipesPage() {
 
@@ -12,9 +13,8 @@ export default function SavedRecipesPage() {
 
   return (
        <>
-      <header className='page-header'>
-        <h1 className='page-title'>מתכונים שאהבתי</h1>
-      </header>
+
+      <HeaderTitle title="מתכונים שאהבתי" />
     <RecipesDisplay pageType="saved" /> 
        </>
   )
