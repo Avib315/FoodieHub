@@ -86,4 +86,26 @@ router.put('/changeDetails',auth, async (req, res) => {
     }
 }); 
 
+
+router.post('/logout', auth, (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict'
+        });
+
+        res.status(200).json({ 
+            success: true, 
+            message: `${req.user.name || 'משתמש'} התנתק בהצלחה` 
+        });
+    } catch (error) {
+        console.error("Logout Error:", error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'שגיאה בהתנתקות' 
+        });
+    }
+});
+
 module.exports = router;

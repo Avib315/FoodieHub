@@ -108,6 +108,7 @@
         padding: $spacing-md $spacing-lg;
         border-radius: $radius-lg;
         font-weight: $font-semibold;
+        margin: 10px;
         @include transition();
 
         &:hover {
