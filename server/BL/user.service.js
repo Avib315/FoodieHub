@@ -141,7 +141,6 @@ async function register(body) {
 async function getUser(userId) {
     if (!userId) {
         console.log("getUser: userId is required");
-        
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
