@@ -188,6 +188,7 @@ async function getUser(userId) {
     // הכנת האובייקט המוחזר
     return {
         name: `${user.firstName} ${user.lastName}`,
+        username: user.username,
         email: user.email,
         createdRecipesCount: createdRecipesCount,
         savedRecipesCount: savedCount
