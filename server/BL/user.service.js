@@ -139,20 +139,25 @@ async function register(body) {
 
 async function getUser(userId) {
     if (!userId) {
+        console.log("getUser: userId is required");
+        
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     if (typeof userId !== 'string' || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+          console.log("getUser: userId not a valid ObjectId");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // שליפת המשתמש
     const user = await userController.readOne({ _id: userId });
     if (!user) {
+        console.log("getUser: user not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
     if (user.status === 'blocked' || user.status === 'inactive') {
+         console.log("getUser: user is blocked or inactive");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 

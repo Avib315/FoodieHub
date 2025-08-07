@@ -15,6 +15,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.use("/api/main", require("./routes/main.router.js"));
 app.use("/api/user", require("./routes/user.router.js"));
 app.use("/api/recipe", require("./routes/recipe.router.js"));
 app.use("/api/comment", require("./routes/comment.router.js"));
