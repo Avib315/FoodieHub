@@ -64,13 +64,13 @@ const initialRecipeData = [
 ];
 
 export default function RecipesPanel() {
-  const [recipeData, setRecipeData] = useState(initialRecipeData);
+  const { data } = useAxiosRequest({ url: `/admin/getAllRecipes` , method:"GET" });
+  const [recipeData, setRecipeData] = useState(data);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
-
   // Get unique categories for filter
   const categories = [...new Set(recipeData.map(recipe => recipe.category))];
 

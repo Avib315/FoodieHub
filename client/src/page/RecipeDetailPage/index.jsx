@@ -36,8 +36,7 @@ export default function RecipeDetailPage() {
     console.log(res);
     return res;
   }
-  console.log("data", data);
-  console.log("user", user);
+ 
   
   async function addComment() {
     const body = {

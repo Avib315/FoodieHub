@@ -263,7 +263,7 @@ export default function UserPanel() {
         <div className="table-section">
           <Table 
             tableColumns={userColumns} 
-            tableData={tableDataWithActions}
+            tableData={data}
             loading={loading}
             emptyMessage="לא נמצאו משתמשים"
             striped={true}
