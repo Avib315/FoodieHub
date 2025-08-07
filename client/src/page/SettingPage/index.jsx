@@ -8,42 +8,40 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isLoading, setIsLoading] = useState(false);
 
-const {user} = useUserStore()
-const data = user;
+  const { user, setUser } = useUserStore()
+  const data = user;
 
+
+  // מה שקורל עשתה ------------------------------------- 
+  // const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
+
+  async function changeUserDetails() {
+    const body = {
+      fullName: profileForm.name,
+      email: profileForm.email
+    };
+    const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body })
+    console.log(res)
+  }
+
+  async function changeUserPassword(body) {
  
-// מה שקורל עשתה ------------------------------------- 
-// const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
-
-async function changeUserDetails() {
-      const body =  {
-            fullName: "fullName",
-            email: "email"
-        };
-      const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body }) 
-      console.log(res)
-    }
-
-async function changeUserPassword() {
-      const body =  {
-            oldPass: "oldPass",
-            newPass: "newPass",
-            checPass: "checPass"
-        };
-      const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body }) 
-      console.log(res)
-    }
-// מה שקורל עשתה ------------------------------------- 
+    const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body })
+    console.log(res)
+  }
+  // מה שקורל עשתה ------------------------------------- 
 
 
 
-  
+
   // Profile form state
   const [profileForm, setProfileForm] = useState({
-    name: data.name ,
+    name: data.name,
     email: data.email,
     avatar: data.name?.slice(0, 1).toUpperCase() || 'U' // Default to 'U' if name is empty
   });
+
+
 
   // Password form state
   const [passwordForm, setPasswordForm] = useState({
@@ -73,7 +71,7 @@ async function changeUserPassword() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (profileErrors[name]) {
       setProfileErrors(prev => ({
@@ -90,7 +88,7 @@ async function changeUserPassword() {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (passwordErrors[name]) {
       setPasswordErrors(prev => ({
@@ -103,19 +101,19 @@ async function changeUserPassword() {
   // Validate profile form
   const validateProfileForm = () => {
     const errors = {};
-    
+
     if (!profileForm.name.trim()) {
       errors.name = 'שם הוא שדה חובה';
     } else if (profileForm.name.trim().length < 2) {
       errors.name = 'שם חייב להכיל לפחות 2 תווים';
     }
-    
+
     if (!profileForm.email.trim()) {
       errors.email = 'אימייל הוא שדה חובה';
     } else if (!/\S+@\S+\.\S+/.test(profileForm.email)) {
       errors.email = 'פורמט אימייל לא תקין';
     }
-    
+
     setProfileErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -123,23 +121,23 @@ async function changeUserPassword() {
   // Validate password form
   const validatePasswordForm = () => {
     const errors = {};
-    
+
     if (!passwordForm.currentPassword) {
       errors.currentPassword = 'סיסמה נוכחית נדרשת';
     }
-    
+
     if (!passwordForm.newPassword) {
       errors.newPassword = 'סיסמה חדשה נדרשת';
     } else if (passwordForm.newPassword.length < 6) {
       errors.newPassword = 'סיסמה חדשה חייבת להכיל לפחות 6 תווים';
     }
-    
+
     if (!passwordForm.confirmPassword) {
       errors.confirmPassword = 'אישור סיסמה נדרש';
     } else if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       errors.confirmPassword = 'הסיסמאות אינן תואמות';
     }
-    
+
     setPasswordErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -147,20 +145,28 @@ async function changeUserPassword() {
   // Handle profile form submission
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateProfileForm()) return;
-    
+
     setIsLoading(true);
     setSuccessMessage('');
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      const res = await changeUserDetails();
+      if (!res.success) {
+        alert('שגיאה בעדכון הפרופיל')
+        return
+      };
       // Update avatar initial if name changed
       const newAvatar = profileForm.name.trim().charAt(0).toUpperCase();
       setProfileForm(prev => ({ ...prev, avatar: newAvatar }));
-      
+      setUser({
+        ...user,
+        name: profileForm.name,
+        email: profileForm.email,
+        avatar: newAvatar
+      })
       setSuccessMessage('הפרופיל עודכן בהצלחה!');
       console.log('Profile updated:', profileForm);
     } catch (error) {
@@ -173,23 +179,30 @@ async function changeUserPassword() {
   // Handle password form submission
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validatePasswordForm()) return;
-    
+
     setIsLoading(true);
     setSuccessMessage('');
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
+     const res = await changeUserPassword({
+        oldPass: passwordForm.currentPassword,
+        newPass: passwordForm.newPassword,
+        checPass: passwordForm.confirmPassword
+      })
+      if (!res.success) {
+        alert('שגיאה בשינוי הסיסמה')  
+        return
+      }
       // Reset password form
       setPasswordForm({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
-      
       setSuccessMessage('הסיסמה שונתה בהצלחה!');
       console.log('Password updated');
     } catch (error) {
@@ -294,8 +307,8 @@ async function changeUserPassword() {
                     </div>
                   </div>
 
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="submit-btn primary"
                     disabled={isLoading}
                   >
@@ -384,8 +397,8 @@ async function changeUserPassword() {
                     </ul>
                   </div>
 
-                  <button 
-                    type="submit" 
+                  <button
+                    type="submit"
                     className="submit-btn warning"
                     disabled={isLoading}
                   >
