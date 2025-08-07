@@ -470,10 +470,8 @@ const recipeIds = getRandomItems(allRecipeIds, 4);
 
 async function run() {
   try {
-    for (const recipeId of recipeIds) {
-      await addSavedRecipe(userId, recipeId);
-      console.log(`✅ Added recipe ${recipeId} to user ${userId}`);
-    }
+      await notificationService.addSystemNotification("68939c1d955ba4f33b5b449c", "היי מה נשמע", "להלהלי");
+
   } catch (err) {
     console.error('❌ Error:', err.message);
   } finally {

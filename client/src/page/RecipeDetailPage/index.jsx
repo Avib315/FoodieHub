@@ -5,6 +5,7 @@ import axiosRequest from '../../services/axiosRequest';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoadingPage from '../LoadingPage';
+import unitTypes from '../../data/unitTypes';
 
 // Mock data based on the provided structure
 
@@ -175,7 +176,6 @@ export default function RecipeDetailPage() {
   if (loading) {
     return <LoadingPage />
   }
-  console.log(data)
   if (!data) {
     return <></>
   }
@@ -229,9 +229,10 @@ export default function RecipeDetailPage() {
         {/* User Section */}
         <div className="user-section">
           <div className="user-header">
-            <div className="user-avatar">{data.userName?.slice(0, 1)}</div>
+            <div className="user-avatar">{data.fullName?.slice(0, 1)}</div>
             <div className="user-info">
               <h3>{data.fullName}</h3>
+              <p>{data.userName}</p>
 
             </div>
 
@@ -298,7 +299,7 @@ export default function RecipeDetailPage() {
                   <i className="fas fa-check" style={{ display: checkedIngredients.has(index) ? 'block' : 'none' }}></i>
                 </div>
                 <span className="ingredient-text">
-                  {ingredient.quantity} {ingredient.unit} {ingredient.name}
+                  {ingredient.quantity} {unitTypes.map(type => type.value === ingredient.unit ? type.label : null)} {ingredient.name}
                   {ingredient.notes && ` - ${ingredient.notes}`}
                 </span>
               </li>
@@ -364,10 +365,7 @@ export default function RecipeDetailPage() {
               <i className="fas fa-comments"></i>
               תגובות ({data.comments.length})
             </h2>
-            <button className="sort-btn">
-              <i className="fas fa-sort"></i>
-              מיון: חדשות
-            </button>
+  
           </div>
 
           {/* Comment Form */}
@@ -408,9 +406,7 @@ export default function RecipeDetailPage() {
                     <div className="comment-author">{comment.fullName}</div>
                     <div className="comment-time">{new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
                   </div>
-                  <div className="comment-rating">
-                    {renderStars(comment.rating)}
-                  </div>
+           
                 </div>
                 <div className="comment-text">{comment.content}</div>
                 <div className="comment-actions">

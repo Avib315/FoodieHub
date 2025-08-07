@@ -19,7 +19,7 @@ router.post("/add", auth, async (req, res) => {
     }
 });
 
-router.get("/getAll", async (req, res) => {
+router.get("/getAll", auth, async (req, res) => {
     try {
         const { userId } = req.body;
         const result = await service.getSavedRecipes(userId);

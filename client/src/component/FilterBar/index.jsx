@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useState, useCallback, useMemo, useEffect } from 'react'
 import './style.scss'
 import { AiOutlineClose, AiOutlineFilter } from 'react-icons/ai'
 import SearchBar from '../SerchBar'
@@ -7,9 +7,9 @@ import categoryOptions from '../../data/options/categoryOptions'
 import difLevelOptions from '../../data/options/difLevelOption'
 import ratingOptions from '../../data/options/ratingOptions'
 import timeOptions from '../../data/options/timeOptions'
+
 export default function FilterBar({ data, setData }) {
-
-
+  console.log("data FilterBar:", data);
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,26 +19,26 @@ export default function FilterBar({ data, setData }) {
     rating: "",
     time: ""
   })
-  const handelSelectChange = (e) => {
-    const { name, value } = e.target;
-    setFilterOption(prev => ({ ...prev, [name]: value }));
-  }
+
+  // Calculate active filters count using useMemo
   const activeFilters = useMemo(() => {
     return Object.values(filterOption).filter(value => value !== "").length;
   }, [filterOption]);
 
+  // Memoize the dropdown change handler
+  const handelSelectChange = useCallback((name, value) => {
+    setFilterOption(prev => ({ ...prev, [name]: value }));
+  }, []);
+  useEffect(() => {
 
-  const toggleMobileFilter = () => {
-    setIsMobileFilterOpen(!isMobileFilterOpen)
-  }
+  }, [filterOption]);
+  // Memoize the search change handler
+  const handleSearchChange = useCallback((e) => {
+    setSearchTerm(e.target.value);
+  }, []);
 
-  const closeMobileFilter = () => {
-    setIsMobileFilterOpen(false)
-  }
+  // Memoize the search handler
   const handelSearch = useCallback(() => {
-    console.log("Current searchTerm:", searchTerm);
-    console.log("Current filterOption:", filterOption);
-    
     let filteredData = [...data];
 
     // Apply search filter
@@ -48,25 +48,31 @@ export default function FilterBar({ data, setData }) {
       );
     }
 
-    // Apply filter options
-    Object.entries(filterOption).forEach(([key, value]) => {
-      if (value) {
-        filteredData = filteredData.filter(r => r[key] === value);
-      }
-    });
+    // Apply other filters
+    if (filterOption.category) {
+      filteredData = filteredData.filter(r => r.category === filterOption.category);
+    }
+    if (filterOption.difficulty) {
+      filteredData = filteredData.filter(r => r.difficulty === filterOption.difficulty);
+    }
+    if (filterOption.rating) {
+      filteredData = filteredData.filter(r => r.rating >= parseInt(filterOption.rating));
+    }
+    if (filterOption.time) {
+      filteredData = filteredData.filter(r => r.time <= parseInt(filterOption.time));
+    }
 
     setData(filteredData);
-  }, [searchTerm, filterOption, data]);
+  }, [searchTerm, filterOption, data, setData]);
 
-  const handleSearchChange = useCallback((e) => {
-    setSearchTerm(e.target.value);
-  }, []);
-
-  const handleKeyDown = (e) => {
+  // Memoize the key down handler
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'Enter') {
       handelSearch();
     }
-  };
+  }, [handelSearch]);
+
+  // Memoize the clear filters handler
   const clearAllFilters = useCallback(() => {
     setFilterOption({
       category: "",
@@ -75,48 +81,35 @@ export default function FilterBar({ data, setData }) {
       time: ""
     });
     setSearchTerm('');
-
+    // Reset data to original
+    // You might want to pass original data as a prop or store it separately
   }, []);
 
-  const FilterElements = () => {
-    return (
-      <>
-        <SearchBar
-          label="חיפוש מתכונים..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <DropDown
-          options={categoryOptions}
-          onSelect={handelSelectChange}
-          placeholder="קטגוריה"
-          name={"category"}
-        />
-        <DropDown
-          options={difLevelOptions}
-          onSelect={handelSelectChange}
-          placeholder="רמת קושי"
-          name={"difficulty"}
+  // Memoize mobile filter handlers
+  const toggleMobileFilter = useCallback(() => {
+    setIsMobileFilterOpen(prev => !prev);
+  }, []);
 
-        />
-        <DropDown
-          options={ratingOptions}
-          onSelect={handelSelectChange}
-          placeholder="דירוג"
-          name={"rating"}
-        />
-        <DropDown
-          options={timeOptions}
-          onSelect={handelSelectChange}
-          placeholder="זמן הכנה"
-          name={"time"}
-        />
-        <button onClick={() => handelSearch()}>חיפוש</button>
-      </>
-    )
-  }
+  const closeMobileFilter = useCallback(() => {
+    setIsMobileFilterOpen(false);
+  }, []);
 
+  // Create dropdown change handlers for each dropdown
+  const handleCategoryChange = useCallback((value) => {
+    handelSelectChange('category', value);
+  }, [handelSelectChange]);
 
+  const handleDifficultyChange = useCallback((value) => {
+    handelSelectChange('difficulty', value);
+  }, [handelSelectChange]);
+
+  const handleRatingChange = useCallback((value) => {
+    handelSelectChange('rating', value);
+  }, [handelSelectChange]);
+
+  const handleTimeChange = useCallback((value) => {
+    handelSelectChange('time', value);
+  }, [handelSelectChange]);
 
   return (
     <>
@@ -128,21 +121,83 @@ export default function FilterBar({ data, setData }) {
               <AiOutlineClose />
             </button>
             <h3>סינון מתכונים</h3>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handelSearch();
-              }}
-            >
-              <FilterElements />
-            </form>
+         
+              <SearchBar
+                label="חיפוש מתכונים..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onKeyDown={handleKeyDown}
+              />
+              <DropDown
+                options={categoryOptions}
+                onSelect={handleCategoryChange}
+                placeholder="קטגוריה"
+                name="category"
+                defaultValue={filterOption.category}
+              />
+              <DropDown
+                options={difLevelOptions}
+                onSelect={handleDifficultyChange}
+                placeholder="רמת קושי"
+                name="difficulty"
+                defaultValue={filterOption.difficulty}
+              />
+              <DropDown
+                options={ratingOptions}
+                onSelect={handleRatingChange}
+                placeholder="דירוג"
+                name="rating"
+                defaultValue={filterOption.rating}
+              />
+              <DropDown
+                options={timeOptions}
+                onSelect={handleTimeChange}
+                placeholder="זמן הכנה"
+                name="time"
+                defaultValue={filterOption.time}
+              />
+            
           </div>
         )}
 
         {/* Desktop/Tablet filters */}
         {!isMobileFilterOpen && (
           <>
-            <FilterElements />
+            <SearchBar
+              label="חיפוש מתכונים..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown}
+            />
+            <DropDown
+              options={categoryOptions}
+              onSelect={handleCategoryChange}
+              placeholder="קטגוריה"
+              name="category"
+              defaultValue={filterOption.category}
+            />
+            <DropDown
+              options={difLevelOptions}
+              onSelect={handleDifficultyChange}
+              placeholder="רמת קושי"
+              name="difficulty"
+              defaultValue={filterOption.difficulty}
+            />
+            <DropDown
+              options={ratingOptions}
+              onSelect={handleRatingChange}
+              placeholder="דירוג"
+              name="rating"
+              defaultValue={filterOption.rating}
+            />
+            <DropDown
+              options={timeOptions}
+              onSelect={handleTimeChange}
+              placeholder="זמן הכנה"
+              name="time"
+              defaultValue={filterOption.time}
+            />
+            <button onClick={handelSearch}>חיפוש</button>
           </>
         )}
       </div>
