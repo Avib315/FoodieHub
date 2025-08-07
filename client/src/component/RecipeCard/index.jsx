@@ -11,12 +11,13 @@ import { MdSignalCellularAlt } from 'react-icons/md'
 import './style.scss'
 import difLevel from '../../data/difLevel'
 import { Link, useParams } from 'react-router-dom';
-export default function RecipeCard({ recipe }) {
+import axiosRequest from '../../services/axiosRequest'
+export default function RecipeCard({ recipe , addSaveBtn = true }) {
   const [isSaved, setIsSaved] = useState(false)
 
   // Destructure recipe data with fallbacks
   const {
-    username = 'משתמש לא ידוע',
+    fullName = 'משתמש לא ידוע',
     title = 'מתכון ללא שם',
     imageUrl = '',
     updatedAt = 'לא ידוע',
@@ -25,9 +26,10 @@ export default function RecipeCard({ recipe }) {
     difficultyLevel = 'לא ידוע',
     averageRating = 0,
     servings = 1,
-    totalRatings = 0
+    totalRatings = 0,
+    _id
   } = recipe || {}
-  const { id } = useParams();
+
 
 
   // Get user's first letter for avatar
@@ -59,14 +61,14 @@ export default function RecipeCard({ recipe }) {
 
   async function saveRecipe() {
     const body = {
-      recipeId: id
+      recipeId: _id
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
     console.log(res)
   }
 
   async function unsaveRecipe() {
-    const res = await axiosRequest({ url: `/savedRecipe/remove/${id}`, method: "DELETE" })
+    const res = await axiosRequest({ url: `/savedRecipe/remove/${_id}`, method: "DELETE" })
     console.log(res)
   }
 
@@ -121,12 +123,13 @@ export default function RecipeCard({ recipe }) {
 
   return (
     <div className="recipe-card">
+      <Link to={`/recipe/${_id}`} className="recipe-link">
       <div className="card-header">
         <div className="user-avatar">
-          {getUserInitial(username)}
+          {getUserInitial(fullName)}
         </div>
         <div className="user-info">
-          <h3>{username}</h3>
+          <h3>{fullName}</h3>
           <span>{formatDate(updatedAt)}</span>
         </div>
       </div>
@@ -140,6 +143,7 @@ export default function RecipeCard({ recipe }) {
         </div>
       </div>
 
+          </Link>
       <div className="recipe-info">
         <h2 className="recipe-title">{title}</h2>
         <p className="recipe-description">{description}</p>
@@ -168,13 +172,13 @@ export default function RecipeCard({ recipe }) {
               {averageRating.toFixed(1)} ({totalRatings} דירוגים)
             </span>
           </div>
-          <button
+          {addSaveBtn && <button
             className={`save-btn ${isSaved ? 'saved' : ''}`}
             onClick={toggleSave}
             aria-label={isSaved ? 'בטל שמירה' : 'שמור מתכון'}
-          >
+            >   
             {isSaved ? <AiFillHeart /> : <AiOutlineHeart />}
-          </button>
+          </button>}
         </div>
       </div>
     </div>
