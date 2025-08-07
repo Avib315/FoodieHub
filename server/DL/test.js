@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 // // Import all controllers
 const userController = require("../DL/controllers/user.controller");
+const adminController = require("../DL/controllers/admin.controller");
 const categoryController = require("../DL/controllers/category.controller");
 const recipeController = require("../DL/controllers/recipe.controller");
 const ratingController = require("../DL/controllers/rating.controller");
@@ -72,45 +73,39 @@ const insertAdmins = async () => {
         const hashedPassword = await bcrypt.hash("123456", 10);
         console.log("Hashed password:", hashedPassword);
 
-        const users = [
+        const admins = [
             {
                 username: "avi_hershkovitz",
                 email: "avi@example.com",
                 passwordHash: hashedPassword, // Should be properly hashed in real app
                 firstName: "אבי",
-                lastName: "הרשקוביץ",
-                status: "active",
-                savedRecipes:[]
+                lastName: "הרשקוביץ"
             },
             {
                 username: "coral286",
                 email: "admin1@example.com",
                 passwordHash:hashedPassword,
                 firstName: "קורל",
-                lastName: "שמואלוביץ",
-                status: "active",
-                   savedRecipes:[]
+                lastName: "שמואלוביץ"
             },
             {
                 username: "pnina",
                 email: "pnina@example.com",
                 passwordHash:hashedPassword,
                 firstName: "פנינה",
-                lastName: "כהן",
-                status: "active",
-                   savedRecipes:[]
+                lastName: "כהן"
             }
         ];
         
-        for (const user of users) {
-            const result = await userController.create(user);
-            console.log("User created:", result.username);
+        for (const admin of admins) {
+            const result = await adminController.create(admin);
+            console.log("Admin created:", result.username);
         }
         
-        console.log("========================= USERS TEST END =========================\n");
-        return users;
+        console.log("========================= ADMIN TEST END =========================\n");
+        return admins;
     } catch (error) {
-        console.error("Users error:", error);
+        console.error("Admins error:", error);
         throw error;
     }
 };
@@ -661,7 +656,9 @@ const insertComments = async () => {
 };
 
 // Run the complete test
-runCompleteTest();
+ runCompleteTest();
+
+//insertAdmins();
 
 
 // const insertUsers = async () => {

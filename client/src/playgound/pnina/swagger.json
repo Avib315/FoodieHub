@@ -86,5 +86,24 @@
         "router": "adminLog",
         "method": "GET",
         "path": "adminLog/byTarget/user/6890f585b07387c3dd488f5e"
+    },
+    {
+        "router": "comment",
+        "method": "GET",
+        "path": "comment/getComments/68939c20955ba4f33b5b44af"
+    },
+    {
+        "router": "comment",
+        "method": "POST",
+        "path": "comment/create/",
+        "body": {
+            "recipeId": "6890f586b07387c3dd488f61",
+            "content": "This is a test comment"
+        }
+    },
+    {
+        "router": "comment",
+        "method": "DELETE",
+        "path": "comment/deleteAll/6893bfacfa4a10f2ecebc433"
     }
 ]

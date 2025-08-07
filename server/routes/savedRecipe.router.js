@@ -11,7 +11,7 @@ router.post("/add", auth, async (req, res) => {
         const result = await service.addSavedRecipe(userId, recipeId);
         res.status(201).send({ success: result });  // will be true since didn't throw
     } catch (error) {
-        console.error('RouteName: savedRecipe , Path: post/ , error message: ', error.message);
+        console.error('RouteName: savedRecipe , Path: /add , error message: ', error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError
@@ -26,7 +26,7 @@ router.get("/getAll", auth, async (req, res) => {
         console.log(result);
         res.status(200).send({ success: true, data: result });
     } catch (error) {
-        console.error('RouteName: savedRecipe , Path: get/ , error message: ', error.message);
+        console.error('RouteName: savedRecipe , Path: /getAll , error message: ', error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError
@@ -41,7 +41,7 @@ router.delete("/remove/:recipeId", auth, async (req, res) => {
         const result = await service.removeSavedRecipe(userId, recipeId);
         res.status(200).send({ success: result });  // will be true since didn't throw
     } catch (error) {
-        console.error('RouteName: savedRecipe , Path: delete/ , error message: ', error.message);
+        console.error('RouteName: savedRecipe , Path: /remove , error message: ', error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError
@@ -55,7 +55,7 @@ router.get("/count", auth, async (req, res) => {
         const count = await service.countSavedRecipes(userId);
         res.status(200).send({ success: true, data: count });
     } catch (error) {
-        console.error('RouteName: savedRecipe , Path: get/coynt/ , error message: ', error.message);
+        console.error('RouteName: savedRecipe , Path: /count , error message: ', error.message);
         res.status(500).send({
             success: false,
             message: error.message || ApiMessages.errorMessages.serverError

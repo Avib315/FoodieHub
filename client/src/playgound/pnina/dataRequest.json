@@ -208,5 +208,39 @@
                 }
             ]
         }
+    },
+    {
+        "router": "comment",
+        "method": "GET",
+        "path": "comment/getComments/:recipeId",
+        "returnSuccessData": {
+            "success": true,
+            "data": [
+                {
+                    "_id": "68939c23955ba4f33b5b44ea",
+                    "userId": "68939c1d955ba4f33b5b449c",
+                    "recipeId": "68939c20955ba4f33b5b44af",
+                    "content": "Didnt love it. It was a bit bland for my taste.",
+                    "status": "hidden",
+                    "isEdited": false,
+                    "editedAt": null,
+                    "createdAt": "2025-08-06T18:17:07.598Z",
+                    "updatedAt": "2025-08-06T18:17:07.598Z",
+                    "__v": 0
+                },
+                {
+                    "_id": "68939c23955ba4f33b5b44ec",
+                    "userId": "68939c1e955ba4f33b5b449f",
+                    "recipeId": "68939c20955ba4f33b5b44af",
+                    "content": "Absolutely delicious. Ill be making this again next weekend!",
+                    "status": "active",
+                    "isEdited": false,
+                    "editedAt": null,
+                    "createdAt": "2025-08-06T18:17:07.769Z",
+                    "updatedAt": "2025-08-06T18:17:07.769Z",
+                    "__v": 0
+                }
+            ]
+        }
     }
 ]

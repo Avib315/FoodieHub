@@ -4,8 +4,8 @@ const ApiMessages = require("../common/apiMessages.js");
 const validActions = [
     'user_blocked', 'user_unblocked', // 'user_deleted',
     'recipe_approved', 'recipe_rejected', 'recipe_deleted',
-    'comment_added', 'comment_deleted',
-    'settings_updated'
+    // 'comment_added', 'comment_deleted',
+    // 'settings_updated'
 ];
 const validTargetTypes = ['user', 'recipe', 'comment', 'system'];
 
