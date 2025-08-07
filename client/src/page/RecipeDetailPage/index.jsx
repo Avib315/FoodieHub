@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoadingPage from '../LoadingPage';
@@ -24,44 +25,45 @@ export default function RecipeDetailPage() {
   const [userRating, setUserRating] = useState(0);
   const [commentText, setCommentText] = useState('');
   const [showCommentActions, setShowCommentActions] = useState(false);
-  const {id } = useParams()
+  const { id } = useParams()
 
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
-  const { data , loading} = useAxiosRequest({ url: `recipe/getById?id=${id}` , method:"GET" });
+  const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET" });
   //מה שקורל עשתה -------------------------------
-  async function addRating() {
-      const body= {
-            recipeId: "recipeId",
-            rating: "rating",
-            review: "review"
-        };
-      const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
-      console.log(res)
-    }
-
-  async function addComment(){
-        const body= {
-            recipeId: "recipeId",
-            content: "content"
-        };
-      const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body })
-      console.log(res)
+  async function addRating(rating) {
+    const body = {
+      recipeId: id,
+      rating,
+      review: ''
+    };
+    console.log("im here");
+    const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
+    console.log(res)
   }
 
-  async function saveRecipe(){
+  async function addComment() {
     const body = {
-      recipeId: "recipeId"
+      recipeId: "recipeId",
+      content: "content"
+    };
+    const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body })
+    console.log(res)
+  }
+
+  async function saveRecipe() {
+    const body = {
+      recipeId: id
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
     console.log(res)
   }
 
-  async function unsaveRecipe(){
-    const res = await axiosRequest({ url: "/savedRecipe/remove/:recipeId", method: "DELETE"}) // הערה: שים לב שמה ששלחתי מגיע כפרמטר, ובנוסף פנינה שמה בבאדי את היוזר של המשתמש אבל אני מניחה שזה היזר שמגיע מהקוקי ולכן לא שמתי אותו בבקשה
+  async function unsaveRecipe() {
+    const res = await axiosRequest({ url: `/savedRecipe/remove/${id}`, method: "DELETE" })
     console.log(res)
   }
- //מה שקורל עשתה -------------------------------
-  
+  //מה שקורל עשתה -------------------------------
+
 
   const getDifficultyText = (level) => {
     switch (level) {
@@ -106,11 +108,18 @@ export default function RecipeDetailPage() {
     setUserRating(rating);
   };
 
-  const submitRating = () => {
+  const submitRating = async () => {
     if (userRating > 0) {
-      alert(`דירוג נשלח: ${userRating} כוכבים`);
+      try {
+        await addRating(userRating);
+        alert(`דירוג נשלח בהצלחה: ${userRating} כוכבים`);
+      } catch (error) {
+        alert('שגיאה בשליחת הדירוג');
+        console.error(error);
+      }
     }
   };
+
 
   const submitComment = () => {
     if (commentText.trim()) {
@@ -119,6 +128,20 @@ export default function RecipeDetailPage() {
       setShowCommentActions(false);
     }
   };
+
+  async function handleSaveClick() {
+    try {
+      if (saved) {
+        await unsaveRecipe();
+        setSaved(false);
+      } else {
+        await saveRecipe();
+        setSaved(true);
+      }
+    } catch (error) {
+      console.error("Error toggling saved status:", error.message);
+    }
+  }
 
   const mockComments = [
     {
@@ -142,13 +165,13 @@ export default function RecipeDetailPage() {
       liked: true
     }
   ];
-if(loading){
-  return <LoadingPage/>
-}
-console.log(data)
-if(!data){
-  return <></>
-}
+  if (loading) {
+    return <LoadingPage />
+  }
+  console.log(data)
+  if (!data) {
+    return <></>
+  }
 
   const getImageStyle = (imageUrl) => {
     if (imageUrl) {
@@ -170,9 +193,9 @@ if(!data){
         <div className="header-overlay" style={getImageStyle(data.imageUrl)}></div>
         <div className="header-controls">
           <Link to={-1} className="back-btn">
-          <button className="control-btn">
-            <i className="fas fa-arrow-right"></i>
-          </button>
+            <button className="control-btn">
+              <i className="fas fa-arrow-right"></i>
+            </button>
           </Link>
         </div>
         <div className="recipe-title-overlay">
@@ -199,12 +222,12 @@ if(!data){
         {/* User Section */}
         <div className="user-section">
           <div className="user-header">
-            <div className="user-avatar">{data.userName?.slice(0,1)}</div>
+            <div className="user-avatar">{data.userName?.slice(0, 1)}</div>
             <div className="user-info">
               <h3>{data.userName}</h3>
-           
+
             </div>
- 
+
           </div>
           <p className="recipe-description">
             {data.description}
@@ -214,16 +237,16 @@ if(!data){
         {/* Actions Bar */}
         <div className="actions-bar">
           <div className="actions-left">
-        
+
             <button className="action-btn">
               <i className="far fa-comment"></i>
               <span>{mockComments.length}</span>
             </button>
-     
+
           </div>
           <button
             className={`save-btn ${saved ? 'saved' : ''}`}
-            onClick={() => setSaved(!saved)}
+            onClick={handleSaveClick}
           >
             <i className={`${saved ? 'fas' : 'far'} fa-heart`}></i>
           </button>
@@ -247,7 +270,7 @@ if(!data){
               <div className="meta-value">{getDifficultyText(data.difficultyLevel)}</div>
               <div className="meta-label">רמת קושי</div>
             </div>
-         
+
           </div>
         </div>
 
