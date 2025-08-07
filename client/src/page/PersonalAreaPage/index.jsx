@@ -22,11 +22,14 @@ const data = user;
 
 
 
-   const handleLogout = () => {
+   const handleLogout = async () => {
     // מחיקת הטוקן מהקוקי
-    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    
-    // ניקוי נתוני המשתמש מה-store
+   // שליחת בקשה לשרת למחיקת הטוקן
+     const res = await axiosRequest({
+        url: '/user/logout', // או כל endpoint שיש לך להתנתקות
+        method: 'POST'
+      });
+
     clearUser();
     
     // מעבר לדף התחברות
@@ -99,7 +102,7 @@ const data = user;
             <Link to="/settings" className="edit-profile-btn">
               ✏️ ערוך פרופיל
             </Link>
-            <button onClick={handleLogout} className="logout-btn">
+            <button onClick={handleLogout} className="edit-profile-btn">
                 🚪 התנתק
               </button>
           </div>
