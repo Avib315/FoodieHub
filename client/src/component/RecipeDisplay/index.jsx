@@ -10,7 +10,7 @@ import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
 
-export default function RecipesDisplay({ data = [] }) {
+export default function RecipesDisplay({ data = [], isMyRecipes, addSaveBtn=true }) {
   // State for filtered data - this is what gets displayed
   const [filteredData, setFilteredData] = useState(data);
 
@@ -32,10 +32,12 @@ export default function RecipesDisplay({ data = [] }) {
         <div className='recipes-list'>
           {/* Display filtered data, not original data */}
           {filteredData.map(recipe => (
-            <RecipeCard 
-              key={recipe._id} 
-              recipe={recipe} 
-              id={recipe._id} 
+            <RecipeCard
+            addSaveBtn={addSaveBtn}
+              isMyRecipes={isMyRecipes}
+              key={recipe._id}
+              recipe={recipe}
+              id={recipe._id}
             />
           ))}
         </div>

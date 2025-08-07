@@ -19,8 +19,8 @@ export default function NotificationPage() {
     console.log(res)
   }
 
-  async function removeNotification() {
-    const res = await axiosRequest({ url: "/notification/delete/:id", method: "DELETE" })
+  async function removeNotification(id) {
+    const res = await axiosRequest({ url: `/notification/delete/${id}`, method: "DELETE" })
     console.log(res)
   }
   // מה שקורל עשתה -------------------------------------

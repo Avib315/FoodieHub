@@ -12,7 +12,7 @@ import './style.scss'
 import difLevel from '../../data/difLevel'
 import { Link, useParams } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest'
-export default function RecipeCard({ recipe , addSaveBtn = true }) {
+export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
   const [isSaved, setIsSaved] = useState(false)
 
   // Destructure recipe data with fallbacks
@@ -64,13 +64,18 @@ export default function RecipeCard({ recipe , addSaveBtn = true }) {
       recipeId: _id
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
-    console.log(res)
+    if(res){
+      alert("מתכון נשמר בהצלחה")
+    }
   }
-
+  
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${_id}`, method: "DELETE" })
-    console.log(res)
+    if(res){
+      alert("מתכון נשמר בהצלחה")
+    }
   }
+
 
   // Generate star rating
   const renderStars = () => {
@@ -121,29 +126,30 @@ export default function RecipeCard({ recipe , addSaveBtn = true }) {
     }
   }
 
+
   return (
-    <div className="recipe-card">
+    <div className={`recipe-card ${recipe.status}`}>
       <Link to={`/recipe/${_id}`} className="recipe-link">
-      <div className="card-header">
-        <div className="user-avatar">
-          {getUserInitial(fullName)}
+        <div className="card-header">
+          {!isMyRecipes && <><div className="user-avatar">
+            {getUserInitial(fullName)}
+          </div>
+            <div className="user-info">
+              <h3>{fullName}</h3>
+              <span>{formatDate(updatedAt)}</span>
+            </div> </>}
         </div>
-        <div className="user-info">
-          <h3>{fullName}</h3>
-          <span>{formatDate(updatedAt)}</span>
-        </div>
-      </div>
 
-      <div
-        className="recipe-image"
-        style={getImageStyle()}
-      >
-        <div className="recipe-overlay">
-          <p>{description}</p>
+        <div
+          className="recipe-image"
+          style={getImageStyle()}
+        >
+          <div className="recipe-overlay">
+            <p>{description}</p>
+          </div>
         </div>
-      </div>
 
-          </Link>
+      </Link>
       <div className="recipe-info">
         <h2 className="recipe-title">{title}</h2>
         <p className="recipe-description">{description}</p>
@@ -176,11 +182,12 @@ export default function RecipeCard({ recipe , addSaveBtn = true }) {
             className={`save-btn ${isSaved ? 'saved' : ''}`}
             onClick={toggleSave}
             aria-label={isSaved ? 'בטל שמירה' : 'שמור מתכון'}
-            >   
+          >
             {isSaved ? <AiFillHeart /> : <AiOutlineHeart />}
           </button>}
         </div>
       </div>
+      <p className='pendingOrReject'>{recipe.status == "pending" ? "מחכה לאישור" : recipe.status == "rejected" ? "מנהל הסיר את המתכון" : ""} </p>
     </div>
   )
 }
