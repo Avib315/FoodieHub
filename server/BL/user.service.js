@@ -96,8 +96,12 @@ async function register(body) {
 
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email.trim()) || !usernameRegex.test(body.username.trim())) {
-        console.log("register: Invalid email or username format");
+    if (!emailRegex.test(body.email.trim())) {
+        console.log("register: Invalid email format");
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+    if (!usernameRegex.test(body.username.trim())) {
+        console.log("register: Invalid username format");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
