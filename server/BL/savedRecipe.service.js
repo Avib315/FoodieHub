@@ -54,8 +54,12 @@ async function getSavedRecipes(userId) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
     // savedRecipes = ["dsadjsa;"]
-    const savedRecipesWithDetails =user.savedRecipes?.map(async (e)=> {return await recipeController.readWithUserAndRatings({ _id: e._id })}); 
-     
+    const savedRecipesWithDetails = await Promise.all(
+        user.savedRecipes?.map((e) =>
+            recipeController.readWithUserAndRatings({ _id: e._id })
+        )
+    );
+
     // const savedRecipes = await Promise.all(
     //     user.savedRecipes.map(async (savedRecipe) => {
     //         const recipeDetails = await getRecipeById(savedRecipe._id.toString());
@@ -66,7 +70,7 @@ async function getSavedRecipes(userId) {
     //     throw new Error(ApiMessages.errorMessages.notFound);
     // }
 
-  
+
 
     return savedRecipesWithDetails;
 }
