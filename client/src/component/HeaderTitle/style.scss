@@ -1,0 +1,30 @@
+ @use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+ 
+ .page-header {
+    padding: $spacing-xl $spacing-lg;
+    background: $bg-white;
+    @include shadow(light);
+    border-bottom: 1px solid $border-color;
+    text-align: center;
+
+    .page-title {
+      font-size: $font-4xl;
+      font-weight: $font-bold;
+      color: $text-color;
+      margin: 0;
+      @include gradient-bg();
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+
+      @include tablet {
+        font-size: $font-3xl;
+      }
+
+      @include mobile {
+        font-size: $font-2xl;
+      }
+    }
+  }
