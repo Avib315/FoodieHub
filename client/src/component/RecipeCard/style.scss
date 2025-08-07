@@ -9,6 +9,32 @@
   @include transition();
   border: 1px solid rgba($border-color, 0.5);
   cursor: pointer;
+  position: relative;
+
+  &.pending,
+  &.rejected {
+    opacity: .6 !important;
+
+    .pendingOrReject {
+
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translateY(-50%)  translateX(-50%)  ;
+      font-size: 20px;
+      background-color: rgb(255, 208, 55);
+      width: 80%;
+      max-width: 200px;
+      text-align: center;
+      border-radius: 10px;
+    }
+  }
+
+  &.rejected {
+ .pendingOrReject {
+        background-color: red;
+  }
+  }
 
   &:hover {
     @include shadow(medium);
@@ -197,9 +223,17 @@
 
 // Animations
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 // Mobile responsiveness

@@ -27,6 +27,7 @@ import AdminLogin from './adminPages/AdmnLogin/index.jsx'
 import AdminPage from './adminPages/AdminPage/index.jsx'
 import RecipesPanel from './adminPages/RecipesPanel/index.jsx'
 import UserPanel from './adminPages/UsersPanel/index.jsx'
+import MyRecipesPage from './page/MyRecipesPage/index.jsx'
 
 function App() {
   return (
@@ -93,7 +94,9 @@ function App() {
         <Route path="/new-recipe" element={
           <ProtectedPage element={<NewRecipePage />} />
         } />
-
+        <Route path="/my-recipes" element={
+          <ProtectedPage element={<MyRecipesPage />} />
+        } />
         <Route path="/edit-recipe/:id" element={
           <ProtectedPage element={<NewRecipePage />} />
 
@@ -116,16 +119,16 @@ function App() {
           <PninaSwaggerAPITester />
         } />
 
-          <Route path="/admin-login" element={
+        <Route path="/admin-login" element={
           <AdminLogin />
         } />
-          <Route path="/admin-panel" element={
+        <Route path="/admin-panel" element={
           <AdminPage />
         } />
-          <Route path="/admin-recipe-panel" element={
+        <Route path="/admin-recipe-panel" element={
           <RecipesPanel />
         } />
-          <Route path="/admin-users-panel" element={
+        <Route path="/admin-users-panel" element={
           <UserPanel />
         } />
         {/* Utility Routes */}
