@@ -3,7 +3,11 @@ import './style.scss'
 import { AiOutlineClose, AiOutlineFilter } from 'react-icons/ai'
 import SearchBar from '../SerchBar'
 import DropDown from '../DropDown'
+import categoryOptions from '../../data/options/categoryOptions'
+import difLevelOptions from '../../data/options/difLevelOption'
 export default function FilterBar({ data }) {
+  console.log("data FilterBar:" ,data);
+  
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
   const handleFilterSelect = (option) => {
@@ -22,6 +26,31 @@ export default function FilterBar({ data }) {
   const closeMobileFilter = () => {
     setIsMobileFilterOpen(false)
   }
+  const handelSearch = () => {
+    // Implement search logic here
+    console.log("Search clicked")
+  }
+  const FilterElements = ()=>{
+    return (
+      <>
+            <SearchBar label="חיפוש מתכונים..." />
+            <DropDown
+              options={difLevelOptions}
+              onSelect={handleFilterSelect}
+              name="חיפוש לפי קטגוריה..."
+            />
+            <DropDown
+              options={categoryOptions}
+              onSelect={handleFilterSelect}
+              name="סינון לפי..."
+            />
+            <button onClick={() => handelSearch()}>חיפוש</button>
+          </>
+    )
+  }
+
+
+
   return (
     <>
       <div className={`filter-container ${isMobileFilterOpen ? 'mobile-open' : ''}`}>
@@ -32,34 +61,14 @@ export default function FilterBar({ data }) {
               <AiOutlineClose />
             </button>
             <h3>סינון מתכונים</h3>
-            <SearchBar label="חיפוש מתכונים..." />
-            <DropDown
-              options={['בשרי', 'חלבי', 'צמחוני']}
-              onSelect={handleFilterSelect}
-              name="חיפוש לפי קטגוריה..."
-            />
-            <DropDown
-              options={['פופולרי', 'חדש', 'מומלץ']}
-              onSelect={handleFilterSelect}
-              name="סינון לפי..."
-            />
+            <FilterElements />
           </div>
         )}
 
         {/* Desktop/Tablet filters */}
         {!isMobileFilterOpen && (
           <>
-            <SearchBar label="חיפוש מתכונים..." />
-            <DropDown
-              options={['בשרי', 'חלבי', 'צמחוני']}
-              onSelect={handleFilterSelect}
-              name=" קטגוריה..."
-            />
-            <DropDown
-              options={['פופולרי', 'חדש', 'מומלץ']}
-              onSelect={handleFilterSelect}
-              name="סינון לפי..."
-            />
+          <FilterElements />
           </>
         )}
       </div>
