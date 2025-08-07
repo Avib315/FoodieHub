@@ -7,7 +7,7 @@ import categoryOptions from '../../data/options/categoryOptions'
 import difLevelOptions from '../../data/options/difLevelOption'
 import ratingOptions from '../../data/options/ratingOptions'
 import timeOptions from '../../data/options/timeOptions'
-export default function FilterBar({ data }) {
+export default function FilterBar({ data, setData }) {
   console.log("data FilterBar:", data);
   console.log("FilterBar render");
 
@@ -35,6 +35,7 @@ export default function FilterBar({ data }) {
   const handelSearch = () => {
     // Implement search logic here ysing searchTerm
     console.log("Search clicked")
+    setData(data.filter(r => r.title.includes(searchTerm)))
   }
 
   const handleSearchChange = (e) => {
