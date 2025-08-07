@@ -11,6 +11,8 @@ const ApiMessages = require("../common/apiMessages.js");
 async function login(adminInput) {
     if (!adminInput || !adminInput.email || !adminInput.email.trim() ||
         !adminInput.password || adminInput.password.trim() === '') {
+        console.log(ApiMessages.errorMessages.missingRequiredFields);
+        
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 

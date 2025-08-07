@@ -12,8 +12,8 @@ const validTargetTypes = ['user', 'recipe', 'comment', 'system'];
 // Create a new admin log entry
 async function createLog(data) {
     if (!data.action || !data.targetType) {
+        console.log("createLog: Missing required fields: action or targetType");
         return false;
-        console.log(ApiMessages.errorMessages.missingRequiredFields);
     }
     if (
         typeof data.action !== 'string' ||
@@ -22,15 +22,16 @@ async function createLog(data) {
         !validTargetTypes.includes(data.targetType) ||
         (data.targetId && !data.targetId.match(/^[0-9a-fA-F]{24}$/))
     ) {
+        console.log("createLog: Invalid data format or values provided");
         return false;
-        console.log(ApiMessages.errorMessages.invalidData);
+        
     }
 
     const result = await adminLogController.create(data);
 
     if (!result || !result._id) {
-        return false;
         console.log(ApiMessages.errorMessages.creationFailed);
+        return false;
     }
     return result._id;
 }
@@ -39,26 +40,28 @@ async function createLog(data) {
 async function getAllLogs(filters = {}) {
     if (Object.keys(filters).includes('action')) {
         if (!validActions.includes(filters.action) || filters.action === '') {
-            return false;
             console.log(ApiMessages.errorMessages.invalidData);
+            return false;
+            
         }
     }
     if (Object.keys(filters).includes('targetType')) {
         if (!validTargetTypes.includes(filters.targetType) || filters.targetType === '') {
-            return false;
             console.log(ApiMessages.errorMessages.invalidData);
+            return false;
+            
         }
     }
     if (Object.keys(filters).includes('targetId') && !filters.targetId.match(/^[0-9a-fA-F]{24}$/)) {
-        return false;
         console.log(ApiMessages.errorMessages.invalidData);
+        return false;
     }
 
     const logs = await adminLogController.read(filters);
 
     if (!logs || logs.length === 0) {
-        return false;
         console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
     return logs;
 }
@@ -67,23 +70,23 @@ async function getAllLogs(filters = {}) {
 async function getLogsByTarget(targetType, targetId) {
     if (targetType !== 'system') {
         if (!targetType || !targetId) {
-            return false;
             console.log(ApiMessages.errorMessages.missingRequiredFields);
+            return false;
         }
         if (!targetId.match(/^[0-9a-fA-F]{24}$/) ||
             typeof targetType !== 'string' ||
             !validTargetTypes.includes(targetType)
         ) {
-            return false;
             console.log(ApiMessages.errorMessages.invalidData);
+            return false;
         }
     }
 
     const logs = await adminLogController.read({ targetType, targetId });
 
     if (!logs || logs.length === 0) {
-        return false;
         console.log(ApiMessages.errorMessages.notFound);
+        return false;
     }
     return logs;
 }
