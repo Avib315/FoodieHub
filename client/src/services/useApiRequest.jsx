@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import axiosRequest  from './axiosRequest';
-
+import axiosRequest from './axiosRequest';
 
 const useApiRequest = (
   { url,
@@ -12,40 +11,45 @@ const useApiRequest = (
 ) => {
 
   const [data, setData] = useState(defaultValue);
-  const[loading , setLoading] = useState()
+  const [loading, setLoading] = useState(true); // Start with loading true
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     const getData = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
+        setError(null);
+        
         const response = await axiosRequest({
           url: `${url}`,
           method,
-          body:body
+          body: body
         });
         
+        console.log('API Response:', response);
+        
         if (response?.data?.success) {
-          const data = response.data.data
-          console.log(response);
-          
-          if (response?.data) {
-            setData(data);
-          }
-        }
-        else {
-          if (errorMessage) {
-            console.log(errorMessage)
-          }
+          const responseData = response.data.data;
+          setData(responseData);
+        } else {
+          // Handle unsuccessful response
+          const errorMsg = response?.data?.message || errorMessage || 'Unknown error occurred';
+          setError(errorMsg);
+          console.error('API Error:', errorMsg);
         }
       } catch (err) {
-      }
-      finally{
-        setLoading(false)
+        const errorMsg = err.message || errorMessage || 'Network error occurred';
+        setError(errorMsg);
+        console.error('Request Error:', err);
+      } finally {
+        setLoading(false);
       }
     };
-getData()
-  }, dependencies);
 
-  return { setData, data , loading };
+    getData();
+  }, [url, method, JSON.stringify(body), JSON.stringify(dependencies), errorMessage]);
+
+  return { setData, data, loading, error };
 };
 
 export default useApiRequest;

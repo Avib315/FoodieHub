@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './style.scss'
 import RecipeCard from '../../component/RecipeCard'
 import SearchBar from '../../component/SerchBar'
@@ -10,35 +10,51 @@ import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
 
-export default function RecipesDisplay({ data = [] , setData}) {
+export default function RecipesDisplay({ data = [] }) {
+  // State for filtered data - this is what gets displayed
+  const [filteredData, setFilteredData] = useState(data);
 
-
-
+  // Update filtered data when original data changes
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
 
   return (
     <>
       <div className='recipes-page'>
         {/* Desktop/Tablet Filter Container */}
-        <FilterBar data={data} setData={setData} />
-        
-
-
+        <FilterBar 
+          originalData={data} 
+          data={filteredData} 
+          setData={setFilteredData} 
+        />
 
         <div className='recipes-list'>
-          {data.map(recipe => (
-            <>
-  
-                <RecipeCard key={recipe._id} recipe={recipe} id={recipe._id} />
-            </>
+          {/* Display filtered data, not original data */}
+          {filteredData.map(recipe => (
+            <RecipeCard 
+              key={recipe._id} 
+              recipe={recipe} 
+              id={recipe._id} 
+            />
           ))}
         </div>
 
-        {/* Empty State Example */}
+        {/* Empty State */}
+        {filteredData.length === 0 && data.length > 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">🔍</div>
+            <h3>לא נמצאו מתכונים</h3>
+            <p>נסה לשנות את קריטריוני החיפוש או נקה את הסינונים</p>
+          </div>
+        )}
+
+        {/* No Data State */}
         {data.length === 0 && (
           <div className="empty-state">
             <div className="empty-icon">🍳</div>
-            <h3>לא נמצאו מתכונים</h3>
-            <p>נסה לשנות את קריטריוני החיפוש או נקה את הסינונים</p>
+            <h3>אין מתכונים זמינים</h3>
+            <p>טוען מתכונים או שאין מתכונים במערכת</p>
           </div>
         )}
       </div>

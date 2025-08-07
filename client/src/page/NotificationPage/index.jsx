@@ -181,7 +181,7 @@ export default function NotificationPage() {
             </p>
           </div>
         ) : (
-          filteredNotifications.map((notification, index) => (
+          filteredNotifications?.reverse()?.map((notification, index) => (
             <div
               key={notification._id}
               className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
