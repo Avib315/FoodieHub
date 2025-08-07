@@ -1,6 +1,7 @@
 import React from 'react'
 import './style.scss'
-export default function DropDown({ options, onSelect  ,name}) {
+export default function DropDown({ options, onSelect, name }) {
+  console.log("Dropdown X render");
   return (
     <div className='drop-down'>
       <button className='drop-down-btn'>{name}</button>
