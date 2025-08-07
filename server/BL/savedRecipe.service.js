@@ -1,9 +1,10 @@
-const savedRecipeController = require("../DL/controllers/savedRecipe.controller.js");
 const bcrypt = require('bcrypt');
+const savedRecipeController = require("../DL/controllers/savedRecipe.controller.js");
 const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
 const { getRecipeById } = require('./recipe.service.js');
-
+const { getRecipesWithDetails } = require('./reciepDetails.service.js')
+const recipeController = require("../DL/controllers/recipe.controller.js");
 // Add recipe to saved list
 async function addSavedRecipe(userId, recipeId) {
     if (!userId || !recipeId) {
@@ -48,30 +49,26 @@ async function getSavedRecipes(userId) {
     }
 
     const user = await savedRecipeController.read(userId);
-
-    if (!user || !user.savedRecipes) {
-        console.log("getSavedRecipes: User not found or no saved recipes");
+    if (!user) {
+        console.log("getSavedRecipes: User not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
+    // savedRecipes = ["dsadjsa;"]
+    const savedRecipesWithDetails =user.savedRecipes?.map(async (e)=> {return await recipeController.readWithUserAndRatings({ _id: e._id })}); 
+     
+    // const savedRecipes = await Promise.all(
+    //     user.savedRecipes.map(async (savedRecipe) => {
+    //         const recipeDetails = await getRecipeById(savedRecipe._id.toString());
+    //     })
+    // );
+    // if (!savedRecipes || savedRecipes.length === 0) {
+    //     console.log("getSavedRecipes: No saved recipes found for user");
+    //     throw new Error(ApiMessages.errorMessages.notFound);
+    // }
 
-    // שלוף פרטים מלאים לכל מתכון שמור
-    const savedRecipesWithDetails = await Promise.all(
-        user.savedRecipes.map(async (savedRecipe) => {
-            const recipeDetails = await getRecipeById(savedRecipe._id.toString());
-
-            return {
-                ...savedRecipe,
-                creatorFullName: recipeDetails.fullName || 'Unknown User',
-                creatorUserName: recipeDetails.userName || 'Unknown User',
-                averageRating: recipeDetails.averageRating || 0,
-                ratingsCount: recipeDetails.ratingsCount || 0
-            };
-        })
-    );
+  
 
     return savedRecipesWithDetails;
-
-    return user.savedRecipes;
 }
 
 
@@ -157,10 +154,23 @@ async function countSavedRecipes(userId) {
 
     return count;
 }
+// const savedRecipesWithDetails = await Promise.all(
+//     user.savedRecipes.map(async (savedRecipe) => {
+//         const recipeDetails = await getRecipeById(savedRecipe._id.toString());
 
+//         return {
+//             ...savedRecipe,
+//             creatorFullName: recipeDetails.fullName || 'Unknown User',
+//             creatorUserName: recipeDetails.userName || 'Unknown User',
+//             averageRating: recipeDetails.averageRating || 0,
+//             ratingsCount: recipeDetails.ratingsCount || 0
+//         };
+//     })
+// );
 module.exports = {
     addSavedRecipe,
     getSavedRecipes,
     removeSavedRecipe,
     countSavedRecipes
 };
+
