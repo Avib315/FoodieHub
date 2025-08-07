@@ -1,5 +1,6 @@
 const commentController = require("../DL/controllers/comment.controller.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
+const userController = require("../DL/controllers/user.controller.js");
 const { addRecipeCommentedNotification } = require("./notification.service.js");
 const ApiMessages = require("../common/apiMessages.js");
 
@@ -18,15 +19,39 @@ async function getRecipeComments(recipeId) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
-    // הסר את userId מכל הערה לפני החזרה
-    const sanitizedComments = comments.map(comment => {
-        // אם זה Mongoose document, המר לאובייקט רגיל
-        const commentObj = comment.toObject ? comment.toObject() : comment;
-        const { userId, ...commentWithoutUserId } = commentObj;
-        return commentWithoutUserId;
-    });
+    // הוסף את שם המשתמש לכל הערה ותסיר את userId
+    const commentsWithUserName = await Promise.all(
+        comments.map(async (comment) => {
+            // אם זה Mongoose document, המר לאובייקט רגיל
+            const commentObj = comment.toObject ? comment.toObject() : comment;
+            
+            // שלוף את שם המשתמש
+            let userName = 'Unknown User';
+            let fullName = 'Unknown User';
+            
+            if (commentObj.userId) {
+                try {
+                    const user = await userController.readOne({ _id: commentObj.userId });
+                    if (user) {
+                        userName = user.username || 'Unknown User';
+                        fullName = user.firstName + " " + user.lastName;
+                    }
+                } catch (error) {
+                    console.error('Error fetching user for comment:', error);
+                }
+            }
+            
+            // החזר הערה ללא userId אבל עם שם המשתמש
+            const { userId, ...commentWithoutUserId } = commentObj;
+            return {
+                ...commentWithoutUserId,
+                userName: userName,
+                fullName: fullName
+            };
+        })
+    );
 
-    return sanitizedComments;
+    return commentsWithUserName;
 }
 
 // Create a new comment
