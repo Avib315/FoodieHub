@@ -1,6 +1,7 @@
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
 const ratingController = require("./rating.service.js");
+const commentService = require("./comment.service.js");
 const SavedRecipeService = require("./savedRecipe.service.js");
 const adminLogService = require("./adminLog.service.js");
 const ApiMessages = require("../common/apiMessages.js");
@@ -45,14 +46,16 @@ async function getRecipeById(id) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
-    // ביצוע שליפת המשתמש והדירוגים במקביל
-    const [userResult, ratingResult] = await Promise.all([
+    // ביצוע כל השליפות במקביל (כולל ההערות!)
+    const [userResult, ratingResult, comments] = await Promise.all([
         recipe.userId ? userController.readOne({ _id: recipe.userId }) : Promise.resolve(null),
-        ratingController.getAllRatings(id)
+        ratingController.getAllRatings(id),
+        commentService.getRecipeComments(id).catch(() => []) // אם אין הערות, החזר מערך ריק
     ]);
 
     // עיבוד התוצאות
     const userName = userResult?.username || 'Unknown User';
+    const fullName = userResult?.firstName + " " + userResult?.lastName || 'Unknown User';
     const averageRating = ratingResult.data.averageRating;
     const totalRatings = ratingResult.data.totalCount;
 
@@ -64,8 +67,10 @@ async function getRecipeById(id) {
     return {
         ...recipeWithoutUserId,
         userName: userName,
+        fullName: fullName,
         averageRating: averageRating,
-        ratingsCount: totalRatings
+        ratingsCount: totalRatings,
+        comments: comments // עכשיו זה יעבוד!
     };
 }
 

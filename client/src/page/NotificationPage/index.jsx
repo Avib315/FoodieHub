@@ -23,8 +23,10 @@ async function markAsRead() {
     console.log(res)
   }
 
-async function renoveNotification(){} // מחכה שפנינה תיצור את הבקשה בשרת 
-
+async function renoveNotification(){
+    const res = await axiosRequest({ url: "/notification/delete/:id", method: "DELETE" })
+    console.log(res)
+} 
 // מה שקורל עשתה -------------------------------------
 
 
