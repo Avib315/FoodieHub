@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import useAxiosRequest from '../../services/useApiRequest';
 import Table from '../../component/Table';
 import './style.scss';
 
@@ -23,6 +24,11 @@ const initialUserData = [
 ];
 
 export default function UserPanel() {
+
+  //--------------------------מה שקורל עשתה---------------------------
+   const { data } = useAxiosRequest({ url: `/admin/getAllUsers` , method:"GET" });
+  console.log(data);
+
   const [userData, setUserData] = useState(initialUserData);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,6 +38,9 @@ export default function UserPanel() {
 
   // Get unique roles for filter
   const roles = [...new Set(userData.map(user => user.role))];
+
+ 
+  
 
   // Filter users based on search and filters
   const filteredUsers = userData.filter(user => {
