@@ -10,7 +10,7 @@ import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
 
-export default function RecipesDisplay({ data = []}) {
+export default function RecipesDisplay({ data = [] , setData}) {
 
 
 
@@ -19,7 +19,7 @@ export default function RecipesDisplay({ data = []}) {
     <>
       <div className='recipes-page'>
         {/* Desktop/Tablet Filter Container */}
-        <FilterBar data={data}/>
+        <FilterBar data={data} setData={setData} />
         
 
 

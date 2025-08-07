@@ -13,13 +13,13 @@ import HeaderTitle from '../../component/HeaderTitle'
 import useUserStore from '../../store/userStore'
 
 export default function RecipesPage() {
-  const { data } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
+  const { data , setData } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
   useUserStore.getState().setUser(data.user)
   
   return (
     <>
       <HeaderTitle title="מתכוני הקהילה" />
-      <RecipesDisplay data={data?.recipes} />
+      <RecipesDisplay data={data?.recipes} setData={setData} />
     </>
   )
 }
