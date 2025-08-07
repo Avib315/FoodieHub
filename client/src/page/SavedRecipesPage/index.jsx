@@ -5,17 +5,19 @@ import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import RecipesDisplay from '../../component/RecipeDisplay';
 import HeaderTitle from '../../component/HeaderTitle';
+import useApiRequest from '../../services/useApiRequest';
 
 export default function SavedRecipesPage() {
 
 
-  const { data, loading } = useApiRequest({ url: "/savedRecipe/getAll", defaultValue: [], method: "GET" })
-
+  const { data, setData,loading } = useApiRequest({ url: "/savedRecipe/getAll", defaultValue: [], method: "GET" })
+  console.log("SavedRecipesPage data:", data);
+  
   return (
        <>
 
       <HeaderTitle title="מתכונים שאהבתי" />
-    <RecipesDisplay pageType="saved" data={data}/> 
+    <RecipesDisplay pageType="saved" setData={setData} data={data}/> 
        </>
   )
 }

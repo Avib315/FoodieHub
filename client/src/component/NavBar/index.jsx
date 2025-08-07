@@ -9,13 +9,20 @@ import {
   AiOutlineSetting 
 } from "react-icons/ai"
 import './style.scss'
+import useUserStore from '../../store/userStore'
 
 export default function NavBar() {
+  const {user} = useUserStore()
+  const badgeCount = user?.notifications || 0; // Assuming user.notifications is an array of notifications
+  const badgeObj = {}
+  if(badgeCount !== 0 ) {
+    badgeObj.badge = badgeCount
+  }
   const navArr = [
     { name: 'Home', path: '/', icon: <AiFillHome />, label: 'בית' },
     { name: 'Personal Area', path: '/personal-area', icon: <AiOutlineUser />, label: 'איזור אישי' },
     // { name: 'Shopping List', path: '/shopping-list', icon: <AiOutlineShoppingCart />, label: 'קניות' },
-    { name: 'Notifications', path: '/notifications', icon: <AiOutlineBell />, label: 'התראות', badge: 3 },
+    { name: 'Notifications', path: '/notifications', icon: <AiOutlineBell />, label: 'התראות', ...badgeObj },
     { name: 'New Recipe', path: '/new-recipe', icon: <AiOutlinePlusCircle />, label: 'הוסף מתכון' },
     { name: 'Settings', path: '/settings', icon: <AiOutlineSetting />, label: 'הגדרות' }
   ]
