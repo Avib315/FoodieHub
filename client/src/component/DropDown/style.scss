@@ -2,8 +2,10 @@
   position: relative;
   display: inline-block;
   direction: rtl;
+  min-width: 160px;
 
-  &-btn {
+  &-select {
+    width: 100%;
     background-color: #f9f9f9;
     color: #333;
     padding: 12px 16px;
@@ -11,83 +13,91 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     cursor: pointer;
-    min-width: 160px;
     text-align: right;
-    transition: background-color 0.3s ease;
+    direction: rtl;
+    transition: all 0.3s ease;
+    appearance: none; // Remove default browser styling
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    // Custom dropdown arrow
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: left 12px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-left: 40px;
 
     &:hover {
       background-color: #f1f1f1;
+      border-color: #bbb;
     }
 
     &:focus {
       outline: none;
       border-color: #007bff;
       box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      background-color: white;
     }
 
-    // Add dropdown arrow
-    &::after {
-      content: '▼';
-      float: left;
-      margin-right: 10px;
-      font-size: 12px;
-      transition: transform 0.3s ease;
-    }
-  }
-
-  &-content {
-    display: none;
-    position: absolute;
-    background-color: white;
-    min-width: 100%;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    z-index: 1000;
-    top: 100%;
-    right: 0;
-    margin-top: 2px;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-
-  &-item {
-    color: #333;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    text-align: right;
-
-    &:hover {
-      background-color: #f1f1f1;
+    &:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
     }
 
-    &:first-child {
-      border-radius: 4px 4px 0 0;
+    // Style for placeholder (disabled first option)
+    option:disabled {
+      color: #999;
     }
 
-    &:last-child {
-      border-radius: 0 0 4px 4px;
+    option {
+      padding: 8px;
+      direction: rtl;
+      text-align: right;
     }
   }
 
-  // Show dropdown on hover
-  &:hover {
-    .drop-down-content {
-      z-index: 2;
-      display: block;
-    }
+  // Alternative styling for a more custom look
+  &.custom-style {
+    .drop-down-select {
+      background-color: white;
+      border: 2px solid #e1e5e9;
+      font-weight: 500;
+      
+      &:hover {
+        border-color: #007bff;
+      }
 
-    .drop-down-btn::after {
-      transform: rotate(180deg);
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      }
     }
   }
 
-  // Alternative: Show dropdown on button focus (for keyboard navigation)
-  &-btn:focus + &-content,
-  &-content:hover {
-    display: block;
+  // Dark theme variant
+  &.dark-theme {
+    .drop-down-select {
+      background-color: #2d3748;
+      color: white;
+      border-color: #4a5568;
+      
+      // Dark theme dropdown arrow
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+
+      &:hover {
+        background-color: #4a5568;
+      }
+
+      &:focus {
+        border-color: #007bff;
+        background-color: #2d3748;
+      }
+
+      option {
+        background-color: #2d3748;
+        color: white;
+      }
+    }
   }
 }
