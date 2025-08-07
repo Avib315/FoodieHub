@@ -88,13 +88,14 @@ export default function RecipeDetailPage() {
     setCheckedIngredients(newChecked);
   };
 
-  const renderStars = (rating, interactive = false, onStarClick = null) => {
+  const renderStars = (rating, interactive = true, onStarClick = null) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
         <i
           key={i}
-          className={`fas fa-star ${i <= rating ? 'star' : 'star empty'} ${interactive ? 'rating-star' : ''}`}
+          // className={`fas fa-star ${i <= rating ? 'star' : 'star empty'} ${interactive ? 'rating-star' : ''}`}
+          className={`fas fa-star star ${i <= rating ? '' : 'empty'}`}
           onClick={interactive ? () => onStarClick(i) : undefined}
           data-rating={i}
         />
