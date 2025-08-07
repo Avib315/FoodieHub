@@ -30,20 +30,21 @@ export default function RecipeDetailPage() {
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET" });
   //מה שקורל עשתה -------------------------------
-  async function addRating(rating) {
+  async function addRating(rat) {
     const body = {
       recipeId: id,
-      rating,
+      rating: rat,
       review: ''
     };
     const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
-    console.log(res)
+    console.log(res);
+    return res;
   }
 
   async function addComment() {
     const body = {
-      recipeId: "recipeId",
-      content: "content"
+      recipeId: id,
+      content: commentText
     };
     const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body })
     console.log(res)
@@ -59,7 +60,7 @@ export default function RecipeDetailPage() {
 
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${id}`, method: "DELETE" })
-    console.log(res)
+    return res;
   }
   //מה שקורל עשתה -------------------------------
 
@@ -110,18 +111,24 @@ export default function RecipeDetailPage() {
 
   const submitRating = async () => {
     if (userRating > 0) {
-      try {
-        await addRating(userRating);
+      const result = await addRating(userRating);
+      console.log(result);
+      console.log(result.success);
+      
+      if (result.success === false) {
+        alert('לא ניתן לשלוח דירוג');
+      }
+      else {
         alert(`דירוג נשלח בהצלחה: ${userRating} כוכבים`);
-      } catch (error) {
-        alert('שגיאה בשליחת הדירוג');
-        console.error(error);
       }
     }
   };
 
 
-  const submitComment = () => {
+  const submitComment = async () => {
+    const res = await addComment();
+    console.log("comment", res);
+
     if (commentText.trim()) {
       alert('תגובה נשלחה בהצלחה!');
       setCommentText('');
@@ -224,7 +231,7 @@ export default function RecipeDetailPage() {
           <div className="user-header">
             <div className="user-avatar">{data.userName?.slice(0, 1)}</div>
             <div className="user-info">
-              <h3>{data.userName}</h3>
+              <h3>{data.fullName}</h3>
 
             </div>
 
@@ -399,7 +406,7 @@ export default function RecipeDetailPage() {
                   <div className="comment-avatar">{comment.avatar}</div>
                   <div className="comment-info">
                     <div className="comment-author">{comment.fullName}</div>
-                    <div className="comment-time">{ new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
+                    <div className="comment-time">{new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
                   </div>
                   <div className="comment-rating">
                     {renderStars(comment.rating)}
