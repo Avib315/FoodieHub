@@ -5,11 +5,17 @@ import SearchBar from '../SerchBar'
 import DropDown from '../DropDown'
 import categoryOptions from '../../data/options/categoryOptions'
 import difLevelOptions from '../../data/options/difLevelOption'
-export default function FilterBar({ data }) {
-  console.log("data FilterBar:" ,data);
-  
+import ratingOptions from '../../data/options/ratingOptions'
+import timeOptions from '../../data/options/timeOptions'
+export default function FilterBar({ data, setData }) {
+  console.log("data FilterBar:", data);
+  console.log("FilterBar render");
+
+
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('');
+
   const handleFilterSelect = (option) => {
     console.log(option)
     setActiveFilters(prev => prev + 1)
@@ -27,25 +33,51 @@ export default function FilterBar({ data }) {
     setIsMobileFilterOpen(false)
   }
   const handelSearch = () => {
-    // Implement search logic here
+    // Implement search logic here ysing searchTerm
     console.log("Search clicked")
+    setData(data.filter(r => r.title.includes(searchTerm)))
   }
-  const FilterElements = ()=>{
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handelSearch();
+    }
+  };
+
+  const FilterElements = () => {
     return (
       <>
-            <SearchBar label="חיפוש מתכונים..." />
-            <DropDown
-              options={difLevelOptions}
-              onSelect={handleFilterSelect}
-              name="חיפוש לפי קטגוריה..."
-            />
-            <DropDown
-              options={categoryOptions}
-              onSelect={handleFilterSelect}
-              name="סינון לפי..."
-            />
-            <button onClick={() => handelSearch()}>חיפוש</button>
-          </>
+        <SearchBar
+          label="חיפוש מתכונים..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+        <DropDown
+          options={categoryOptions}
+          onSelect={handleFilterSelect}
+          name="חיפוש לפי קטגוריה"
+        />
+        <DropDown
+          options={difLevelOptions}
+          onSelect={handleFilterSelect}
+          name="חיפוש לפי רמת קושי"
+        />
+        <DropDown
+          options={ratingOptions}
+          onSelect={handleFilterSelect}
+          name="חיפוש לפי דירוג"
+        />
+        <DropDown
+          options={timeOptions}
+          onSelect={handleFilterSelect}
+          name="חיפוש לפי זמן הכנה"
+        />
+        <button onClick={() => handelSearch()}>חיפוש</button>
+      </>
     )
   }
 
@@ -61,14 +93,21 @@ export default function FilterBar({ data }) {
               <AiOutlineClose />
             </button>
             <h3>סינון מתכונים</h3>
-            <FilterElements />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handelSearch();
+              }}
+            >
+              <FilterElements />
+            </form>
           </div>
         )}
 
         {/* Desktop/Tablet filters */}
         {!isMobileFilterOpen && (
           <>
-          <FilterElements />
+            <FilterElements />
           </>
         )}
       </div>
@@ -84,7 +123,7 @@ export default function FilterBar({ data }) {
       {activeFilters > 0 && (
         <div className="results-info">
           <div className="results-count">
-            נמצאו <strong>{arr.length}</strong> מתכונים
+            נמצאו <strong>{data.length}</strong> מתכונים
           </div>
           <button className="clear-filters" onClick={clearAllFilters}>
             נקה סינונים
