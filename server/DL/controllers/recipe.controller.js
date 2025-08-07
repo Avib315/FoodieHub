@@ -54,9 +54,27 @@ const readWithUserAndRatings = async (filter = {}) => {
             $addFields: {
                 username: { 
                     $ifNull: [
-                        { $arrayElemAt: ['$userInfo.username', 0] }, // או username אם זה השדה שלך
+                        { $arrayElemAt: ['$userInfo.username', 0] },
                         'Unknown User'
                     ]
+                },
+                fullName: {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $ne: [{ $arrayElemAt: ['$userInfo.firstName', 0] }, null] },
+                                { $ne: [{ $arrayElemAt: ['$userInfo.lastName', 0] }, null] }
+                            ]
+                        },
+                        then: {
+                            $concat: [
+                                { $arrayElemAt: ['$userInfo.firstName', 0] },
+                                ' ',
+                                { $arrayElemAt: ['$userInfo.lastName', 0] }
+                            ]
+                        },
+                        else: 'Unknown User'
+                    }
                 },
                 averageRating: {
                     $cond: {

@@ -25,6 +25,8 @@ export default function RecipeDetailPage() {
   const [commentText, setCommentText] = useState('');
   const [showCommentActions, setShowCommentActions] = useState(false);
   const {id } = useParams()
+
+  // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data , loading} = useAxiosRequest({ url: `recipe/getById?id=${id}` , method:"GET" });
   //מה שקורל עשתה -------------------------------
   async function addRating() {
@@ -37,7 +39,14 @@ export default function RecipeDetailPage() {
       console.log(res)
     }
 
-  async function addComment(){}
+  async function addComment(){
+        const body= {
+            recipeId: "recipeId",
+            content: "content"
+        };
+      const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body })
+      console.log(res)
+  }
 
   async function saveRecipe(){
     const body = {

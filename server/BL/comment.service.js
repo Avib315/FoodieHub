@@ -18,7 +18,15 @@ async function getRecipeComments(recipeId) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
-    return comments;
+    // הסר את userId מכל הערה לפני החזרה
+    const sanitizedComments = comments.map(comment => {
+        // אם זה Mongoose document, המר לאובייקט רגיל
+        const commentObj = comment.toObject ? comment.toObject() : comment;
+        const { userId, ...commentWithoutUserId } = commentObj;
+        return commentWithoutUserId;
+    });
+
+    return sanitizedComments;
 }
 
 // Create a new comment
