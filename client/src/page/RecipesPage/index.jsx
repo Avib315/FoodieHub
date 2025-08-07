@@ -12,7 +12,9 @@ import RecipesDisplay from '../../component/RecipeDisplay'
 import HeaderTitle from '../../component/HeaderTitle'
 
 export default function RecipesPage() {
-
+  const { data, loading } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
+  console.log("getHomeData",data);
+  
   return (
     <>
       <HeaderTitle title="מתכוני הקהילה" />
