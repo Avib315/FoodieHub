@@ -12,12 +12,16 @@ export default function SavedRecipesPage() {
 
   const { data, setData,loading } = useApiRequest({ url: "/savedRecipe/getAll", defaultValue: [], method: "GET" })
   console.log("SavedRecipesPage data:", data);
-  
+  const unArrayData = data.map(recipe => {
+    return {
+      ...recipe[0],
+    };
+  });
   return (
        <>
 
       <HeaderTitle title="מתכונים שאהבתי" />
-    <RecipesDisplay pageType="saved" setData={setData} data={data}/> 
+    <RecipesDisplay pageType="saved" setData={setData} data={unArrayData}/> 
        </>
   )
 }

@@ -5,6 +5,7 @@ import axiosRequest from '../../services/axiosRequest';
 import categories from '../../data/categories';
 import difLevel from '../../data/difLevel';
 import unitTypes from '../../data/unitTypes';
+import HeaderTitle from '../../component/HeaderTitle';
 
 export default function NewRecipePage() {
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -288,17 +289,15 @@ export default function NewRecipePage() {
 
   return (
     <div className="new-recipe-page">
-      <div className="header">
+  
         <Link to={-1}>
           <button className="back-btn">
             <i className="fas fa-arrow-right"></i>
           </button>
         </Link>
-        <div className="header-content">
-          <h1>הוספת מתכון חדש</h1>
-          <p>שתף את המתכון שלך עם הקהילה</p>
-        </div>
-      </div>
+        <HeaderTitle title={"הוספת מתכון חדש"}/>
+  
+
 
       <div className="form-container">
         <form id="recipeForm" onSubmit={submitRecipe}>

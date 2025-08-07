@@ -23,11 +23,11 @@ export default function RecipesDisplay({ data = [] }) {
     <>
       <div className='recipes-page'>
         {/* Desktop/Tablet Filter Container */}
-        <FilterBar 
+        {/* <FilterBar 
           originalData={data} 
           data={filteredData} 
           setData={setFilteredData} 
-        />
+        /> */}
 
         <div className='recipes-list'>
           {/* Display filtered data, not original data */}

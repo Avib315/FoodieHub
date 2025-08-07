@@ -32,9 +32,7 @@ async function adminAuth(req, res, next) {
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) {
                 return res.status(403).send({ message: 'Failed to authenticate token.' });
-            }
-            console.log(user.role);
-            
+            }            
             if (user.role !== 'admin') {
                 return res.status(403).send({ message: 'Access denied. Admin role required.' });
             }

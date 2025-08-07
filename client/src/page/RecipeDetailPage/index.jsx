@@ -6,17 +6,12 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import LoadingPage from '../LoadingPage';
 import unitTypes from '../../data/unitTypes';
+import useUserStore from '../../store/userStore';
 
 // Mock data based on the provided structure
 
 // Mock user data
-const userData = {
-  name: "שרה כהן",
-  avatar: "ש",
-  recipesCount: 156,
-  followersCount: 2300,
-  joinedYear: 2022
-};
+
 
 export default function RecipeDetailPage() {
   const [liked, setLiked] = useState(false);
@@ -27,7 +22,7 @@ export default function RecipeDetailPage() {
   const [commentText, setCommentText] = useState('');
   const [showCommentActions, setShowCommentActions] = useState(false);
   const { id } = useParams()
-
+  const { user } = useUserStore()
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET" });
   //מה שקורל עשתה -------------------------------
@@ -41,7 +36,8 @@ export default function RecipeDetailPage() {
     console.log(res);
     return res;
   }
-
+ 
+  
   async function addComment() {
     const body = {
       recipeId: id,
@@ -115,7 +111,7 @@ export default function RecipeDetailPage() {
       const result = await addRating(userRating);
       console.log(result);
       console.log(result.success);
-      
+
       if (result.success === false) {
         alert('לא ניתן לשלוח דירוג');
       }
@@ -341,20 +337,21 @@ export default function RecipeDetailPage() {
                 {data.averageRating} מתוך 5 ({data.ratingsCount} דירוגים)
               </div>
             </div>
-
-            <div className="your-rating">
-              <h4>דרג את המתכון</h4>
-              <div className="rating-input">
-                {renderStars(userRating, true, setRating)}
+            {data.userName != user.username &&
+              <div className="your-rating">
+                <h4>דרג את המתכון</h4>
+                <div className="rating-input">
+                  {renderStars(userRating, true, setRating)}
+                </div>
+                <button
+                  className="rating-submit"
+                  onClick={submitRating}
+                  disabled={userRating === 0}
+                >
+                  שלח דירוג
+                </button>
               </div>
-              <button
-                className="rating-submit"
-                onClick={submitRating}
-                disabled={userRating === 0}
-              >
-                שלח דירוג
-              </button>
-            </div>
+            }
           </div>
         </div>
 
@@ -365,7 +362,7 @@ export default function RecipeDetailPage() {
               <i className="fas fa-comments"></i>
               תגובות ({data.comments.length})
             </h2>
-  
+
           </div>
 
           {/* Comment Form */}
@@ -406,7 +403,7 @@ export default function RecipeDetailPage() {
                     <div className="comment-author">{comment.fullName}</div>
                     <div className="comment-time">{new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
                   </div>
-           
+
                 </div>
                 <div className="comment-text">{comment.content}</div>
                 <div className="comment-actions">

@@ -12,24 +12,13 @@ const userColumns = [
   { actions: 'פעולות', field: 'actions', typeof: 'actions' }
 ];
 
-const initialUserData = [
-  {
-    id: 4,
-    userName: 'אורן',
-    email: 'oren@example.com',
-    role: 'user',
-    status: 'active',
-    createdAt: '2024-04-01',
-  }
-];
 
 export default function UserPanel() {
 
   //--------------------------מה שקורל עשתה---------------------------
    const { data } = useAxiosRequest({ url: `/admin/getAllUsers` , method:"GET" });
-  console.log(data);
 
-  const [userData, setUserData] = useState(initialUserData);
+  const [userData, setUserData] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -263,7 +252,7 @@ export default function UserPanel() {
         <div className="table-section">
           <Table 
             tableColumns={userColumns} 
-            tableData={tableDataWithActions}
+            tableData={data}
             loading={loading}
             emptyMessage="לא נמצאו משתמשים"
             striped={true}
