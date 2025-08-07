@@ -15,6 +15,9 @@ export default async function axiosRequest({ method = "POST", body = {}, url = "
     }
     catch (err) {
         console.error(err)
-        return null;
+        return {
+            success: false
+        }
+
     }
 }
