@@ -1,17 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './style.scss'
-export default function DropDown({ options, onSelect, name }) {
-  console.log("Dropdown X render");
+
+export default function DropDown({ options, onSelect, name, defaultValue = "", placeholder = "בחר אפשרות" }) {
   return (
     <div className='drop-down'>
-      <button className='drop-down-btn'>{name}</button>
-      <div className='drop-down-content'>
+      <select 
+        className='drop-down-select' 
+        onChange={onSelect}
+        name={name}
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
         {options.map((option, index) => (
-          <div key={index} className='drop-down-item' onClick={() => onSelect(option.value)}>
+          <option key={index} value={option.value}>
             {option.label}
-          </div>
+          </option>
         ))}
-      </div>
+      </select>
     </div>
   )
 }

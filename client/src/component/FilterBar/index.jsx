@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import './style.scss'
 import { AiOutlineClose, AiOutlineFilter } from 'react-icons/ai'
 import SearchBar from '../SerchBar'
@@ -8,22 +8,25 @@ import difLevelOptions from '../../data/options/difLevelOption'
 import ratingOptions from '../../data/options/ratingOptions'
 import timeOptions from '../../data/options/timeOptions'
 export default function FilterBar({ data, setData }) {
-  console.log("data FilterBar:", data);
-  console.log("FilterBar render");
+
 
 
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  const [activeFilters, setActiveFilters] = useState(0)
   const [searchTerm, setSearchTerm] = useState('');
-
-  const handleFilterSelect = (option) => {
-    console.log(option)
-    setActiveFilters(prev => prev + 1)
+  const [filterOption, setFilterOption] = useState({
+    category: "",
+    difficulty: "",
+    rating: "",
+    time: ""
+  })
+  const handelSelectChange = (e) => {
+    const { name, value } = e.target;
+    setFilterOption(prev => ({ ...prev, [name]: value }));
   }
+  const activeFilters = useMemo(() => {
+    return Object.values(filterOption).filter(value => value !== "").length;
+  }, [filterOption]);
 
-  const clearAllFilters = () => {
-    setActiveFilters(0)
-  }
 
   const toggleMobileFilter = () => {
     setIsMobileFilterOpen(!isMobileFilterOpen)
@@ -32,21 +35,48 @@ export default function FilterBar({ data, setData }) {
   const closeMobileFilter = () => {
     setIsMobileFilterOpen(false)
   }
-  const handelSearch = () => {
-    // Implement search logic here ysing searchTerm
-    console.log("Search clicked")
-    setData(data.filter(r => r.title.includes(searchTerm)))
-  }
+  const handelSearch = useCallback(() => {
+    console.log("Current searchTerm:", searchTerm);
+    console.log("Current filterOption:", filterOption);
+    
+    let filteredData = [...data];
 
-  const handleSearchChange = (e) => {
+    // Apply search filter
+    if (searchTerm.trim()) {
+      filteredData = filteredData.filter(r => 
+        r.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply filter options
+    Object.entries(filterOption).forEach(([key, value]) => {
+      if (value) {
+        filteredData = filteredData.filter(r => r[key] === value);
+      }
+    });
+
+    setData(filteredData);
+  }, [searchTerm, filterOption, data]);
+
+  const handleSearchChange = useCallback((e) => {
     setSearchTerm(e.target.value);
-  };
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       handelSearch();
     }
   };
+  const clearAllFilters = useCallback(() => {
+    setFilterOption({
+      category: "",
+      difficulty: "",
+      rating: "",
+      time: ""
+    });
+    setSearchTerm('');
+
+  }, []);
 
   const FilterElements = () => {
     return (
@@ -58,23 +88,28 @@ export default function FilterBar({ data, setData }) {
         />
         <DropDown
           options={categoryOptions}
-          onSelect={handleFilterSelect}
-          name="חיפוש לפי קטגוריה"
+          onSelect={handelSelectChange}
+          placeholder="קטגוריה"
+          name={"category"}
         />
         <DropDown
           options={difLevelOptions}
-          onSelect={handleFilterSelect}
-          name="חיפוש לפי רמת קושי"
+          onSelect={handelSelectChange}
+          placeholder="רמת קושי"
+          name={"difficulty"}
+
         />
         <DropDown
           options={ratingOptions}
-          onSelect={handleFilterSelect}
-          name="חיפוש לפי דירוג"
+          onSelect={handelSelectChange}
+          placeholder="דירוג"
+          name={"rating"}
         />
         <DropDown
           options={timeOptions}
-          onSelect={handleFilterSelect}
-          name="חיפוש לפי זמן הכנה"
+          onSelect={handelSelectChange}
+          placeholder="זמן הכנה"
+          name={"time"}
         />
         <button onClick={() => handelSearch()}>חיפוש</button>
       </>

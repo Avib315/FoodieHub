@@ -15,7 +15,6 @@ export default function SearchBar({
   onBlur
 }) {
 
-  console.log("SearchBar render");
 
   return (
     <div className='search-bar'>
