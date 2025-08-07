@@ -239,7 +239,7 @@ export default function RecipeDetailPage() {
 
             <button className="action-btn">
               <i className="far fa-comment"></i>
-              <span>{mockComments.length}</span>
+              <span>{data.comments.length}</span>
             </button>
 
           </div>
@@ -354,7 +354,7 @@ export default function RecipeDetailPage() {
           <div className="comments-header">
             <h2 className="section-title">
               <i className="fas fa-comments"></i>
-              תגובות ({mockComments.length})
+              תגובות ({data.comments.length})
             </h2>
             <button className="sort-btn">
               <i className="fas fa-sort"></i>
@@ -392,19 +392,19 @@ export default function RecipeDetailPage() {
 
           {/* Comments List */}
           <div className="comments-list">
-            {mockComments.map((comment) => (
+            {data.comments.map((comment) => (
               <div key={comment.id} className="comment">
                 <div className="comment-header">
                   <div className="comment-avatar">{comment.avatar}</div>
                   <div className="comment-info">
-                    <div className="comment-author">{comment.author}</div>
-                    <div className="comment-time">{comment.time}</div>
+                    <div className="comment-author">{comment.fullName}</div>
+                    <div className="comment-time">{ new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
                   </div>
                   <div className="comment-rating">
                     {renderStars(comment.rating)}
                   </div>
                 </div>
-                <div className="comment-text">{comment.text}</div>
+                <div className="comment-text">{comment.content}</div>
                 <div className="comment-actions">
                   <button className={`comment-action ${comment.liked ? 'liked' : ''}`}>
                     <i className={`${comment.liked ? 'fas' : 'far'} fa-heart`}></i>

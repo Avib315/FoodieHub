@@ -1,10 +1,14 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import useAxiosRequest from '../../services/useApiRequest';
 import './style.scss'
 const adminLog = [
 
 ]
 export default function AdminPage() {
+   const { data , loading} = useAxiosRequest({ url: `/adminLog/getAll` , method:"GET" });
+   console.log(data);
+   
 
   return (
     <div className="about-page">
