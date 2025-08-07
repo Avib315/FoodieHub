@@ -8,6 +8,7 @@ export default function SignupPage() {
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
+    username: '',
     firstName: '',
     lastName: '',
     email: '',
@@ -110,10 +111,10 @@ export default function SignupPage() {
     setIsLoading(true)
 
     try {
-      const data = await axiosRequest({url: "user/register" , method:"POST" , body:formData })
+      const data = await axiosRequest({ url: "user/register", method: "POST", body: formData })
       console.log(data);
-      
-      if(data){
+
+      if (data) {
 
       }
       console.log('Registration data:', data)
@@ -157,6 +158,19 @@ export default function SignupPage() {
 
             {/* Name fields */}
             <div className="name-fields">
+              <Input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="שם משתמש"
+                label="שם משתמש"
+                error={errors.username}
+                required
+                disabled={isLoading}
+                autoComplete="username"
+              />
+
               <Input
                 type="text"
                 name="firstName"
