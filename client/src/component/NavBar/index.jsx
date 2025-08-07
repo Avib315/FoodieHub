@@ -13,7 +13,9 @@ import useUserStore from '../../store/userStore'
 
 export default function NavBar() {
   const {user} = useUserStore()
-  const badgeCount = user?.notifications || 0; // Assuming user.notifications is an array of notifications
+  const badgeCount = user?.notification || 0; // Assuming user.notifications is an array of notifications
+  console.log("NavBar user data:", user);
+  
   const badgeObj = {}
   if(badgeCount !== 0 ) {
     badgeObj.badge = badgeCount

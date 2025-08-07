@@ -14,8 +14,8 @@ import useUserStore from '../../store/userStore'
 
 export default function RecipesPage() {
   const { data , setData } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
-  useUserStore.getState().setUser(data.user)
-  
+  useUserStore.getState().setUser({...data?.user , notification:data?.notification})
+
   return (
     <>
       <HeaderTitle title="מתכוני הקהילה" />
