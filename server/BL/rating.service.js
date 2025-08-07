@@ -7,11 +7,13 @@ const ApiMessages = require('../common/apiMessages.js');
 const getAllRatings = async (recipeId) => {
     // ולידציה של הפרמטרים
     if (!recipeId || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("getAllRatings: Invalid or missing recipeId");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     const ratings = await ratingController.read({ recipeId });
     if (!ratings) {
+        console.log("getAllRatings: No ratings found for the given recipeId");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -35,6 +37,7 @@ const getAllRatings = async (recipeId) => {
 const createRating = async (ratingInput) => {
     // בדיקת קיום האובייקט
     if (!ratingInput) {
+        console.log("createRating: Missing required fields in ratingInput");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
@@ -42,23 +45,27 @@ const createRating = async (ratingInput) => {
 
     // ולידציה בסיסית - קיום שדות
     if (!userId || !recipeId || rating === undefined || rating === null) {
+        console.log("createRating: Missing required fields: userId, recipeId, or rating");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     // ולידציה של פורמט ObjectId
     if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("createRating: Invalid userId or recipeId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // ולידציה של טיפוס הדירוג
     const ratingNum = Number(rating);
     if (isNaN(ratingNum) || !Number.isInteger(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        console.log("createRating: Rating must be an integer between 1 and 5");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // ולידציה של הביקורת (אם קיימת)
     if (review !== undefined && review !== null) {
         if (typeof review !== 'string') {
+            console.log("createRating: Review must be a string");
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
@@ -66,20 +73,24 @@ const createRating = async (ratingInput) => {
     // בדיקה שהמתכון קיים ופעיל
     const recipe = await recipeController.readOne({ _id: recipeId });
     if (!recipe) {
+        console.log("createRating: Recipe not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
     if (recipe.status !== 'active') {
+        console.log("createRating: Recipe is not active");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     // בדיקה שהמשתמש לא מדרג את המתכון שלו
     if (recipe.userId.toString() === userId.toString()) {
+        console.log("createRating: User cannot rate their own recipe");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     // בדיקה אם המשתמש כבר דירג את המתכון
     const existingRating = await ratingController.readOne({ userId, recipeId });
     if (existingRating) {
+        console.log("createRating: User has already rated this recipe");
         throw new Error(ApiMessages.errorMessages.conflict);
     }
 
@@ -95,6 +106,7 @@ const createRating = async (ratingInput) => {
     const newRating = await ratingController.create(ratingData);
 
     if (!newRating) {
+        console.log("createRating: Rating creation failed");
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
@@ -108,6 +120,7 @@ const createRating = async (ratingInput) => {
 const deleteRating = async (ratingInput) => {
     // בדיקת קיום האובייקט וולידציות בסיסיות במשולב
     if (!ratingInput || !ratingInput.userId || !ratingInput.ratingId) {
+        console.log("deleteRating: Missing required fields in ratingInput");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
@@ -115,6 +128,7 @@ const deleteRating = async (ratingInput) => {
 
     // ולידציות פורמט ObjectId במשולב
     if (!userId.match(/^[0-9a-fA-F]{24}$/) || !ratingId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("deleteRating: Invalid userId or ratingId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
@@ -123,6 +137,7 @@ const deleteRating = async (ratingInput) => {
     // בדיקה שהדירוג קיים ושייך למשתמש
     const existingRating = await ratingController.readOne(filterObject);
     if (!existingRating) {
+        console.log("deleteRating: Rating not found or does not belong to the user");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -130,6 +145,7 @@ const deleteRating = async (ratingInput) => {
     const deletedRating = await ratingController.del(filterObject);
 
     if (!deletedRating) {
+        console.log("deleteRating: Rating deletion failed");
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
 
@@ -215,12 +231,15 @@ const updateRating = async (ratingInput) => {
 
     // ולידציות פורמט ObjectId במשולב
     if (!userId.match(/^[0-9a-fA-F]{24}$/) || !recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+
+        console.log("updateRating: Invalid userId or recipeId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שהדירוג קיים ושייך למשתמש
     const existingRating = await ratingController.readOne({ userId, recipeId });
     if (!existingRating) {
+        console.log("updateRating: Rating not found or does not belong to the user");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -228,6 +247,7 @@ const updateRating = async (ratingInput) => {
     if (rating !== undefined && rating !== null) {
         const ratingNum = Number(rating);
         if (isNaN(ratingNum) || !Number.isInteger(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+            console.log("updateRating: Rating must be an integer between 1 and 5");
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
@@ -235,11 +255,13 @@ const updateRating = async (ratingInput) => {
     // ולידציה של הביקורת (אם קיימת)
     if (review !== undefined && review !== null &&
         (typeof review !== 'string' || review.length > 1000)) {
+        console.log("updateRating: Review must be a string and less than 1000 characters");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שיש לפחות שדה אחד לעדכון
     if (rating === undefined && review === undefined) {
+        console.log("updateRating: No fields to update provided");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
@@ -257,6 +279,7 @@ const updateRating = async (ratingInput) => {
     const updatedRating = await ratingController.update({ _id: existingRating._id }, updateData);
 
     if (!updatedRating) {
+        console.log("updateRating: Rating update failed");
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
