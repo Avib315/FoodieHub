@@ -12,17 +12,7 @@ import { Link } from 'react-router-dom'
 export default function RecipesPage() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const [activeFilters, setActiveFilters] = useState(0)
-  
-  // דוגמא לקורל ----------------------------
   const { data, loading } = useApiRequest({ url: "/recipe/getAll", defaultValue: [], method: "GET" })
-  async function savedRecipesHandler() {
-    const body = {
-      recipeId: "6892737909aaf0aab630d90b"
-    }
-    const res = await axiosRequest({ url: "/savedRecipe/add", method: "PUT", body: body })
-    console.log(res)
-  }
-  // ----------------------------
 
   const handleFilterSelect = (option) => {
     console.log(option)
@@ -109,7 +99,7 @@ export default function RecipesPage() {
           {data.map(recipe => (
             <>
               <Link to={`recipe/${recipe._id}`}>
-                <RecipeCard key={recipe._id} recipe={recipe} />
+                <RecipeCard key={recipe._id} recipe={recipe} id={recipe._id} />
               </Link>
             </>
           ))}
