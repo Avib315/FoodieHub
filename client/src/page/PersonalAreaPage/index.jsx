@@ -4,15 +4,18 @@ import { Link } from 'react-router-dom';
 import FloatingElements from '../../component/FloatingElements';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
+import useUserStore from '../../store/userStore';
 
 export default function PersonalAreaPage() {
  
-
+const {user} = useUserStore()
+const data = user;
  // מה שקורל עשתה ------------------------------------- 
  
  // הערה: מהערך המוחזר אפשר לשלוף גם את כמות המתכונים השמורים ואת כמות המתכונים שהמשתמש יצר
+ console.log("useUserStore.getState().getUser()" , );
 
-const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
+// const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
 
   // מה שקורל עשתה ------------------------------------- 
 

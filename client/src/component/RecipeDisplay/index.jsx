@@ -10,19 +10,9 @@ import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
 
-export default function RecipesDisplay({pageType = "home"}) {
-  let url = "/recipe/getAll";
-  if (pageType === 'userRecipes') {
-    url = `/recipe/getByUserId`;
-  }
-  else if (pageType === 'saved') {
-    url = "/savedRecipe/getAll" ;
-  }
-  else if (pageType === 'home') {
-    url = "/recipe/getAll" ;
-  }
+export default function RecipesDisplay({ data = []}) {
 
-  const { data, loading } = useApiRequest({ url: url, defaultValue: [], method: "GET" })
+
 
 
   return (

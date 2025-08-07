@@ -10,15 +10,16 @@ import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import RecipesDisplay from '../../component/RecipeDisplay'
 import HeaderTitle from '../../component/HeaderTitle'
+import useUserStore from '../../store/userStore'
 
 export default function RecipesPage() {
-  const { data, loading } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
-  console.log("getHomeData",data);
+  const { data } = useApiRequest({ url: "/main", defaultValue: [], method: "GET" })
+  useUserStore.getState().setUser(data.user)
   
   return (
     <>
       <HeaderTitle title="מתכוני הקהילה" />
-      <RecipesDisplay pageType="home" />
+      <RecipesDisplay data={data?.recipes} />
     </>
   )
 }

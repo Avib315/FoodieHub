@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
+import useUserStore from '../../store/userStore';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isLoading, setIsLoading] = useState(false);
 
+const {user} = useUserStore()
+const data = user;
 
+ 
 // מה שקורל עשתה ------------------------------------- 
-const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
+// const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
 
 async function changeUserDetails() {
       const body =  {

@@ -9,13 +9,13 @@ import HeaderTitle from '../../component/HeaderTitle';
 export default function SavedRecipesPage() {
 
 
-
+  const { data, loading } = useApiRequest({ url: "/savedRecipe/getAll", defaultValue: [], method: "GET" })
 
   return (
        <>
 
       <HeaderTitle title="מתכונים שאהבתי" />
-    <RecipesDisplay pageType="saved" /> 
+    <RecipesDisplay pageType="saved" data={data}/> 
        </>
   )
 }
