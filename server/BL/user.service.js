@@ -9,15 +9,18 @@ const ApiMessages = require("../common/apiMessages.js");
 
 async function login(userInput) {
     if (!userInput || !userInput.email || !userInput.email.trim()) {
+        console.log("login: Missing required field: email");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(userInput.email.trim())) {
+        console.log("login: Invalid email format provided");
         throw new Error(ApiMessages.errorMessages.invalidEmail);
     }
 
     if (userInput.password.length < 6) {
+        console.log("login: Password too weak");
         throw new Error(ApiMessages.errorMessages.passwordTooWeak);
     }
 
@@ -26,25 +29,30 @@ async function login(userInput) {
     });
 
     if (!user) {
+        console.log("login: User not found");
         throw new Error(ApiMessages.errorMessages.userNotFound);
     }
 
     if (user.status === 'blocked') {
+        console.log("login: User is blocked");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     if (user.status === 'inactive') {
+        console.log("login: User is inactive");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     const passwordMatch = await bcrypt.compare(userInput.password, user.passwordHash);
     if (!passwordMatch) {
+        console.log("login: Invalid credentials");
         throw new Error(ApiMessages.errorMessages.invalidCredentials);
     }
 
     const token = loginAuth({ id: user._id, role: "user" });
 
     if (!token) {
+        console.log("login: Token generation failed");
         throw new Error(ApiMessages.errorMessages.tokenInvalid);
     }
 
@@ -64,6 +72,7 @@ async function login(userInput) {
 async function register(body) {
     // בדיקת קלט בסיסית
     if (!body) {
+        console.log("register: Missing required fields");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
@@ -73,12 +82,14 @@ async function register(body) {
         !body.username || !body.username.trim() ||
         !body.email || !body.email.trim() ||
         !body.password || !body.password.trim()) {
+        console.log("register: Missing required fields");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     // בדיקות אורך במשולב - שמות
     if (body.firstName.trim().length < 2 || body.firstName.trim().length > 50 ||
         body.lastName.trim().length < 2 || body.lastName.trim().length > 50) {
+        console.log("register: Invalid firstName or lastName length");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
@@ -86,11 +97,13 @@ async function register(body) {
     const usernameRegex = /^[a-zA-Z0-9_]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(body.email.trim()) || !usernameRegex.test(body.username.trim())) {
+        console.log("register: Invalid email or username format");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקות סיסמה במשולב
     if (body.password.length < 6) {
+        console.log("register: Password too weak");
         throw new Error(ApiMessages.errorMessages.passwordTooWeak);
     }
 
@@ -101,6 +114,7 @@ async function register(body) {
     ]);
 
     if (existingUserByEmail || existingUserByUsername) {
+        console.log("register: Email or username already exists");
         if (existingUserByEmail) throw new Error(ApiMessages.errorMessages.emailAlreadyExists);
         if (existingUserByUsername) throw new Error(ApiMessages.errorMessages.userAlreadyExists);
     }
@@ -184,6 +198,7 @@ const changePassword = async (userInput) => {
     console.log("userInput:", userInput);
     if (!userInput || !userInput.userId || !userInput.oldPass ||
         !userInput.newPass || !userInput.checPass) {
+        console.log("changePassword: Missing required fields");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
@@ -193,33 +208,39 @@ const changePassword = async (userInput) => {
 
     // ולידציה של פורמט userId
     if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("changePassword: Invalid userId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // ולידציות סיסמאות
     if (newPass.length < 6 || checPass.length < 6) {
+        console.log("changePassword: Password too weak");
         throw new Error(ApiMessages.errorMessages.passwordTooWeak);
     }
 
     // בדיקה שהסיסמה החדשה והאישור זהים
     if (newPass !== checPass) {
+        console.log("changePassword: New password and confirmation do not match");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // שליפת המשתמש
     const user = await userController.readOne({ _id: userId });
     if (!user) {
+        console.log("changePassword: User not found");
         throw new Error(ApiMessages.errorMessages.userNotFound);
     }
 
     // בדיקת סטטוס המשתמש
     if (user.status === 'blocked' || user.status === 'inactive') {
+        console.log("changePassword: User is blocked or inactive");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
     // בדיקה שהסיסמה הנוכחית נכונה
     const passwordMatch = await bcrypt.compare(oldPass, user.passwordHash);
     if (!passwordMatch) {
+        console.log("changePassword: Invalid credentials");
         throw new Error(ApiMessages.errorMessages.invalidCredentials);
     }
 
@@ -233,6 +254,7 @@ const changePassword = async (userInput) => {
     );
 
     if (!updatedUser) {
+        console.log("changePassword: Failed to update password");
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
@@ -245,6 +267,7 @@ const changePassword = async (userInput) => {
 const changeDetails = async (userInput) => {
     // ולידציות בסיסיות
     if (!userInput || !userInput.userId) {
+        console.log("changeDetails: Missing required field: userId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
@@ -252,22 +275,26 @@ const changeDetails = async (userInput) => {
 
     // בדיקה שיש לפחות שדה אחד לעדכון
     if (!fullName && !newEmail) {
+        console.log("changeDetails: No fields to update");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
     // ולידציה של פורמט userId
     if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("changeDetails: Invalid userId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // שליפת המשתמש
     const user = await userController.readOne({ _id: userId });
     if (!user) {
+        console.log("changeDetails: User not found");
         throw new Error(ApiMessages.errorMessages.userNotFound);
     }
 
     // בדיקת סטטוס המשתמש
     if (user.status === 'blocked' || user.status === 'inactive') {
+        console.log("changeDetails: User is blocked or inactive");
         throw new Error(ApiMessages.errorMessages.forbidden);
     }
 
@@ -279,6 +306,7 @@ const changeDetails = async (userInput) => {
 
         // בדיקה שיש לפחות שני חלקים (שם פרטי ומשפחה)
         if (nameParts.length < 2) {
+            console.log("changeDetails: Full name must contain at least first name and last name");
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
 
@@ -289,6 +317,7 @@ const changeDetails = async (userInput) => {
         // ולידציות אורך
         if (firstName.length < 2 || firstName.length > 50 ||
             lastName.length < 2 || lastName.length > 50) {
+            console.log("changeDetails: Invalid firstName or lastName length");
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
 
@@ -303,6 +332,7 @@ const changeDetails = async (userInput) => {
         // ולידציה של פורמט אימייל
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email) || email.length > 100) {
+            console.log("changeDetails: Invalid email format provided");
             throw new Error(ApiMessages.errorMessages.invalidEmail);
         }
 
@@ -310,6 +340,7 @@ const changeDetails = async (userInput) => {
         if (email !== user.email.toLowerCase()) {
             const existingUser = await userController.readOne({ email: email });
             if (existingUser) {
+                console.log("changeDetails: Email already exists");
                 throw new Error(ApiMessages.errorMessages.emailAlreadyExists);
             }
             updateData.email = email;
@@ -318,6 +349,7 @@ const changeDetails = async (userInput) => {
 
     // בדיקה שיש משהו לעדכן
     if (Object.keys(updateData).length === 0) {
+        console.log("changeDetails: No valid fields to update");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
@@ -325,6 +357,7 @@ const changeDetails = async (userInput) => {
     const updatedUser = await userController.update({ _id: userId }, updateData);
 
     if (!updatedUser) {
+        console.log("changeDetails: Failed to update user details");
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 

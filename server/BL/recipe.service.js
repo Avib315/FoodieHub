@@ -11,7 +11,7 @@ async function getAllRecipes(filterByActive = true) {
     // ולידציה של הפרמטר
     if (typeof filterByActive !== 'boolean') {
         console.log("getAllRecipes: filterByActive should be a boolean");
-        
+
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
@@ -33,20 +33,19 @@ async function getAllRecipes(filterByActive = true) {
 }
 
 
-
-
-
 async function getRecipeById(id) {
     // ולידציות בסיסיות במשולב
     console.log('id', id);
-    
+
     if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("getRecipeById: Invalid or missing recipe ID");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // שליפת המתכון
     const recipe = await recipeController.readOne({ _id: id });
     if (!recipe) {
+        console.log("getRecipeById: Recipe not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
@@ -84,6 +83,7 @@ async function getRecipeById(id) {
 const createRecipe = async (recipeInput) => {
     // בדיקת קיום האובייקט
     if (!recipeInput) {
+        console.log("createRecipe: Missing required recipeInput object");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
     const {
@@ -98,78 +98,86 @@ const createRecipe = async (recipeInput) => {
         difficultyLevel,
         image
     } = recipeInput;
-    if (!image)
+    if (!image) {
+        console.log("createRecipe: Missing required field: image");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
-    
+    }
 
-    
+
     await cloudinaryService.connect();
-    
+
     // Upload image using the file path
     const imageResult = await cloudinaryService.uploadImage(image.path, "recipesImages");
     if (!imageResult || !imageResult.url) {
+        console.log("createRecipe: Image upload failed");
         throw new Error(ApiMessages.errorMessages.imageUploadFailed);
     }
- 
+
     // ולידציות בסיסיות במשולב
     if (!userId || !category || !title || !description || !instructions ||
         !ingredients || prepTime === undefined || servings === undefined ||
         difficultyLevel === undefined) {
-            throw new Error(ApiMessages.errorMessages.missingRequiredFields);
-        }
-        
-        // ולידציות פורמט ObjectId במשולב
-        if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("createRecipe: Missing required fields");
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+
+    // ולידציות פורמט ObjectId במשולב
+    if (!userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("createRecipe: Invalid userId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
-    
+
     if (category !== undefined) {
         const validCategories = ['main', 'appetizer', 'soup', 'salad', 'dessert', 'drink'];
         if (!validCategories.includes(category)) {
+            console.log("createRecipe: Invalid category provided");
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-  
+
     // ולידציות מערכים במשולב
     if (!Array.isArray(instructions) || instructions.length === 0 ||
         !Array.isArray(ingredients) || ingredients.length === 0) {
-            throw new Error(ApiMessages.errorMessages.invalidData);
-        }
-        
-        // ולידציות ערכים מספריים במשולב
-        if (prepTime < 0 || servings < 1 || difficultyLevel < 1 || difficultyLevel > 5) {
-            throw new Error(ApiMessages.errorMessages.invalidData);
-        }
- 
-        // ולידציה של הוראות הכנה
-        for (let i = 0; i < instructions.length; i++) {
-            const instruction = instructions[i];
-            if (!instruction.stepNumber || !instruction.text || !instruction.text.trim()) {
+        console.log("createRecipe: Instructions and ingredients must be non-empty arrays");
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // ולידציות ערכים מספריים במשולב
+    if (prepTime < 0 || servings < 1 || difficultyLevel < 1 || difficultyLevel > 5) {
+        console.log("createRecipe: Invalid prepTime, servings, or difficultyLevel provided");
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // ולידציה של הוראות הכנה
+    for (let i = 0; i < instructions.length; i++) {
+        const instruction = instructions[i];
+        if (!instruction.stepNumber || !instruction.text || !instruction.text.trim()) {
+            console.log(`createRecipe: Invalid instruction at index ${i}`);
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-    
+
     // ולידציה של רכיבים
     const validUnits = ['gram', 'kilogram', 'ml', 'liter', 'tablespoon', 'teaspoon', 'cup', 'unit', 'quart'];
-    
+
     for (let i = 0; i < ingredients.length; i++) {
         const ingredient = ingredients[i];
         if (!ingredient.name || !ingredient.name.trim() ||
-        ingredient.quantity === undefined || ingredient.quantity <= 0 ||
-        !ingredient.unit || !validUnits.includes(ingredient.unit)) {
-            console.log('---', !ingredient.name ,  !ingredient.name.trim() , ingredient.quantity === undefined , ingredient.quantity <= 0 , !ingredient.unit , !validUnits.includes(ingredient.unit));
+            ingredient.quantity === undefined || ingredient.quantity <= 0 ||
+            !ingredient.unit || !validUnits.includes(ingredient.unit)) {
+            console.log('---', !ingredient.name, !ingredient.name.trim(), ingredient.quantity === undefined, ingredient.quantity <= 0, !ingredient.unit, !validUnits.includes(ingredient.unit));
             throw new Error(ApiMessages.errorMessages.invalidData);
         }
     }
-    
+
     if (title.trim().length < 3 || title.trim().length > 100 ||
-    description.trim().length < 5 || description.trim().length > 500) {
-        
+        description.trim().length < 5 || description.trim().length > 500) {
+        console.log("createRecipe: Invalid title or description length");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
-    
-    
-    
+
+
+
     // הכנת נתוני המתכון
     const recipeData = {
         userId,
@@ -192,14 +200,15 @@ const createRecipe = async (recipeInput) => {
         imageUrl: imageResult.url || null,
         status: 'pending'
     };
-    
+
     console.log(1111);
     // יצירת המתכון
     const newRecipe = await recipeController.create(recipeData);
     if (!newRecipe) {
+        console.log("createRecipe: Recipe creation failed");
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
-    
+
     return {
         id: newRecipe._id
     };
@@ -210,17 +219,20 @@ const createRecipe = async (recipeInput) => {
 const updateRecipe = async (recipeId, updateData, currentUserId) => {
     // ولידציות בסיסיות במשולב
     if (!recipeId || !currentUserId || !updateData) {
+        console.log("updateRecipe: Missing required fields: recipeId, currentUserId, or updateData");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
-  
+
 
     // ولידציות פורמט ObjectId במשולב
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/) || !currentUserId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("updateRecipe: Invalid recipeId or currentUserId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שיש לפחות שדה אחד לעדכון
     if (Object.keys(updateData).length === 0) {
+        console.log("updateRecipe: No fields to update provided");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
@@ -228,10 +240,12 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
     // בדיקה שהמתכון קיים ושייך למשתמש
     const existingRecipe = await recipeController.readOne({ _id: recipeId });
     if (!existingRecipe) {
+        console.log("updateRecipe: Recipe not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
-    
+
     if (existingRecipe.userId.toString() !== currentUserId.toString()) {
+        console.log("updateRecipe: Unauthorized action - user does not own the recipe");
         throw new Error(ApiMessages.errorMessages.unauthorized);
     }
 
@@ -248,6 +262,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
         switch (key) {
             case 'title':
                 if (typeof value !== 'string' || value.trim().length < 3 || value.trim().length > 100) {
+                    console.log("updateRecipe: Title must be a string between 3 and 100 characters");
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 filteredUpdateData[key] = value.trim();
@@ -255,6 +270,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 
             case 'description':
                 if (typeof value !== 'string' || value.trim().length < 10 || value.trim().length > 500) {
+                    console.log("updateRecipe: Description must be a string between 10 and 500 characters");
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 filteredUpdateData[key] = value.trim();
@@ -264,6 +280,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
                 if (value !== undefined) {
                     const validCategories = ['main', 'appetizer', 'soup', 'salad', 'dessert', 'drink'];
                     if (!validCategories.includes(value)) {
+                        console.log("updateRecipe: Invalid category provided");
                         throw new Error(ApiMessages.errorMessages.invalidData);
                     }
                 }
@@ -274,6 +291,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
             case 'servings':
                 const numValue = Number(value);
                 if (isNaN(numValue) || numValue < 1) {
+                    console.log(`updateRecipe: ${key} must be a positive number`);
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 filteredUpdateData[key] = numValue;
@@ -282,6 +300,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
             case 'difficultyLevel':
                 const difficultyNum = Number(value);
                 if (isNaN(difficultyNum) || difficultyNum < 1 || difficultyNum > 5) {
+                    console.log("updateRecipe: Difficulty level must be an integer between 1 and 5");
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 filteredUpdateData[key] = difficultyNum;
@@ -289,11 +308,13 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 
             case 'instructions':
                 if (!Array.isArray(value) || value.length === 0) {
+                    console.log("updateRecipe: Instructions must be a non-empty array");
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 // ولידציה של כל הוראה
                 value.forEach((instruction, index) => {
                     if (!instruction.stepNumber || !instruction.text || !instruction.text.trim()) {
+                        console.log(`updateRecipe: Invalid instruction at index ${index}`);
                         throw new Error(ApiMessages.errorMessages.invalidData);
                     }
                 });
@@ -305,6 +326,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 
             case 'ingredients':
                 if (!Array.isArray(value) || value.length === 0) {
+                    console.log("updateRecipe: Ingredients must be a non-empty array");
                     throw new Error(ApiMessages.errorMessages.invalidData);
                 }
                 const validUnits = ['גרם', 'קילוגרם', 'מ"ל', 'ליטר', 'כף', 'כפית', 'כוס', 'יחידה', 'קורט'];
@@ -314,6 +336,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
                     if (!ingredient.name || !ingredient.name.trim() ||
                         ingredient.quantity === undefined || ingredient.quantity <= 0 ||
                         !ingredient.unit || !validUnits.includes(ingredient.unit)) {
+                        console.log("updateRecipe: Invalid ingredient format provided");
                         throw new Error(ApiMessages.errorMessages.invalidData);
                     }
                 });
@@ -333,6 +356,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 
     // בדיקה שנשאר משהו לעדכון אחרי הפילטור
     if (Object.keys(filteredUpdateData).length === 0) {
+        console.log("updateRecipe: No valid fields to update provided");
         throw new Error(ApiMessages.errorMessages.badRequest);
     }
 
@@ -343,6 +367,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
     const updatedRecipe = await recipeController.update({ _id: recipeId }, filteredUpdateData);
 
     if (!updatedRecipe) {
+        console.log("updateRecipe: Recipe update failed");
         throw new Error(ApiMessages.errorMessages.updateFailed);
     }
 
@@ -353,22 +378,26 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
 const deleteRecipe = async (recipeId, currentUserId) => {
     // ولידציות בסיסיות במשולב
     if (!recipeId || !currentUserId) {
+        console.log("deleteRecipe: Missing required fields: recipeId or currentUserId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
     // ولידציות פורמט ObjectId במשולב
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/) || !currentUserId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("deleteRecipe: Invalid recipeId or currentUserId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // בדיקה שהמתכון קיים
     const existingRecipe = await recipeController.readOne({ _id: recipeId });
     if (!existingRecipe) {
+        console.log("deleteRecipe: Recipe not found");
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
     // בדיקה שהמשתמש הוא הבעלים של המתכון
     if (existingRecipe.userId.toString() !== currentUserId.toString()) {
+        console.log("deleteRecipe: Unauthorized action - user does not own the recipe");
         throw new Error(ApiMessages.errorMessages.unauthorized);
     }
 
@@ -384,9 +413,11 @@ const deleteRecipe = async (recipeId, currentUserId) => {
             await Promise.all(
                 usersWithSavedRecipe.map(async (user) => {
                     try {
-                            const result = await savedRecipeController.del(user._id.toString(), recipeId);
+                        const result = await savedRecipeController.del(user._id.toString(), recipeId);
                     } catch (error) {
+
                         // לוג השגיאה אבל לא עוצר את התהליך
+                        console.log(`Error removing saved recipe ${recipeId} from user ${user._id}:`, error);
                         throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
                     }
                 })
@@ -394,6 +425,7 @@ const deleteRecipe = async (recipeId, currentUserId) => {
         }
     } catch (error) {
         // לוג השגיאה אבל לא עוצר את מחיקת המתכון
+        console.log(`Error removing recipe ${recipeId} from saved lists:`, error);
         throw new Error(`Error removing recipe ${recipeId} from saved lists:`, error.message);
     }
 
@@ -401,6 +433,7 @@ const deleteRecipe = async (recipeId, currentUserId) => {
     const deletedRecipe = await recipeController.del({ _id: recipeId });
 
     if (!deletedRecipe) {
+        console.log("deleteRecipe: Recipe deletion failed");
         throw new Error(ApiMessages.errorMessages.deletionFailed);
     }
 
@@ -422,11 +455,13 @@ const deleteRecipe = async (recipeId, currentUserId) => {
 const getRecipesByUser = async (userId, requestType) => {
     // ولידציות בסיסיות במשולב
     if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("getRecipesByUser: Invalid or missing userId");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // ולידציה של requestType
     if (requestType && !['currentUser', 'otherUser'].includes(requestType)) {
+        console.log("getRecipesByUser: Invalid requestType provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
