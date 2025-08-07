@@ -8,6 +8,7 @@ import NavBar from '../../component/NavBar'
 import useApiRequest from '../../services/useApiRequest'
 import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
+import FilterBar from '../FilterBar'
 
 export default function RecipesDisplay({pageType = "home"}) {
   let url = "/recipe/getAll";
@@ -20,89 +21,17 @@ export default function RecipesDisplay({pageType = "home"}) {
   else if (pageType === 'home') {
     url = "/recipe/getAll" ;
   }
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
-  const [activeFilters, setActiveFilters] = useState(0)
+
   const { data, loading } = useApiRequest({ url: url, defaultValue: [], method: "GET" })
 
-  const handleFilterSelect = (option) => {
-    console.log(option)
-    setActiveFilters(prev => prev + 1)
-  }
-
-  const clearAllFilters = () => {
-    setActiveFilters(0)
-  }
-
-  const toggleMobileFilter = () => {
-    setIsMobileFilterOpen(!isMobileFilterOpen)
-  }
-
-  const closeMobileFilter = () => {
-    setIsMobileFilterOpen(false)
-  }
 
   return (
     <>
       <div className='recipes-page'>
         {/* Desktop/Tablet Filter Container */}
-        <div className={`filter-container ${isMobileFilterOpen ? 'mobile-open' : ''}`}>
-          {/* Mobile filter modal content */}
-          {isMobileFilterOpen && (
-            <div className="filter-content">
-              <button className="close-filters" onClick={closeMobileFilter}>
-                <AiOutlineClose />
-              </button>
-              <h3>סינון מתכונים</h3>
-              <SearchBar label="חיפוש מתכונים..." />
-              <DropDown
-                options={['בשרי', 'חלבי', 'צמחוני']}
-                onSelect={handleFilterSelect}
-                name="חיפוש לפי קטגוריה..."
-              />
-              <DropDown
-                options={['פופולרי', 'חדש', 'מומלץ']}
-                onSelect={handleFilterSelect}
-                name="סינון לפי..."
-              />
-            </div>
-          )}
+        <FilterBar data={data}/>
+        
 
-          {/* Desktop/Tablet filters */}
-          {!isMobileFilterOpen && (
-            <>
-              <SearchBar label="חיפוש מתכונים..." />
-              <DropDown
-                options={['בשרי', 'חלבי', 'צמחוני']}
-                onSelect={handleFilterSelect}
-                name=" קטגוריה..."
-              />
-              <DropDown
-                options={['פופולרי', 'חדש', 'מומלץ']}
-                onSelect={handleFilterSelect}
-                name="סינון לפי..."
-              />
-            </>
-          )}
-        </div>
-
-        <button className="floating-filter-btn" onClick={toggleMobileFilter}>
-          <AiOutlineFilter />
-          {activeFilters > 0 && (
-            <div className="filter-badge">{activeFilters}</div>
-          )}
-        </button>
-
-        {/* Results Info */}
-        {activeFilters > 0 && (
-          <div className="results-info">
-            <div className="results-count">
-              נמצאו <strong>{arr.length}</strong> מתכונים
-            </div>
-            <button className="clear-filters" onClick={clearAllFilters}>
-              נקה סינונים
-            </button>
-          </div>
-        )}
 
 
         <div className='recipes-list'>
