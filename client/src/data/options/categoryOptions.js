@@ -1,6 +1,6 @@
 const categoryOptions = [
     { value: 'main', label: 'מנה עיקרית' },
-    { value: 'appetizer',  label: 'מתאבן' },
+    { value: 'appetizer',  label: 'ראשונה' },
     { value: 'dessert',  label: 'קינוח' },
     { value: 'soup',  label: 'מרק' },
     { value: 'salad',  label: 'סלט' },

@@ -6,39 +6,36 @@ import './style.scss';
 const userColumns = [
   { userName: 'שם המשתמש', field: 'userName', typeof: 'string' },
   { email: 'אימייל', field: 'email', typeof: 'string' },
-  { role: 'תפקיד', field: 'role', typeof: 'string' },
   { status: 'סטטוס', field: 'status', typeof: 'badge' },
   { createdAt: 'תאריך יצירה', field: 'createdAt', typeof: 'date' },
-  { actions: 'פעולות', field: 'actions', typeof: 'actions' }
+  { actions: 'פעולות', field: 'actions', typeof: 'actions' } // מה זה??
 ];
 
 
 export default function UserPanel() {
 
   //--------------------------מה שקורל עשתה---------------------------
-   const { data } = useAxiosRequest({ url: `/admin/getAllUsers` , method:"GET" });
+  const { data } = useAxiosRequest({ url: `/admin/getAllUsers`, method: "GET" });
 
   const [userData, setUserData] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // Get unique roles for filter
-  const roles = [...new Set(userData.map(user => user.role))];
+  // useEffect(() => {
+  //   setUserData(data);
+  // }, [data]);
 
- 
-  
-
+  console.log('User data:', data);
   // Filter users based on search and filters
   const filteredUsers = userData.filter(user => {
-    const matchesSearch = user.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = filterRole === 'all' || user.role === filterRole;
+    const matchesSearch =
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
-    
-    return matchesSearch && matchesRole && matchesStatus;
+
+    return matchesSearch && matchesStatus;
   });
 
   // Add action buttons to table data
@@ -46,28 +43,28 @@ export default function UserPanel() {
     ...user,
     actions: (
       <div className="user-actions">
-        <button 
+        <button
           className="action-btn view-btn"
           onClick={() => viewUser(user.id)}
           title="צפייה במשתמש"
         >
           <span>👁️</span>
         </button>
-        <button 
+        <button
           className="action-btn edit-btn"
           onClick={() => editUser(user.id)}
           title="עריכת משתמש"
         >
           <span>✏️</span>
         </button>
-        <button 
+        <button
           className="action-btn status-btn"
           onClick={() => toggleUserStatus(user.id)}
           title={user.status === 'active' ? 'השבת משתמש' : 'הפעל משתמש'}
         >
           <span>{user.status === 'active' ? '⏸️' : '▶️'}</span>
         </button>
-        <button 
+        <button
           className="action-btn delete-btn"
           onClick={() => deleteUser(user.id)}
           title="מחיקת משתמש"
@@ -90,9 +87,9 @@ export default function UserPanel() {
   };
 
   const toggleUserStatus = (userId) => {
-    setUserData(prevData => 
-      prevData.map(user => 
-        user.id === userId 
+    setUserData(prevData =>
+      prevData.map(user =>
+        user.id === userId
           ? { ...user, status: user.status === 'active' ? 'inactive' : 'active' }
           : user
       )
@@ -115,7 +112,6 @@ export default function UserPanel() {
 
   const clearFilters = () => {
     setSearchTerm('');
-    setFilterRole('all');
     setFilterStatus('all');
   };
 
@@ -131,16 +127,6 @@ export default function UserPanel() {
   const exportUsers = () => {
     console.log('Exporting users data');
     // Add export logic here
-  };
-
-  // Role translation helper
-  const getRoleLabel = (role) => {
-    const roleLabels = {
-      admin: 'מנהל',
-      moderator: 'מנהל תוכן',
-      user: 'משתמש'
-    };
-    return roleLabels[role] || role;
   };
 
   // Status translation helper
@@ -170,6 +156,10 @@ export default function UserPanel() {
             <span>👤</span>
             הוסף משתמש חדש
           </button>
+          <a className="back-btn" href="/admin-panel">
+            חזור לפאנל
+            <span>← </span>
+          </a>
         </div>
       </div>
 
@@ -184,19 +174,8 @@ export default function UserPanel() {
             className="search-input"
           />
         </div>
-        
-        <div className="filter-controls">
-          <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-            className="filter-select"
-          >
-            <option value="all">כל התפקידים</option>
-            <option value="admin">מנהל</option>
-            <option value="moderator">מנהל תוכן</option>
-            <option value="user">משתמש</option>
-          </select>
 
+        <div className="filter-controls">
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -237,21 +216,14 @@ export default function UserPanel() {
             <span className="stat-label">ממתינים</span>
           </div>
         </div>
-        <div className="stat-card admins">
-          <div className="stat-icon">👑</div>
-          <div className="stat-content">
-            <span className="stat-number">{userData.filter(u => u.role === 'admin').length}</span>
-            <span className="stat-label">מנהלים</span>
-          </div>
-        </div>
       </div>
 
       {/* Main Content */}
       <div className="panel-content">
         {/* Table Section */}
         <div className="table-section">
-          <Table 
-            tableColumns={userColumns} 
+          <Table
+            tableColumns={userColumns}
             tableData={data}
             loading={loading}
             emptyMessage="לא נמצאו משתמשים"
@@ -265,8 +237,8 @@ export default function UserPanel() {
           <div className="user-details">
             <div className="details-header">
               <div className="user-header-info">
-                <img 
-                  src={selectedUser.avatar} 
+                <img
+                  src={selectedUser.avatar}
                   alt={selectedUser.userName}
                   className="user-avatar"
                 />
@@ -279,39 +251,32 @@ export default function UserPanel() {
                 ✕
               </button>
             </div>
-            
+
             <div className="details-content">
               <div className="user-info">
                 <div className="info-section">
                   <h3>פרטים כלליים</h3>
                   <div className="info-item">
-                    <strong>תפקיד:</strong> 
-                    <span className={`role-badge ${selectedUser.role}`}>
-                      {getRoleLabel(selectedUser.role)}
-                    </span>
-                  </div>
-                  
-                  <div className="info-item">
-                    <strong>סטטוס:</strong> 
+                    <strong>סטטוס:</strong>
                     <span className={`status-badge ${selectedUser.status}`}>
                       {getStatusLabel(selectedUser.status)}
                     </span>
                   </div>
-                  
+
                   <div className="info-item">
-                    <strong>טלפון:</strong> 
+                    <strong>טלפון:</strong>
                     <span>{selectedUser.phone}</span>
                   </div>
-                  
+
                   <div className="info-item">
-                    <strong>תאריך הצטרפות:</strong> 
+                    <strong>תאריך הצטרפות:</strong>
                     <span>{new Date(selectedUser.createdAt).toLocaleDateString('he-IL')}</span>
                   </div>
-                  
+
                   <div className="info-item">
-                    <strong>כניסה אחרונה:</strong> 
+                    <strong>כניסה אחרונה:</strong>
                     <span>
-                      {selectedUser.lastLogin 
+                      {selectedUser.lastLogin
                         ? new Date(selectedUser.lastLogin).toLocaleDateString('he-IL')
                         : 'אף פעם'
                       }
@@ -325,8 +290,8 @@ export default function UserPanel() {
                     {selectedUser.permissions.map((permission, index) => (
                       <span key={index} className={`permission-badge ${permission}`}>
                         {permission === 'read' ? 'קריאה' :
-                         permission === 'write' ? 'כתיבה' :
-                         permission === 'delete' ? 'מחיקה' : permission}
+                          permission === 'write' ? 'כתיבה' :
+                            permission === 'delete' ? 'מחיקה' : permission}
                       </span>
                     ))}
                   </div>
@@ -334,19 +299,19 @@ export default function UserPanel() {
               </div>
 
               <div className="user-actions-full">
-                <button 
+                <button
                   className="edit-full-btn"
                   onClick={() => editUser(selectedUser.id)}
                 >
                   ערוך פרטים
                 </button>
-                <button 
+                <button
                   className="password-reset-btn"
                   onClick={() => sendPasswordReset(selectedUser.id)}
                 >
                   שלח איפוס סיסמה
                 </button>
-                <button 
+                <button
                   className={`status-toggle-btn ${selectedUser.status}`}
                   onClick={() => toggleUserStatus(selectedUser.id)}
                 >
