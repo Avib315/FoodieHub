@@ -44,8 +44,8 @@ export default function RecipesPanel() {
   });
 
   const toggleRecipeStatus = async (recipeId, status) => {
-
     const newStatus = status === 'active' ? 'rejected' : 'active';
+
     const res = await axiosRequest({
       url: `/admin/updateRecipeStatus`,
       body: { status: newStatus, id: recipeId },
@@ -118,7 +118,6 @@ export default function RecipesPanel() {
 
   const deleteRecipe = async (recipeId) => {
     if (window.confirm('האם אתה בטוח שברצונך למחוק את המתכון?')) {
-      console.log(`Deleting recipe with ID: ${recipeId}`);
       const res = await axiosRequest({
         url: `/admin/deleteRecipe/${recipeId}`,
         method: 'DELETE'

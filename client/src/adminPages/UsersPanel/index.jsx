@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 import Table from '../../component/Table';
 import './style.scss';
 
 const userColumns = [
-  { userName: 'שם המשתמש', field: 'userName', typeof: 'string' },
-  { email: 'אימייל', field: 'email', typeof: 'string' },
-  { status: 'סטטוס', field: 'status', typeof: 'badge' },
-  { createdAt: 'תאריך יצירה', field: 'createdAt', typeof: 'date' },
-  { actions: 'פעולות', field: 'actions', typeof: 'actions' } // מה זה??
+  { title: 'שם המשתמש', field: 'username', typeof: 'string' },
+  { title: 'אימייל', field: 'email', typeof: 'string' },
+  { title: 'סטטוס', field: 'status', typeof: 'badge' },
+  // { title: 'תאריך יצירה', field: 'createdAt', typeof: 'date' },
+  { title: 'פעולות', field: 'actions', typeof: 'actions' } // מה זה??
 ];
 
 
@@ -23,11 +24,10 @@ export default function UserPanel() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // useEffect(() => {
-  //   setUserData(data);
-  // }, [data]);
+  useEffect(() => {
+    if (data) { setUserData(data); }
+  }, [data]);
 
-  console.log('User data:', data);
   // Filter users based on search and filters
   const filteredUsers = userData.filter(user => {
     const matchesSearch =
@@ -45,28 +45,28 @@ export default function UserPanel() {
       <div className="user-actions">
         <button
           className="action-btn view-btn"
-          onClick={() => viewUser(user.id)}
+          onClick={() => viewUser(user._id)}
           title="צפייה במשתמש"
         >
           <span>👁️</span>
         </button>
         <button
           className="action-btn edit-btn"
-          onClick={() => editUser(user.id)}
+          onClick={() => editUser(user._id)}
           title="עריכת משתמש"
         >
           <span>✏️</span>
         </button>
         <button
           className="action-btn status-btn"
-          onClick={() => toggleUserStatus(user.id)}
-          title={user.status === 'active' ? 'השבת משתמש' : 'הפעל משתמש'}
+          onClick={() => toggleUserStatus(user._id, user.status)}
+          title={user.status === 'active' ? 'חסום משתמש' : 'הפעל משתמש'}
         >
           <span>{user.status === 'active' ? '⏸️' : '▶️'}</span>
         </button>
         <button
           className="action-btn delete-btn"
-          onClick={() => deleteUser(user.id)}
+          onClick={() => deleteUser(user._id)}
           title="מחיקת משתמש"
         >
           <span>🗑️</span>
@@ -86,20 +86,45 @@ export default function UserPanel() {
     // Add your edit logic here
   };
 
-  const toggleUserStatus = (userId) => {
+  const toggleUserStatus = async (userId, status) => {
+    const newStatus = status === 'active' ? 'blocked' : 'active';
+
+    const res = await axiosRequest({
+      url: `/admin/updateUserStatus`,
+      body: { status: newStatus, id: userId },
+      method: 'PUT'
+    });
+
+    if (!res.data.success) {
+      alert('שגיאה בשינוי הסטטוס של המשתמש');
+      return;
+    }
+
     setUserData(prevData =>
       prevData.map(user =>
-        user.id === userId
-          ? { ...user, status: user.status === 'active' ? 'inactive' : 'active' }
+        user._id === userId
+          ? { ...user, status: user.status === 'active' ? 'blocked' : 'active' }
           : user
       )
     );
   };
 
-  const deleteUser = (userId) => {
+  const deleteUser = async (userId) => {
     if (window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
-      setUserData(prevData => prevData.filter(user => user.id !== userId));
-      if (selectedUser && selectedUser.id === userId) {
+
+    const res = await axiosRequest({
+      url: `/admin/updateUserStatus`,
+      body: { status: 'inactive', id: userId },
+      method: 'PUT'
+    });
+
+    if (!res.data.success) {
+      alert('שגיאה במחיקת המשתמש');
+      return;
+    }
+
+      setUserData(prevData => prevData.filter(user => user._id !== userId));
+      if (selectedUser && selectedUser._id === userId) {
         setSelectedUser(null);
       }
     }
@@ -134,7 +159,7 @@ export default function UserPanel() {
     const statusLabels = {
       active: 'פעיל',
       inactive: 'לא פעיל',
-      pending: 'ממתין לאישור'
+      blocked: 'חסום'
     };
     return statusLabels[status] || status;
   };
@@ -184,7 +209,7 @@ export default function UserPanel() {
             <option value="all">כל הסטטוסים</option>
             <option value="active">פעיל</option>
             <option value="inactive">לא פעיל</option>
-            <option value="pending">ממתין לאישור</option>
+            <option value="pending">חסום</option>
           </select>
 
           <button className="clear-filters-btn" onClick={clearFilters}>
@@ -224,7 +249,7 @@ export default function UserPanel() {
         <div className="table-section">
           <Table
             tableColumns={userColumns}
-            tableData={data}
+            tableData={tableDataWithActions}
             loading={loading}
             emptyMessage="לא נמצאו משתמשים"
             striped={true}
@@ -301,19 +326,19 @@ export default function UserPanel() {
               <div className="user-actions-full">
                 <button
                   className="edit-full-btn"
-                  onClick={() => editUser(selectedUser.id)}
+                  onClick={() => editUser(selectedUser._id)}
                 >
                   ערוך פרטים
                 </button>
                 <button
                   className="password-reset-btn"
-                  onClick={() => sendPasswordReset(selectedUser.id)}
+                  onClick={() => sendPasswordReset(selectedUser._id)}
                 >
                   שלח איפוס סיסמה
                 </button>
                 <button
                   className={`status-toggle-btn ${selectedUser.status}`}
-                  onClick={() => toggleUserStatus(selectedUser.id)}
+                  onClick={() => toggleUserStatus(selectedUser._id)}
                 >
                   {selectedUser.status === 'active' ? 'השבת משתמש' : 'הפעל משתמש'}
                 </button>
