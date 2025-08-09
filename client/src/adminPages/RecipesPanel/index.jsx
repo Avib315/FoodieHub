@@ -291,23 +291,6 @@ export default function RecipesPanel() {
                   ))}
                 </ul>
               </div>
-
-              <div className="recipe-actions-full">
-                <a
-                  href={selectedRecipe?.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="view-full-btn"
-                >
-                  צפה במתכון המלא
-                </a>
-                <button
-                  className="edit-full-btn"
-                  onClick={() => editRecipe(selectedRecipe?._id)}
-                >
-                  ערוך מתכון
-                </button>
-              </div>
             </div>
           </div>
         )}
