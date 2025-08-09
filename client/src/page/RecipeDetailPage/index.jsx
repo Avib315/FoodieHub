@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import LoadingPage from '../LoadingPage';
 import unitTypes from '../../data/unitTypes';
 import useUserStore from '../../store/userStore';
+import CommentSection from '../../component/CommentSections';
 
 // Mock data based on the provided structure
 
@@ -14,17 +15,14 @@ import useUserStore from '../../store/userStore';
 
 
 export default function RecipeDetailPage() {
-  const [liked, setLiked] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [following, setFollowing] = useState(false);
+
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
   const [userRating, setUserRating] = useState(0);
-  const [commentText, setCommentText] = useState('');
-  const [showCommentActions, setShowCommentActions] = useState(false);
+  const { addToSaved, removedSaved } = useUserStore()
   const { id } = useParams()
   const { user } = useUserStore()
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
-  const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET" });
+  const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET", defaultValue: {} });
   //מה שקורל עשתה -------------------------------
   async function addRating(rat) {
     const body = {
@@ -36,30 +34,31 @@ export default function RecipeDetailPage() {
     console.log(res);
     return res;
   }
+  const [saved, setSaved] = useState(data.saved);
+  useEffect(() => {
+    setSaved(data.saved)
+  }, [data?._id])
  
-  
-  async function addComment() {
-    const body = {
-      recipeId: id,
-      content: commentText
-    };
-    const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body })
-    console.log(res)
-  }
 
   async function saveRecipe() {
     const body = {
       recipeId: id
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
-    console.log(res)
+    addToSaved()
+    if (res) {
+      alert("מתכון נשמר למועדפים")
+    }
   }
 
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${id}`, method: "DELETE" })
-    return res;
+    removedSaved()
+    if (res) {
+      alert("מתכון נמחק מהמועדפים")
+    }
   }
-  //מה שקורל עשתה -------------------------------
+
 
 
   const getDifficultyText = (level) => {
@@ -122,17 +121,7 @@ export default function RecipeDetailPage() {
   };
 
 
-  const submitComment = async () => {
-    const res = await addComment();
-    console.log("comment", res);
-
-    if (commentText.trim()) {
-      alert('תגובה נשלחה בהצלחה!');
-      setCommentText('');
-      setShowCommentActions(false);
-    }
-  };
-
+  
   async function handleSaveClick() {
     try {
       if (saved) {
@@ -147,28 +136,6 @@ export default function RecipeDetailPage() {
     }
   }
 
-  const mockComments = [
-    {
-      id: 1,
-      author: "רחל אברהם",
-      avatar: "ר",
-      time: "לפני 2 שעות",
-      rating: 5,
-      text: "המתכון הזה פשוט מדהים! הטעם עשיר ומפנק, והכנה מאוד פשוטה. גם הילדים אהבו. בהחלט אכין שוב! תודה על המתכון המושלם 😍",
-      likes: 5,
-      liked: false
-    },
-    {
-      id: 2,
-      author: "מיכל לוי",
-      avatar: "מ",
-      time: "לפני 5 שעות",
-      rating: 4,
-      text: "סלט טעים! הוספתי גם גזר וסלרי והיה מושלם. הילדים בקשו תוספת 👨‍🍳",
-      likes: 3,
-      liked: true
-    }
-  ];
   if (loading) {
     return <LoadingPage />
   }
@@ -354,72 +321,8 @@ export default function RecipeDetailPage() {
             }
           </div>
         </div>
-
-        {/* Comments Section */}
-        <div className="recipe-section">
-          <div className="comments-header">
-            <h2 className="section-title">
-              <i className="fas fa-comments"></i>
-              תגובות ({data.comments.length})
-            </h2>
-
-          </div>
-
-          {/* Comment Form */}
-          <div className={`comment-form ${showCommentActions ? 'active' : ''}`}>
-            <textarea
-              className="comment-input"
-              placeholder="שתף את החוויה שלך עם המתכון..."
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              onFocus={() => setShowCommentActions(true)}
-            />
-            <div className="comment-actions">
-              <div className="comment-tools">
-                <button className="comment-tool" title="הוסף אימוג'י">
-                  <i className="far fa-smile"></i>
-                </button>
-                <button className="comment-tool" title="הוסף תמונה">
-                  <i className="fas fa-camera"></i>
-                </button>
-              </div>
-              <button
-                className="comment-submit"
-                onClick={submitComment}
-                disabled={!commentText.trim()}
-              >
-                פרסם
-              </button>
-            </div>
-          </div>
-
-          {/* Comments List */}
-          <div className="comments-list">
-            {data.comments.map((comment) => (
-              <div key={comment.id} className="comment">
-                <div className="comment-header">
-                  <div className="comment-avatar">{comment.avatar}</div>
-                  <div className="comment-info">
-                    <div className="comment-author">{comment.fullName}</div>
-                    <div className="comment-time">{new Date(comment.createdAt).toLocaleDateString('he-IL')}</div>
-                  </div>
-
-                </div>
-                <div className="comment-text">{comment.content}</div>
-                <div className="comment-actions">
-                  <button className={`comment-action ${comment.liked ? 'liked' : ''}`}>
-                    <i className={`${comment.liked ? 'fas' : 'far'} fa-heart`}></i>
-                    <span>{comment.likes}</span>
-                  </button>
-                  <button className="comment-action">
-                    <i className="far fa-comment"></i>
-                    <span>הגב</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+            <CommentSection recipeId={id} data={data.comments}/>
+      
       </div>
 
 

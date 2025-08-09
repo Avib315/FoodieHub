@@ -8,20 +8,27 @@ const useUserStore = create(
       // User data state
       user: null,
 
-      setUser: (userData) => set({ 
-        user: userData, 
+      setUser: (userData) => set({
+        user: userData,
       }),
-
+      addToSaved: () => set((state)=>({
+        ...state,
+        savedRecipesCount: state.user?.savedRecipesCount + 1
+      })),
+      removedSaved:  () => set((state)=>({
+        ...state,
+        savedRecipesCount: state.user?.savedRecipesCount -1
+      })),
       updateUser: (updates) => set((state) => ({
         user: state.user ? { ...state.user, ...updates } : null
       })),
 
-      clearUser: () => set({ 
-        user: null, 
+      clearUser: () => set({
+        user: null,
       }),
 
-      setError: (error) => set({ 
-        error: error 
+      setError: (error) => set({
+        error: error
       }),
 
 
