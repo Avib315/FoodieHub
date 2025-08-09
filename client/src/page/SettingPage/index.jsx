@@ -18,16 +18,18 @@ export default function SettingsPage() {
   async function changeUserDetails() {
     const body = {
       fullName: profileForm.name,
-      email: profileForm.email
+      newEmail: profileForm.email
     };
     const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body })
     console.log(res)
+    return res;
   }
 
   async function changeUserPassword(body) {
  
     const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body })
     console.log(res)
+    return res;
   }
   // מה שקורל עשתה ------------------------------------- 
 
@@ -154,7 +156,7 @@ export default function SettingsPage() {
     try {
       // Simulate API call
       const res = await changeUserDetails();
-      if (!res.success) {
+      if (res.success === false) {
         alert('שגיאה בעדכון הפרופיל')
         return
       };
@@ -168,7 +170,7 @@ export default function SettingsPage() {
         avatar: newAvatar
       })
       setSuccessMessage('הפרופיל עודכן בהצלחה!');
-      console.log('Profile updated:', profileForm);
+      alert('הפרופיל עודכן בהצלחה!');
     } catch (error) {
       console.error('Error updating profile:', error);
     } finally {
@@ -193,7 +195,9 @@ export default function SettingsPage() {
         newPass: passwordForm.newPassword,
         checPass: passwordForm.confirmPassword
       })
-      if (!res.success) {
+      console.log(res);
+      
+      if (res.success === false) {
         alert('שגיאה בשינוי הסיסמה')  
         return
       }
@@ -204,7 +208,7 @@ export default function SettingsPage() {
         confirmPassword: ''
       });
       setSuccessMessage('הסיסמה שונתה בהצלחה!');
-      console.log('Password updated');
+      alert('הסיסמה שונתה בהצלחה!');
     } catch (error) {
       console.error('Error updating password:', error);
     } finally {
