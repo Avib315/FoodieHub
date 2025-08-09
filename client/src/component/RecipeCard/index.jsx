@@ -147,9 +147,7 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
           className="recipe-image"
           style={getImageStyle()}
         >
-          <div className="recipe-overlay">
-            <p>{description}</p>
-          </div>
+    =
         </div>
 
       </Link>
