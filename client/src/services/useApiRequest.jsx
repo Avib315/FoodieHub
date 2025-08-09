@@ -19,15 +19,15 @@ const useApiRequest = (
       try {
         setLoading(true);
         setError(null);
-        
+
         const response = await axiosRequest({
           url: `${url}`,
           method,
           body: body
         });
-        
+
         console.log('API Response:', response);
-        
+
         if (response?.data?.success) {
           const responseData = response.data.data;
           setData(responseData);
