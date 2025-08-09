@@ -7,31 +7,50 @@ const ApiMessages = require("../common/apiMessages.js");
 const cloudinaryService = require('../imageServer/cloudinary.service.js');
 const savedRecipeController = require("../DL/controllers/savedRecipe.controller.js");
 
-async function getAllRecipes(filterByActive = true) {
+async function getAllRecipes(filterByActive = true, userId) {
     // ולידציה של הפרמטר
     if (typeof filterByActive !== 'boolean') {
         console.log("getAllRecipes: filterByActive should be a boolean");
-
         throw new Error(ApiMessages.errorMessages.invalidData);
     }
 
     // שליפת המתכונים
     const recipes = await recipeController.readWithUserAndRatings();
-
+    
     // בדיקה אם יש מתכונים (אבל לא זורקים שגיאה, זה מצב תקין)
     if (!recipes || recipes.length === 0) {
-        return {
-            data: []
-        };
+        return []
     }
+
+    let sendRecipes = [...recipes]; 
+
+    if (userId) {
+        const user = await userController.readOne({ _id: userId });
+        
+        if (user) {
+            const savedRecipes = user.savedRecipes || [];
+            const savedRecipeIds = new Set(savedRecipes.map(recipe => recipe._id.toString()));
+
+            sendRecipes = sendRecipes.map(recipe => ({
+                ...recipe,
+                saved: savedRecipeIds.has(recipe._id.toString())
+            }));
+        } else {
+            console.log("getAllRecipes: user not found");
+            sendRecipes = sendRecipes.map(recipe => ({
+                ...recipe,
+                saved: false
+            }));
+        }
+    }
+
     // סינון המתכונים על פי הסטטוס אם נדרש
     const filteredRecipes = filterByActive
-        ? recipes.filter(recipe => recipe.status === 'active')
-        : recipes;
+        ? sendRecipes.filter(recipe => recipe.status === 'active')
+        : sendRecipes;
 
     return filteredRecipes;
 }
-
 
 async function getRecipeById(id) {
     // ולידציות בסיסיות במשולב

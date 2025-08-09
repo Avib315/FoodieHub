@@ -14,7 +14,7 @@ router.get('/',auth, async (req, res) => {
         const data = {
             user: await userService.getUser(userId),
             notification: await notificationService.countUnreadNotifications(userId),
-            recipes: await recipeService.getAllRecipes()
+            recipes: await recipeService.getAllRecipes(true , userId)
         }
        res.status(200).send({success: true, data});
     } catch (error) {

@@ -10,7 +10,8 @@ const upload = multer({ dest: 'uploads/' });
 
 router.get("/getAll", auth, async (req, res) => {
     try {
-        const result = await service.getAllRecipes();
+        const userId = req.body.userId
+        const result = await service.getAllRecipes(true , userId);
         res.status(200).send({
             success: true,
             data: result

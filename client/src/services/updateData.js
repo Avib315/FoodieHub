@@ -1,4 +1,4 @@
-const updateData = ({ data, setData, method = "POST", itemId, fullObject }) => {
+const updateData = ({ data, setData, method = "POST", itemId,  fullObject }) => {
   switch (method) {
     case "POST":
       // Add new item to array
