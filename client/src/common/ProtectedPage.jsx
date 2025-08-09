@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
-import { isAuthenticated } from "../services/AuthRequest";
 import LoadingPage from "../page/LoadingPage/index";
 import NotFoundPage from "../page/NotFoundPage";
 import NavBar from "../component/NavBar";
+import useAuth from "../store/useAuth";
 
 export default function ProtectedPage({ element }) {
-    const [isAuth, setIsAuth] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { auth } = useAuth()
     useEffect(() => {
-        const checkAuth = async () => {
-            const authStatus = await isAuthenticated();
-            setLoading(false);
-            setIsAuth(authStatus);
+        console.log('Auth changed to:', auth);
+        if (auth || auth ===false) {
+            setLoading(false)
         }
-        checkAuth();
-    }, []);
+    }, [auth])
+
+if(loading) return <LoadingPage />
 
     return (
         <>
-            {!loading ?
-                (isAuth ?
-                    <>  {element} <NavBar /> </>
-                    : <NotFoundPage type={1}/>) : <LoadingPage/>}
+            { auth ? <>  {element} <NavBar /> </> : <NotFoundPage type={1} /> }
 
         </>)
 }
