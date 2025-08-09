@@ -11,6 +11,8 @@ export default function AdminPage() {
     defaultValue: []
   });
 
+  const navigate = useNavigate();
+
   console.log('Admin logs data:', data);
 
   // Function to get Hebrew text and icon for each action
@@ -87,10 +89,12 @@ export default function AdminPage() {
       url: '/user/logout', // למרות שזה מסלול של יוזר זה נראה שזה עובד, אבל מי שמבין צריך לבדוק את זה
       method: 'POST'
     });
-
-    clearUser(); // כמובן שזה נזרק, לא הבנתי איך זה עובד אצל יוזר אז השארתי כרגע
-
-    navigate('/admin-login');
+    if (res.success === false) {
+      alert("בעיה בהתנתקות")
+    }
+    else {
+      navigate('/admin-login');
+    }
   };
 
   if (loading) {
@@ -122,7 +126,7 @@ export default function AdminPage() {
   return (
     <div className="admin-page">
       <div className="admin-header">
-        <button onClick={handleLogout} className="">
+        <button onClick={handleLogout} className="logout-btn">
           🚪 התנתק
         </button>
         <div className="admin-title">   {/*הוספתי כאן div כדי לעזור לcss של הכתפור התנתקות, לא עשיתי css*/}

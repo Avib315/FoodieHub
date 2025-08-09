@@ -5,6 +5,14 @@
   direction: rtl;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
+  .logout-btn {
+  padding: 10px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
   .admin-header {
     text-align: center;
     margin-bottom: 3rem;
