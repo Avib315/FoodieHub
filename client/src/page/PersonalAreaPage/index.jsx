@@ -11,14 +11,6 @@ export default function PersonalAreaPage() {
 const {user, clearUser} = useUserStore()
 const navigate = useNavigate();
 const data = user;
- // מה שקורל עשתה ------------------------------------- 
- 
- // הערה: מהערך המוחזר אפשר לשלוף גם את כמות המתכונים השמורים ואת כמות המתכונים שהמשתמש יצר
- console.log("useUserStore.getState().getUser()" , );
-
-// const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
-
-  // מה שקורל עשתה ------------------------------------- 
 
 
 

@@ -4,7 +4,7 @@ async function auth(req, res, next) {
     try {
         let token = req.cookies.token; 
         if (!token) {
-            return res.status(403).send({ message: 'No token provided.' });
+            return res.status(403).send({ message: 'No token provided.' , login:false });
         }
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) {
