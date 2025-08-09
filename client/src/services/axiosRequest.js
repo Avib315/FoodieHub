@@ -13,18 +13,20 @@ export default async function axiosRequest({ method = "POST", body = {}, url = "
             baseURL: API_BASE_URL,
             withCredentials: true
         })
-        
-        if (data.notAuth) {
+        if(data.status == 200){
+            return data
+        }
+        else if (data.notAuth) {
             useAuth.getState().logout()
         }
+        else{
+            return { success: false}
+        }
         
-        return data
     }
     catch (err) {
         console.error(err)
         
-        return {
-            success: false
-        }
+        return {success: false}
     }
 }

@@ -4,6 +4,7 @@ import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import { notificationTypes } from '../../data/notificationTypes';
 import useUserStore from '../../store/userStore';
+import updateData from '../../services/updateData';
 export default function NotificationPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -13,7 +14,6 @@ export default function NotificationPage() {
     method: 'get',
     defaultValue: []
   });
-
   // מה שקורל עשתה -------------------------------------
   async function markAsRead(ids) {
     const body = { notificationIds: ids }
@@ -21,11 +21,6 @@ export default function NotificationPage() {
     console.log(res)
   }
 
-  async function removeNotification(id) {
-    const res = await axiosRequest({ url: `/notification/delete/${id}`, method: "DELETE" })
-    console.log(res)
-  }
-  // מה שקורל עשתה -------------------------------------
 
 
 
@@ -73,7 +68,7 @@ export default function NotificationPage() {
   const handleNotificationClick = async (notification) => {
     if (!notification.isRead) {
       await markAsRead([notification._id]);
-      
+
       setUser({ ...user, notification: user.notification - 1 })
       const updatedData = data.map(n =>
         n._id === notification._id ? { ...n, isRead: true } : n
@@ -86,10 +81,13 @@ export default function NotificationPage() {
 
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
-    await removeNotification(notificationId);
-    console.log('Notification deleted:');
-    const updatedData = data.filter(n => n._id !== notificationId);
-    setData(updatedData);
+    const res = await axiosRequest({ url: `/notification/delete/${id}`, method: "DELETE" })
+    if(res.success){
+      updateData()
+      console.log('Notification deleted:');
+      const updatedData = data.filter(n => n._id !== notificationId);
+      setData(updatedData);
+    }
   };
 
 

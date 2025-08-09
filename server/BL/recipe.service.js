@@ -220,7 +220,6 @@ const createRecipe = async (recipeInput) => {
         status: 'pending'
     };
 
-    console.log(1111);
     // יצירת המתכון
     const newRecipe = await recipeController.create(recipeData);
     if (!newRecipe) {
