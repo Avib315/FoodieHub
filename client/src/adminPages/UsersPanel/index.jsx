@@ -200,12 +200,9 @@ export default function UserPanel() {
             <span className="stat-label">פעילים</span>
           </div>
         </div>
-        <div className="stat-card pending">
-          <div className="stat-icon">⏳</div>
-          <div className="stat-content">
-            <span className="stat-number">{userData.filter(u => u.status === 'pending').length}</span>
-            <span className="stat-label">ממתינים</span>
-          </div>
+        <div className="stat-card">
+          <span className="stat-number">{filteredUsers.length}</span>
+          <span className="stat-label">תוצאות מסוננות</span>
         </div>
       </div>
 
