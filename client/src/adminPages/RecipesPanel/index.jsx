@@ -3,9 +3,11 @@ import Table from '../../component/Table';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
+import categoryOptions from '../../data/options/categoryOptions';
+
 const recipeColumns = [
   { title: 'שם המתכון', field: 'title', typeof: 'string' },
-  { title: 'קטגוריה', field: 'category', typeof: 'badge' },
+  { title: 'קטגוריה', field: 'categoryLabel', typeof: 'badge' },
   { title: 'זמן הכנה', field: 'prepTime', typeof: 'string' },
   { title: 'רמת קושי', field: 'difficultyLevel', typeof: 'badge' },
   { title: 'סטטוס', field: 'status', typeof: 'badge' },
@@ -16,7 +18,6 @@ const recipeColumns = [
 
 export default function RecipesPanel() {
   const { data } = useAxiosRequest({ url: `/admin/getAllRecipes`, defaultValue: [], method: "GET" });
-
 
   const [recipeData, setRecipeData] = useState(data);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -29,96 +30,110 @@ export default function RecipesPanel() {
 
   useEffect(() => {
     setRecipeData(data);
-
   }, [data]);
+
   // Filter recipes based on search and filters
   const filteredRecipes = recipeData.filter(recipe => {
-    const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       recipe.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'all' || recipe.status === filterStatus;
     const matchesCategory = filterCategory === 'all' || recipe.category === filterCategory;
 
     return matchesSearch && matchesStatus && matchesCategory;
   });
+
   const toggleRecipeStatus = async (recipeId, status) => {
-
     const newStatus = status === 'active' ? 'rejected' : 'active';
-    const res = await axiosRequest({
-        url: `/admin/updateRecipeStatus`,
-        body: { status: newStatus , id:recipeId },
-        method: 'PUT'
-      });
-    
 
-    if (!res.success) {
+    const res = await axiosRequest({
+      url: `/admin/updateRecipeStatus`,
+      body: { status: newStatus, id: recipeId },
+      method: 'PUT'
+    });
+
+    if (!res.data.success) {
       alert('שגיאה בשינוי הסטטוס של המתכון');
       return;
     }
+
     if (status === 'active') {
       setRecipeData(prevData =>
         prevData.map(recipe =>
-          recipe.id === recipeId
-            ? { ...recipe, status: 'inactive' }
+          recipe._id === recipeId
+            ? { ...recipe, status: 'rejected' }
             : recipe
         )
       );
     } else {
       setRecipeData(prevData =>
         prevData.map(recipe =>
-          recipe.id === recipeId
+          recipe._id === recipeId
             ? { ...recipe, status: 'active' }
             : recipe
         )
       );
     }
   };
+
   // Add action buttons to table data
-  const tableDataWithActions = filteredRecipes.map(recipe => ({
-    ...recipe,
-    actions: (
-      <div className="recipe-actions">
-        <button
-          className="action-btn view-btn"
-          onClick={() => viewRecipe(recipe.id)}
-          title="צפייה במתכון"
-        >
-          <span>👁️</span>
-        </button>
-        <button
-          onClick={() => toggleRecipeStatus(recipe._id, recipe.status)}
-          className="action-btn edit-btn"
-          title={recipe.status === 'active' ? 'הפוך ללא פעיל' : 'הפוך לפעיל'}
-        >
-          {recipe.status === 'active' ? '⏸️' : '▶️'}
-        </button>
-        <button
-          className="action-btn delete-btn"
-          onClick={() => deleteRecipe(recipe.id)}
-          title="מחיקת מתכון"
-        >
-          <span>🗑️</span>
-        </button>
-      </div>
-    )
-  }));
+  const tableDataWithActions = filteredRecipes.map(recipe => {
+    const categoryLabel = categoryOptions.find(opt => opt.value === recipe.category)?.label || recipe.category;
+    return {
+      ...recipe,
+      categoryLabel,
+      actions: (
+        <div className="recipe-actions">
+          <button
+            className="action-btn view-btn"
+            onClick={() => viewRecipe(recipe._id)}
+            title="צפייה במתכון"
+          >
+            <span>👁️</span>
+          </button>
+          <button
+            onClick={() => toggleRecipeStatus(recipe._id, recipe.status)}
+            className="action-btn edit-btn"
+            title={recipe.status === 'active' ? 'הפוך ללא פעיל' : 'הפוך לפעיל'}
+          >
+            {recipe.status === 'active' ? '⏸️' : '▶️'}
+          </button>
+          <button
+            className="action-btn delete-btn"
+            onClick={() => deleteRecipe(recipe._id)}
+            title="מחיקת מתכון"
+          >
+            <span>🗑️</span>
+          </button>
+        </div>
+      )
+    }
+  });
 
   const viewRecipe = (recipeId) => {
-    const recipe = recipeData.find(r => r.id === recipeId);
+    const recipe = recipeData.find(r => r._id === recipeId);
     setSelectedRecipe(recipe);
-    console.log(`Viewing recipe with ID: ${recipeId}`);
+    console.log(`Viewing recipe with ID: ${recipeId} this ,`, recipe);
   };
 
-
-
-  const deleteRecipe = (recipeId) => {
+  const deleteRecipe = async (recipeId) => {
     if (window.confirm('האם אתה בטוח שברצונך למחוק את המתכון?')) {
-      setRecipeData(prevData => prevData.filter(recipe => recipe.id !== recipeId));
-      if (selectedRecipe && selectedRecipe.id === recipeId) {
+      const res = await axiosRequest({
+        url: `/admin/deleteRecipe/${recipeId}`,
+        method: 'DELETE'
+      });
+
+      if (!res.data.success) {
+        alert('שגיאה במחיקת המתכון');
+        return;
+      }
+
+      setRecipeData(prevData => prevData.filter(recipe => recipe._id !== recipeId));
+      if (selectedRecipe && selectedRecipe._id === recipeId) {
         setSelectedRecipe(null);
       }
     }
   };
-
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -138,7 +153,10 @@ export default function RecipesPanel() {
           <h1>ניהול מתכונים</h1>
           <p>נהל את המתכונים שלך בקלות</p>
         </div>
-
+        <a className="back-btn" href="/admin-panel">
+          חזור לפאנל
+          <span>← </span>
+        </a>
       </div>
 
       {/* Filters */}
@@ -162,7 +180,8 @@ export default function RecipesPanel() {
             <option value="all">כל הסטטוסים</option>
             <option value="active">פעיל</option>
             <option value="pending">ממתין</option>
-            <option value="inactive">לא פעיל</option>
+            <option value="rejected">לא פעיל</option>
+            <option value="draft">טיוטה</option>
           </select>
 
           <select
@@ -171,9 +190,16 @@ export default function RecipesPanel() {
             className="filter-select"
           >
             <option value="all">כל הקטגוריות</option>
-            {categories.map(category => (
-              <option key={category} value={category}>{category}</option>
-            ))}
+            {categories.map(
+              category => {
+                const option = categoryOptions.find(opt => opt.value === category);
+                return (
+                  <option key={category} value={category}>
+                    {option ? option.label : category}
+                  </option>
+                );
+              }
+            )}
           </select>
 
           <button className="clear-filters-btn" onClick={clearFilters}>
@@ -191,10 +217,6 @@ export default function RecipesPanel() {
         <div className="stat-card">
           <span className="stat-number">{recipeData.filter(r => r.status === 'active').length}</span>
           <span className="stat-label">מתכונים פעילים</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-number">{categories.length}</span>
-          <span className="stat-label">קטגוריות</span>
         </div>
         <div className="stat-card">
           <span className="stat-number">{filteredRecipes.length}</span>

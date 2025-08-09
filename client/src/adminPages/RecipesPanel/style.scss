@@ -33,6 +33,25 @@
     }
   }
 
+  .back-btn {
+    background: rgba($text-white, 0.2);
+    color: $text-white;
+    border: 2px solid rgba($text-white, 0.3);
+    font-size: $font-base;
+    font-weight: $font-medium;
+    padding: $spacing-sm $spacing-lg;
+    
+    span {
+      margin-right: $spacing-xs;
+    }
+
+    &:hover {
+      background: rgba($text-white, 0.3);
+      border-color: rgba($text-white, 0.5);
+      transform: translateY(-1px);
+    }
+  }
+  
   .add-recipe-btn {
     @include button-base;
     background: rgba($text-white, 0.2);

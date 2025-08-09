@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAxiosRequest from '../../services/useApiRequest';
+import axiosRequest from '../../services/axiosRequest';
 import './style.scss'
 
 export default function AdminPage() {
-  const { data, loading, error } = useAxiosRequest({ 
-    url: `/adminLog/getAll`, 
+  const { data, loading, error } = useAxiosRequest({
+    url: `/adminLog/getAll`,
     method: "GET",
     defaultValue: []
   });
@@ -52,36 +53,45 @@ export default function AdminPage() {
   // Format date to Hebrew
   const formatDate = (dateString) => {
     if (!dateString) return '';
-    
+
     const date = new Date(dateString);
     const options = {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
       timeZone: 'Asia/Jerusalem'
     };
-    
+
     return new Intl.DateTimeFormat('he-IL', options).format(date);
   };
 
   // Group logs by date for better organization
   const groupedLogs = useMemo(() => {
     if (!Array.isArray(data) || data.length === 0) return {};
-    
+
     return data.reduce((groups, log) => {
       const date = new Date(log.createdAt || log.date || Date.now());
       const dateKey = date.toDateString();
-      
+
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
-      
+
       groups[dateKey].push(log);
       return groups;
     }, {});
   }, [data]);
+
+  const handleLogout = async () => {
+    const res = await axiosRequest({
+      url: '/user/logout', // למרות שזה מסלול של יוזר זה נראה שזה עובד, אבל מי שמבין צריך לבדוק את זה
+      method: 'POST'
+    });
+
+    clearUser(); // כמובן שזה נזרק, לא הבנתי איך זה עובד אצל יוזר אז השארתי כרגע
+
+    navigate('/admin-login');
+  };
 
   if (loading) {
     return (
@@ -112,10 +122,14 @@ export default function AdminPage() {
   return (
     <div className="admin-page">
       <div className="admin-header">
-        <h1>פאנל ניהול</h1>
-        <p>ברוך הבא למערכת ניהול האתר</p>
+        <button onClick={handleLogout} className="">
+          🚪 התנתק
+        </button>
+        <div className="admin-title">   {/*הוספתי כאן div כדי לעזור לcss של הכתפור התנתקות, לא עשיתי css*/}
+          <h1>פאנל ניהול</h1>
+          <p>ברוך הבא למערכת ניהול האתר</p>
+        </div>
       </div>
-
       <div className="admin-content">
         {/* Action Buttons */}
         <div className="admin-actions">
@@ -129,7 +143,7 @@ export default function AdminPage() {
               </div>
               <div className="action-arrow">←</div>
             </Link>
-            
+
             <Link to="/admin-recipe-panel" className="action-card recipes">
               <div className="action-icon">🍳</div>
               <div className="action-content">
@@ -159,44 +173,52 @@ export default function AdminPage() {
               </div>
             ) : (
               Object.keys(groupedLogs).length > 0 ? (
-                Object.entries(groupedLogs).map(([dateKey, logs]) => (
-                  <div key={dateKey} className="log-date-group">
-                    <div className="date-header">
-                      {formatDate(logs[0]?.createdAt || logs[0]?.date)}
+                Object.entries(groupedLogs)
+                  .sort((a, b) => {
+                    const aDate = new Date(a[1][0]?.createdAt || a[1][0]?.date || 0);
+                    const bDate = new Date(b[1][0]?.createdAt || b[1][0]?.date || 0);
+                    return bDate - aDate;
+                  })
+                  .map(([dateKey, logs]) => (
+                    <div key={dateKey} className="log-date-group">
+                      <div className="date-header">
+                        {formatDate(logs[0]?.createdAt || logs[0]?.date)}
+                      </div>
+
+                      <div className="logs-list">
+                        {[...logs]
+                          .sort((a, b) => new Date(b.createdAt || b.date || 0) - new Date(a.createdAt || a.date || 0))
+                          .map((log, index) => {
+                            const logDetails = getLogDetails(log.action);
+                            return (
+                              <div key={`${dateKey}-${index}`} className={`log-item ${logDetails.color}`}>
+                                <div className="log-icon">{logDetails.icon}</div>
+
+                                <div className="log-content">
+                                  <div className="log-action">{logDetails.text}</div>
+                                  {log.targetUser && (
+                                    <div className="log-target">משתמש: {log.targetUser}</div>
+                                  )}
+                                  {log.targetRecipe && (
+                                    <div className="log-target">מתכון: {log.targetRecipe}</div>
+                                  )}
+                                  {log.reason && (
+                                    <div className="log-reason">סיבה: {log.reason}</div>
+                                  )}
+                                </div>
+
+                                <div className="log-time">
+                                  {new Date(log.createdAt || log.date || Date.now()).toLocaleTimeString('he-IL', {
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                    
-                    <div className="logs-list">
-                      {logs.map((log, index) => {
-                        const logDetails = getLogDetails(log.action);
-                        return (
-                          <div key={`${dateKey}-${index}`} className={`log-item ${logDetails.color}`}>
-                            <div className="log-icon">{logDetails.icon}</div>
-                            
-                            <div className="log-content">
-                              <div className="log-action">{logDetails.text}</div>
-                              {log.targetUser && (
-                                <div className="log-target">משתמש: {log.targetUser}</div>
-                              )}
-                              {log.targetRecipe && (
-                                <div className="log-target">מתכון: {log.targetRecipe}</div>
-                              )}
-                              {log.reason && (
-                                <div className="log-reason">סיבה: {log.reason}</div>
-                              )}
-                            </div>
-                            
-                            <div className="log-time">
-                              {new Date(log.createdAt || log.date || Date.now()).toLocaleTimeString('he-IL', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))
+                  ))
               ) : (
                 <div className="empty-logs">
                   <div className="empty-icon">📝</div>

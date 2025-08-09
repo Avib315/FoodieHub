@@ -100,8 +100,10 @@ export default function Table({
         return (
           <span className={`status-badge ${value}`}>
             {value === 'active' ? 'פעיל' : 
-             value === 'inactive' ? 'לא פעיל' :
-             value === 'pending' ? 'ממתין' : value}
+             value === 'rejected' ? 'לא פעיל' :
+             value === 'pending' ? 'ממתין' :
+             value === 'draft' ? 'טיוטה' : 
+             value}
           </span>
         );
       
