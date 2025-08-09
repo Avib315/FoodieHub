@@ -14,16 +14,11 @@ export default function NotificationPage() {
     method: 'get',
     defaultValue: []
   });
-  // מה שקורל עשתה -------------------------------------
   async function markAsRead(ids) {
     const body = { notificationIds: ids }
     const res = await axiosRequest({ url: "/notification/markAsRead", method: "PUT", body: body })
     console.log(res)
   }
-
-
-
-
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -81,12 +76,13 @@ export default function NotificationPage() {
 
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
-    const res = await axiosRequest({ url: `/notification/delete/${id}`, method: "DELETE" })
+    console.log('Deleting notification:', notificationId);
+    const res = await axiosRequest({ url: `/notification/delete/${notificationId}`, method: "DELETE" })
     if(res.success){
       updateData()
       console.log('Notification deleted:');
       const updatedData = data.filter(n => n._id !== notificationId);
-      setData(updatedData);
+      setData(previousData => previousData.filter(n => n._id !== notificationId));
     }
   };
 
