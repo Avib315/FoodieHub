@@ -9,6 +9,10 @@
   # Optional: specify Node.js version
   environment = { NODE_VERSION = "18" }
 
+# Build settings override
+[build.processing]
+  skip_processing = false
+
 # Redirect rules for React Router (SPA)
 [[redirects]]
   from = "/*"
