@@ -16,17 +16,17 @@ async function getAllRecipes(filterByActive = true, userId) {
 
     // שליפת המתכונים
     const recipes = await recipeController.readWithUserAndRatings();
-    
+
     // בדיקה אם יש מתכונים (אבל לא זורקים שגיאה, זה מצב תקין)
     if (!recipes || recipes.length === 0) {
         return []
     }
 
-    let sendRecipes = [...recipes]; 
+    let sendRecipes = [...recipes];
 
     if (userId) {
         const user = await userController.readOne({ _id: userId });
-        
+
         if (user) {
             const savedRecipes = user.savedRecipes || [];
             const savedRecipeIds = new Set(savedRecipes.map(recipe => recipe._id.toString()));
@@ -53,8 +53,7 @@ async function getAllRecipes(filterByActive = true, userId) {
 }
 
 async function getRecipeById(id) {
-    // ולידציות בסיסיות במשולב
-    console.log('id', id);
+
 
     if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
         console.log("getRecipeById: Invalid or missing recipe ID");
@@ -74,7 +73,6 @@ async function getRecipeById(id) {
         ratingController.getAllRatings(id),
         commentService.getRecipeComments(id).catch(() => []) // אם אין הערות, החזר מערך ריק
     ]);
-
     // עיבוד התוצאות
     const userName = userResult?.username || 'Unknown User';
     const fullName = userResult?.firstName + " " + userResult?.lastName || 'Unknown User';
@@ -83,6 +81,9 @@ async function getRecipeById(id) {
 
     // המרה לאובייקט רגיל ומחיקת userId
     const recipeObj = recipe.toObject();
+    const savedRecipeIds = userResult?.savedRecipes || [];
+    const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
+    recipeObj.saved = savedRecipeIdsSet.has(recipeObj._id.toString());
     const { userId, ...recipeWithoutUserId } = recipeObj;
 
     // החזרת המתכון עם הנתונים הנוספים
