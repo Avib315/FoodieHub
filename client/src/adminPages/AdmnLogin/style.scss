@@ -8,6 +8,7 @@
   @include flex-center;
   @include gradient-bg($bg-lighter, $bg-light, 135deg);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #ff540a61;
   padding: $spacing-lg;
   box-sizing: border-box;
   direction: rtl; // Hebrew text direction
