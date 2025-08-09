@@ -5,25 +5,28 @@ import FloatingElements from '../../component/FloatingElements';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import useUserStore from '../../store/userStore';
+import useAuth from '../../store/useAuth';
 
 export default function PersonalAreaPage() {
- 
-const {user, clearUser} = useUserStore()
-const navigate = useNavigate();
-const data = user;
+  const {setAuth} = useAuth()
+
+  const { user, clearUser } = useUserStore()
+  const navigate = useNavigate();
+  const data = user;
 
 
 
-   const handleLogout = async () => {
+  const handleLogout = async () => {
     // מחיקת הטוקן מהקוקי
-   // שליחת בקשה לשרת למחיקת הטוקן
-     const res = await axiosRequest({
-        url: '/user/logout', // או כל endpoint שיש לך להתנתקות
-        method: 'POST'
-      });
+    // שליחת בקשה לשרת למחיקת הטוקן
+    const res = await axiosRequest({
+      url: '/user/logout', // או כל endpoint שיש לך להתנתקות
+      method: 'POST'
+    });
+    setAuth(false)
 
     clearUser();
-    
+
     // מעבר לדף התחברות
     navigate('/login');
   };
@@ -78,72 +81,72 @@ const data = user;
 
   return (
     <>
-    <div className="personal-area-page">
-      <div className="container">
-        {/* Profile Header */}
-        <div className="profile-header">
-          <div className="profile-card">
-            <div className="profile-avatar">
-              <span>{data.avatar}</span>
-            </div>
-            <div className="profile-info">
-              <h1 className="profile-name">{data.name}</h1>
-              <p className="profile-email">{data.email}</p>
-              <p className="profile-join-date">חבר מאז {userData.joinDate}</p>
-            </div>
-            <Link to="/settings" className="edit-profile-btn">
-              ✏️ ערוך פרופיל
-            </Link>
-            <button onClick={handleLogout} className="edit-profile-btn">
+      <div className="personal-area-page">
+        <div className="container">
+          {/* Profile Header */}
+          <div className="profile-header">
+            <div className="profile-card">
+              <div className="profile-avatar">
+                <span>{data.avatar}</span>
+              </div>
+              <div className="profile-info">
+                <h1 className="profile-name">{data.name}</h1>
+                <p className="profile-email">{data.email}</p>
+                <p className="profile-join-date">חבר מאז {userData.joinDate}</p>
+              </div>
+              <Link to="/settings" className="edit-profile-btn">
+                ✏️ ערוך פרופיל
+              </Link>
+              <button onClick={handleLogout} className="edit-profile-btn">
                 🚪 התנתק
               </button>
-          </div>
-        </div>
-
-        {/* Stats Cards */}
-        <div className="stats-section">
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon">📝</div>
-              <div className="stat-number">{data.createdRecipesCount}</div>
-              <div className="stat-label">המתכונים שלי</div>
             </div>
-            <div className="stat-card">
-              <div className="stat-icon">❤️</div>
-              <div className="stat-number">{data.savedRecipesCount}</div>
-              <div className="stat-label">מועדפים</div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="stats-section">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon">📝</div>
+                <div className="stat-number">{data.createdRecipesCount}</div>
+                <div className="stat-label">המתכונים שלי</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">❤️</div>
+                <div className="stat-number">{data.savedRecipesCount}</div>
+                <div className="stat-label">מועדפים</div>
+              </div>
+
             </div>
-     
           </div>
-        </div>
 
-        {/* Quick Actions */}
-        <div className="quick-actions-section">
-          <h2 className="section-title">פעולות מהירות</h2>
-          <div className="quick-actions-grid">
-            {quickActions.map((action, index) => (
-              <Link 
-              key={index}
-              to={action.to} 
-                className={`quick-action ${action.color}`}
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                <div className="quick-action-icon">
-                  <span>{action.icon}</span>
-                </div>
-                <div className="quick-action-content">
-                  <div className="quick-action-title">{action.title}</div>
-                  <div className="quick-action-subtitle">{action.subtitle}</div>
-                </div>
-                <div className="quick-action-arrow">←</div>
-              </Link>
-            ))}
+          {/* Quick Actions */}
+          <div className="quick-actions-section">
+            <h2 className="section-title">פעולות מהירות</h2>
+            <div className="quick-actions-grid">
+              {quickActions.map((action, index) => (
+                <Link
+                  key={index}
+                  to={action.to}
+                  className={`quick-action ${action.color}`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="quick-action-icon">
+                    <span>{action.icon}</span>
+                  </div>
+                  <div className="quick-action-content">
+                    <div className="quick-action-title">{action.title}</div>
+                    <div className="quick-action-subtitle">{action.subtitle}</div>
+                  </div>
+                  <div className="quick-action-arrow">←</div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
 
-       
+
+        </div>
       </div>
-    </div>
-              </>
+    </>
   );
 }

@@ -4,13 +4,15 @@ import './style.scss'
 import Input from '../../component/Input'
 import FloatingElements from '../../component/FloatingElements'
 import axiosRequest from '../../services/axiosRequest'
+import useAuth from '../../store/useAuth'
 export default function LoginPage() {
+  localStorage.removeItem('auth-storage')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     remember: false
   })
-
+  const { login } = useAuth()
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -66,25 +68,25 @@ export default function LoginPage() {
       // Simulate API call
 
       const data = await axiosRequest({ url: "user/login", method: "POST", body: formData })
-      console.log(data.data);
-      if (data.data) { 
-        if (data?.data.success === true){
-
-          setSuccessMessage('התחברת בהצלחה!')
-          setTimeout(()=>{
-            nav("/")
-          },800)
-        }
-        else{
-          setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
-        }
+        console.log(data);
+        
+        if (data?.success === true || data.data?.success=== true) {
+          login() // ✅ Add this back!
+          console.log(1111);
+        setSuccessMessage('התחברת בהצלחה!')
+        setTimeout(() => {
+          nav("/")
+        }, 800)
       }
+
       else {
         setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
       }
 
 
     } catch (error) {
+      console.log(error);
+      
       setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
     } finally {
       setIsLoading(false)

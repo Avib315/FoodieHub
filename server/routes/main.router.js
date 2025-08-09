@@ -4,6 +4,7 @@ const userService = require('../BL/user.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const recipeService = require('../BL/recipe.service.js');
 const notificationService = require('../BL/notification.service.js');
+const savedRecipes = require('../BL/savedRecipe.service.js');
 const ApiMessages = require('../common/apiMessages.js');
 
 

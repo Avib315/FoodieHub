@@ -5,12 +5,15 @@ import { persist } from 'zustand/middleware'
 const useAuth = create(
   persist(
     (set, get) => ({
-      // User data state
-
-
-
+      auth: false,
+      
+      login: () => set({ auth: true }),
+      logout: () => set({ auth: false }),
     }),
-
+    {
+      name: 'auth-storage',
+      partialize: (state) => ({ auth: state.auth }),
+    }
   )
 )
 

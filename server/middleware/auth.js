@@ -4,11 +4,11 @@ async function auth(req, res, next) {
     try {
         let token = req.cookies.token; 
         if (!token) {
-            return res.status(403).send({ message: 'No token provided.' , login:false });
+            return res.status(403).send({ message: 'No token provided.' , notAuth:false });
         }
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) {
-                return res.status(403).send({ message: 'Failed to authenticate token.' });
+                return res.status(403).send({ message: 'Failed to authenticate token.', notAuth:false });
             } else {
                 req.user = user;
                 req.body.userId = user.id; 
@@ -27,14 +27,14 @@ async function adminAuth(req, res, next) {
     try {
         let token = req.cookies.token; 
         if (!token) {
-            return res.status(403).send({ message: 'No token provided.' });
+            return res.status(403).send({ message: 'No token provided.', notAuth:true });
         }
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) {
-                return res.status(403).send({ message: 'Failed to authenticate token.' });
+                return res.status(403).send({ message: 'Failed to authenticate token.', notAuth:true });
             }            
             if (user.role !== 'admin') {
-                return res.status(403).send({ message: 'Access denied. Admin role required.' });
+                return res.status(403).send({ message: 'Access denied. Admin role required.',notAuth:true });
             }
             req.user = user;
             req.body.userId = user.id;

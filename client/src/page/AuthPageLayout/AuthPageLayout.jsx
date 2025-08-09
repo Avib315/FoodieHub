@@ -1,15 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import useAxiosRequest from '../../services/useApiRequest'
-import axiosRequest from '../../services/axiosRequest'
+
+import useAuth from '../../store/useAuth'
 
 export default function AuthPageLayout({ children }) {
-  const [isAuth, setIsAuth] = useState(false)
-  const location = useLocation()
-  useEffect(()=>{
-      const {data} =  axiosRequest({url:"user/isAuthenticated"})
-      setIsAuth(data)
-  },[])
+  const {auth , setAuth} = useAuth()
   const isAuthPage = location.pathname === '/login' || 
                      location.pathname === '/signup' || 
                      location.pathname === '/register' ||

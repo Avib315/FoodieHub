@@ -4,6 +4,25 @@ const { loginAuth } = require("../middleware/auth.js");
 const ApiMessages = require("../common/apiMessages.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
 
+
+async function getSavedRecipesIds(userId) {
+     if (!userId ) {
+        console.log("getSavedRecipesIds: Missing required fields: userId");
+        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+    }
+    if (!userId.match(/^[0-9a-fA-F]{24}$/) ) {
+        console.log("getSavedRecipesIds: Invalid userId format provided");
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // Check if recipe already exists in saved list
+    const saved = await savedRecipeController.read(userId);
+    if (!saved) {
+        console.log("getSavedRecipesIds: recipes saved not found");
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+    return saved
+}
 // Add recipe to saved list
 async function addSavedRecipe(userId, recipeId) {
     if (!userId || !recipeId) {

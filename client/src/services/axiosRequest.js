@@ -1,7 +1,9 @@
 import axios from 'axios';
+import useAuth from '../store/useAuth';
 
 const API_BASE_URL = import.meta.env.VITE_API || 'http://localhost:3001/api';
 axios.defaults.withCredentials = true;
+
 export default async function axiosRequest({ method = "POST", body = {}, url = "" }) {
     try {
         const data = await axios.request({
@@ -11,13 +13,18 @@ export default async function axiosRequest({ method = "POST", body = {}, url = "
             baseURL: API_BASE_URL,
             withCredentials: true
         })
+        
+        if (data.notAuth) {
+            useAuth.getState().logout()
+        }
+        
         return data
     }
     catch (err) {
         console.error(err)
+        
         return {
             success: false
         }
-
     }
 }
