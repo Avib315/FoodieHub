@@ -14,7 +14,7 @@ import { Link, useParams } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest'
 import useUserStore from '../../store/userStore'
 export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
-  const {user , setUser} = useUserStore()
+  const {user , setUser , addToSaved ,removedSaved } = useUserStore()
   const {
     fullName = 'משתמש לא ידוע',
     title = 'מתכון ללא שם',
@@ -67,6 +67,7 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
     if(res){
       setUser({...user , createdRecipesCount : user.savedRecipesCount + 1})
+      addToSaved()
       alert("מתכון נוסף לשמורים בהצלחה")
     }
   }
@@ -74,7 +75,7 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${_id}`, method: "DELETE" })
     if(res){
-       setUser({...user , createdRecipesCount : user.savedRecipesCount - 1})
+      removedSaved()
       alert("מתכון לא בשמורים יותר")
     }
   }
