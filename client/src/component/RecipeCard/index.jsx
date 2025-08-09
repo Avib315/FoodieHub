@@ -12,10 +12,9 @@ import './style.scss'
 import difLevel from '../../data/difLevel'
 import { Link, useParams } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest'
+import useUserStore from '../../store/userStore'
 export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
-  const [isSaved, setIsSaved] = useState(false)
-
-  // Destructure recipe data with fallbacks
+  const {user , setUser} = useUserStore()
   const {
     fullName = 'משתמש לא ידוע',
     title = 'מתכון ללא שם',
@@ -27,8 +26,10 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     averageRating = 0,
     servings = 1,
     totalRatings = 0,
+    saved,
     _id
   } = recipe || {}
+  const [isSaved, setIsSaved] = useState(saved)
 
 
 
@@ -65,14 +66,16 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
     if(res){
-      alert("מתכון נשמר בהצלחה")
+      setUser({...user , createdRecipesCount : user.savedRecipesCount + 1})
+      alert("מתכון נוסף לשמורים בהצלחה")
     }
   }
   
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${_id}`, method: "DELETE" })
     if(res){
-      alert("מתכון נשמר בהצלחה")
+       setUser({...user , createdRecipesCount : user.savedRecipesCount - 1})
+      alert("מתכון לא בשמורים יותר")
     }
   }
 
@@ -144,9 +147,7 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
           className="recipe-image"
           style={getImageStyle()}
         >
-          <div className="recipe-overlay">
-            <p>{description}</p>
-          </div>
+    =
         </div>
 
       </Link>

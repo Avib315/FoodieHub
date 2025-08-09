@@ -72,7 +72,6 @@ export default function LoginPage() {
         
         if (data?.success === true || data.data?.success=== true) {
           login() // ✅ Add this back!
-          console.log(1111);
         setSuccessMessage('התחברת בהצלחה!')
         setTimeout(() => {
           nav("/")

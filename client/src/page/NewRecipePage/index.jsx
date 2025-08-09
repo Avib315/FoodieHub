@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest';
 import categories from '../../data/categories';
 import difLevel from '../../data/difLevel';
@@ -18,7 +18,7 @@ export default function NewRecipePage() {
     unit: '',
     notes: ''
   }]);
-  
+  const nav = useNavigate()
   const [instructions, setInstructions] = useState(['']);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -49,7 +49,6 @@ export default function NewRecipePage() {
         setErrors(prev => ({ ...prev, image: null }));
       }
       
-      console.log('Image selected:', file.name, 'Size:', file.size, 'Type:', file.type);
     }
   };
 
@@ -99,9 +98,7 @@ export default function NewRecipePage() {
     newIngredients[index][field] = value;
     setIngredients(newIngredients);
     
-    // Debug log
-    console.log(`Updated ingredient ${index}.${field} to:`, value);
-    console.log('Full ingredient object:', newIngredients[index]);
+
   };
 
   const addInstruction = () => {
@@ -226,31 +223,12 @@ export default function NewRecipePage() {
     formData.append('ingredients', JSON.stringify(validIngredients));
     formData.append('instructions', JSON.stringify(validInstructions));
 
-    // Log what we're about to send for debugging
-    console.log('=== Recipe Submission Debug ===');
-    console.log('Raw ingredients state:', ingredients);
-    console.log('Filtered valid ingredients:', validIngredients);
-    console.log('Valid instructions:', validInstructions);
-    console.log('Selected image:', selectedImage?.name);
-    console.log('Category:', selectedCategory);
-    console.log('Difficulty:', selectedDifficulty);
-    
-    // Debug each ingredient individually
-    ingredients.forEach((ing, index) => {
-      console.log(`Ingredient ${index}:`, {
-        name: ing?.name,
-        quantity: ing?.quantity,
-        unit: ing?.unit,
-        notes: ing?.notes,
-        typeof: typeof ing
-      });
-    });
+
 
     // Validate form before submission
     const validationErrors = validateForm(formData);
 
     if (Object.keys(validationErrors).length > 0) {
-      console.log('Validation Errors:', validationErrors);
       setErrors(validationErrors);
       return;
     }
@@ -266,8 +244,11 @@ export default function NewRecipePage() {
         body: formData
       });
 
-      console.log('Recipe created successfully:', data);
       setShowSuccess(true);
+      setTimeout(()=>{
+        nav("/")
+
+      },2000)
     } catch (error) {
       console.error('Error creating recipe:', error);
       // Handle specific error types
@@ -575,8 +556,8 @@ export default function NewRecipePage() {
           <div className="overlay" onClick={closeSuccess}></div>
           <div className="success-popup">
             <i className="fas fa-check-circle success-icon"></i>
-            <div className="success-title">המתכון נוסף בהצלחה!</div>
-            <div className="success-text">המתכון שלך פורסם ויופיע בזרימה תוך כמה דקות</div>
+            <div className="success-title">המתכון נשלח בהצלחה!</div>
+            <div className="success-text">המתכון שלך פורסם ויופיע בזרימה לאחר אישור מנהל תוך כמה דקות</div>
             <button className="success-btn" onClick={closeSuccess}>מעולה!</button>
           </div>
         </>
