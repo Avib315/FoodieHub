@@ -8,13 +8,22 @@
   direction: rtl;
   font-family: 'Heebo', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
+  @include tablet {
+    margin-bottom: 10px;// Account for bottom nav
+  }
+
+  @include mobile {
+    margin-bottom: 10px;
+
+  }
+
   // Header Section
   .header {
     @include gradient-bg();
     color: $text-white;
     padding: $spacing-lg $spacing-md;
     position: relative;
-    
+
     .back-btn {
       position: absolute;
       top: 50%;
@@ -29,27 +38,27 @@
       cursor: pointer;
       @include transition();
       @include flex-center;
-      
+
       &:hover {
         background: rgba(255, 255, 255, 0.3);
         transform: translateY(-50%) scale(1.1);
       }
-      
+
       i {
         font-size: $font-lg;
       }
     }
-    
+
     .header-content {
       text-align: center;
       padding: $spacing-md 0;
-      
+
       h1 {
         font-size: $font-2xl;
         font-weight: $font-bold;
         margin: 0 0 $spacing-xs 0;
       }
-      
+
       p {
         font-size: $font-base;
         opacity: 0.9;
@@ -64,18 +73,18 @@
     padding: $spacing-md;
     max-width: 600px;
     margin: 0 auto;
+    margin-bottom: 100px;
   }
 
   // Form Sections
   .form-section {
     @include card;
     margin-bottom: $spacing-lg;
-    
     .section-header {
       border-bottom: 2px solid $bg-light;
       padding-bottom: $spacing-sm;
       margin-bottom: $spacing-md;
-      
+
       h3 {
         font-size: $font-lg;
         font-weight: $font-semibold;
@@ -84,22 +93,32 @@
         @include flex-center;
         justify-content: flex-start;
         gap: $spacing-sm;
-        
+
         i {
           color: $primary-color;
           font-size: $font-xl;
         }
       }
-    }
+
+      @include tablet {
+        margin-bottom: 120px;
+// Account for bottom nav
+      }
+
+      @include mobile {
     
+
+      }
+    }
+
     .section-content {
       .form-group {
         margin-bottom: $spacing-md;
-        
+
         &:last-child {
           margin-bottom: 0;
         }
-        
+
         label {
           display: block;
           font-weight: $font-medium;
@@ -107,30 +126,31 @@
           margin-bottom: $spacing-xs;
           font-size: $font-sm;
         }
-        
-        input, textarea {
+
+        input,
+        textarea {
           @include input-base;
           width: 100%;
           box-sizing: border-box;
-          
+
           &:focus {
             border-color: $primary-color;
             @include shadow(light);
           }
         }
-        
+
         textarea {
           min-height: 80px;
           resize: vertical;
           font-family: inherit;
         }
       }
-      
+
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: $spacing-md;
-        
+
         @include mobile {
           grid-template-columns: 1fr;
         }
@@ -147,16 +167,16 @@
     cursor: pointer;
     @include transition();
     background: $bg-white;
-    
+
     &:hover {
       border-color: $primary-color;
       background: rgba($primary-color, 0.02);
     }
-    
+
     input[type="file"] {
       display: none;
     }
-    
+
     .upload-content {
       .upload-icon {
         font-size: $font-4xl;
@@ -164,20 +184,20 @@
         margin-bottom: $spacing-sm;
         display: block;
       }
-      
+
       .upload-text {
         font-size: $font-lg;
         font-weight: $font-medium;
         color: $text-color;
         margin-bottom: $spacing-xs;
       }
-      
+
       .upload-hint {
         font-size: $font-sm;
         color: $text-lighter;
       }
     }
-    
+
     &:hover .upload-icon {
       color: $primary-color;
     }
@@ -188,7 +208,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: $spacing-sm;
-    
+
     .category-pill {
       @include flex-center;
       flex-direction: column;
@@ -199,29 +219,29 @@
       cursor: pointer;
       @include transition();
       background: $bg-white;
-      
+
       &:hover {
         border-color: $primary-color;
         transform: translateY(-2px);
         @include shadow(light);
       }
-      
+
       &.selected {
         border-color: $primary-color;
         background: rgba($primary-color, 0.1);
         color: $primary-color;
-        
+
         i {
           color: $primary-color;
         }
       }
-      
+
       i {
         font-size: $font-xl;
         color: $text-lighter;
         @include transition();
       }
-      
+
       span {
         font-size: $font-sm;
         font-weight: $font-medium;
@@ -235,7 +255,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: $spacing-sm;
-    
+
     .difficulty-option {
       @include flex-center;
       flex-direction: column;
@@ -246,29 +266,29 @@
       cursor: pointer;
       @include transition();
       background: $bg-white;
-      
+
       &:hover {
         border-color: $primary-color;
         transform: translateY(-2px);
         @include shadow(light);
       }
-      
+
       &.selected {
         border-color: $primary-color;
         background: rgba($primary-color, 0.1);
         color: $primary-color;
-        
+
         .difficulty-icon {
           color: $primary-color;
         }
       }
-      
+
       .difficulty-icon {
         font-size: $font-xl;
         color: $text-lighter;
         @include transition();
       }
-      
+
       .difficulty-text {
         font-size: $font-sm;
         font-weight: $font-medium;
@@ -282,16 +302,16 @@
       @include flex-between;
       gap: $spacing-sm;
       margin-bottom: $spacing-sm;
-      
+
       &:last-child {
         margin-bottom: 0;
       }
-      
+
       input {
         flex: 1;
         @include input-base;
       }
-      
+
       .remove-btn {
         background: $error-color;
         color: $text-white;
@@ -303,12 +323,12 @@
         @include transition();
         @include flex-center;
         flex-shrink: 0;
-        
+
         &:hover {
           background: darken($error-color, 10%);
           transform: scale(1.1);
         }
-        
+
         i {
           font-size: $font-sm;
         }
@@ -323,7 +343,7 @@
     margin-top: $spacing-sm;
     @include flex-center;
     gap: $spacing-xs;
-    
+
     i {
       font-size: $font-sm;
     }
@@ -334,7 +354,7 @@
     padding: $spacing-md;
     max-width: 600px;
     margin: 0 auto;
-    
+
     .submit-btn {
       @include button-primary;
       width: 100%;
@@ -343,17 +363,17 @@
       font-weight: $font-semibold;
       position: relative;
       overflow: hidden;
-      
+
       .btn-text {
         @include flex-center;
         gap: $spacing-sm;
         @include transition();
-        
+
         i {
           font-size: $font-lg;
         }
       }
-      
+
       .spinner {
         @include absolute-center;
         width: 24px;
@@ -365,17 +385,17 @@
         opacity: 0;
         @include transition();
       }
-      
+
       &.loading {
         .btn-text {
           opacity: 0;
         }
-        
+
         .spinner {
           opacity: 1;
         }
       }
-      
+
       &:disabled {
         cursor: not-allowed;
       }
@@ -390,7 +410,7 @@
     opacity: 0;
     animation: fadeIn 0.3s ease forwards;
   }
-  
+
   .success-popup {
     position: fixed;
     top: 50%;
@@ -406,28 +426,28 @@
     @include shadow(dark);
     opacity: 0;
     animation: popupSlideIn 0.3s ease 0.1s forwards;
-    
+
     .success-icon {
       font-size: $font-4xl;
       color: $success-color;
       margin-bottom: $spacing-md;
       display: block;
     }
-    
+
     .success-title {
       font-size: $font-xl;
       font-weight: $font-bold;
       color: $text-color;
       margin-bottom: $spacing-sm;
     }
-    
+
     .success-text {
       font-size: $font-base;
       color: $text-light;
       margin-bottom: $spacing-lg;
       line-height: 1.5;
     }
-    
+
     .success-btn {
       @include button-primary;
       padding: $spacing-sm $spacing-xl;
@@ -436,19 +456,27 @@
 
   // Animations
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
   }
-  
+
   @keyframes fadeIn {
-    to { opacity: 1; }
+    to {
+      opacity: 1;
+    }
   }
-  
+
   @keyframes popupSlideIn {
     from {
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.9);
     }
+
     to {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1);
@@ -457,282 +485,288 @@
 
   // Responsive Design
   @include mobile {
+
     .form-container,
     .submit-section {
       padding: $spacing-sm;
     }
-    
+
     .category-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-    
+
     .difficulty-options {
       grid-template-columns: 1fr;
     }
-    
+
     .header {
       .header-content {
         h1 {
           font-size: $font-xl;
         }
-        
+
         p {
           font-size: $font-sm;
         }
       }
     }
   }
-  
+
   @include tablet {
+
     .form-container,
     .submit-section {
       max-width: 100%;
       padding: $spacing-md $spacing-lg;
     }
   }
+
   // Add these styles to your existing .new-recipe-page styles
 
-// Ingredient Items
-.ingredient-item {
-  background: $bg-white;
-  border: 1px solid $border-light;
-  border-radius: $radius-lg;
-  padding: $spacing-md;
-  margin-bottom: $spacing-md;
-  position: relative;
-  @include transition();
-  
-  &:hover {
-    @include shadow(light);
-    border-color: $border-medium;
-  }
-  
-  .ingredient-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1.5fr 2fr;
-    gap: $spacing-sm;
-    align-items: end;
-    
-    @include mobile {
-      grid-template-columns: 1fr;
-      gap: $spacing-xs;
-    }
-    
-    @include tablet {
-      grid-template-columns: 1fr 1fr;
-      gap: $spacing-sm;
-    }
-  }
-  
-  .form-group {
-    margin-bottom: 0;
-    
-    label {
-      font-size: $font-xs;
-      color: $text-light;
-      margin-bottom: 2px;
-      font-weight: $font-medium;
-    }
-    
-    input, select {
-      @include input-base;
-      font-size: $font-sm;
-      padding: $spacing-xs $spacing-sm;
-      height: 36px;
-      
-      &:focus {
-        border-color: $primary-color;
-        @include shadow(light);
-      }
-    }
-    
-    select {
-      background: $bg-white;
-      cursor: pointer;
-      
-      option {
-        padding: $spacing-xs;
-      }
-    }
-  }
-  
-  .ingredient-name {
-    .ingredient-input {
-      font-weight: $font-medium;
-    }
-  }
-  
-  .ingredient-quantity {
-    .ingredient-input {
-      text-align: center;
-    }
-  }
-  
-  .ingredient-unit {
-    .ingredient-select {
-      font-size: $font-sm;
-    }
-  }
-  
-  .ingredient-notes {
-    .ingredient-input {
-      font-style: italic;
-      color: $text-light;
-      
-      &::placeholder {
-        font-style: italic;
-        color: $text-lighter;
-      }
-    }
-  }
-  
-  .remove-btn {
-    position: absolute;
-    top: $spacing-xs;
-    left: $spacing-xs;
-    background: $error-color;
-    color: $text-white;
-    border: none;
-    border-radius: $radius-full;
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-    @include transition();
-    @include flex-center;
-    font-size: $font-xs;
-    opacity: 0.7;
-    
-    &:hover {
-      opacity: 1;
-      background: darken($error-color, 10%);
-      transform: scale(1.1);
-    }
-    
-    @include mobile {
-      position: static;
-      margin-top: $spacing-sm;
-      width: 100%;
-      height: 32px;
-      border-radius: $radius-md;
-    }
-  }
-}
-
-// Enhanced Dynamic Lists for ingredients
-.dynamic-list {
-  .ingredient-item:last-child {
-    margin-bottom: $spacing-sm;
-  }
-}
-
-// Mobile responsiveness for ingredient items
-@include mobile {
+  // Ingredient Items
   .ingredient-item {
-    padding: $spacing-sm;
-    
+    background: $bg-white;
+    border: 1px solid $border-light;
+    border-radius: $radius-lg;
+    padding: $spacing-md;
+    margin-bottom: $spacing-md;
+    position: relative;
+    @include transition();
+
+    &:hover {
+      @include shadow(light);
+      border-color: $border-medium;
+    }
+
     .ingredient-row {
-      .form-group {
-        margin-bottom: $spacing-xs;
-        
-        label {
-          margin-bottom: 1px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1.5fr 2fr;
+      gap: $spacing-sm;
+      align-items: end;
+
+      @include mobile {
+        grid-template-columns: 1fr;
+        gap: $spacing-xs;
+      }
+
+      @include tablet {
+        grid-template-columns: 1fr 1fr;
+        gap: $spacing-sm;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 0;
+
+      label {
+        font-size: $font-xs;
+        color: $text-light;
+        margin-bottom: 2px;
+        font-weight: $font-medium;
+      }
+
+      input,
+      select {
+        @include input-base;
+        font-size: $font-sm;
+        padding: $spacing-xs $spacing-sm;
+        height: 36px;
+
+        &:focus {
+          border-color: $primary-color;
+          @include shadow(light);
+        }
+      }
+
+      select {
+        background: $bg-white;
+        cursor: pointer;
+
+        option {
+          padding: $spacing-xs;
         }
       }
     }
-    
+
+    .ingredient-name {
+      .ingredient-input {
+        font-weight: $font-medium;
+      }
+    }
+
+    .ingredient-quantity {
+      .ingredient-input {
+        text-align: center;
+      }
+    }
+
+    .ingredient-unit {
+      .ingredient-select {
+        font-size: $font-sm;
+      }
+    }
+
+    .ingredient-notes {
+      .ingredient-input {
+        font-style: italic;
+        color: $text-light;
+
+        &::placeholder {
+          font-style: italic;
+          color: $text-lighter;
+        }
+      }
+    }
+
     .remove-btn {
+      position: absolute;
+      top: $spacing-xs;
+      left: $spacing-xs;
+      background: $error-color;
+      color: $text-white;
+      border: none;
+      border-radius: $radius-full;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      @include transition();
       @include flex-center;
-      gap: $spacing-xs;
-      
-      &::after {
-        content: "הסר רכיב";
-        font-size: $font-xs;
-        font-family: inherit;
+      font-size: $font-xs;
+      opacity: 0.7;
+
+      &:hover {
+        opacity: 1;
+        background: darken($error-color, 10%);
+        transform: scale(1.1);
+      }
+
+      @include mobile {
+        position: static;
+        margin-top: $spacing-sm;
+        width: 100%;
+        height: 32px;
+        border-radius: $radius-md;
       }
     }
   }
-}
 
-// Tablet responsiveness 
-@include tablet {
-  .ingredient-item {
-    .ingredient-row {
-      .ingredient-name,
-      .ingredient-notes {
-        grid-column: span 1;
+  // Enhanced Dynamic Lists for ingredients
+  .dynamic-list {
+    .ingredient-item:last-child {
+      margin-bottom: $spacing-sm;
+    }
+  }
+
+  // Mobile responsiveness for ingredient items
+  @include mobile {
+    .ingredient-item {
+      padding: $spacing-sm;
+
+      .ingredient-row {
+        .form-group {
+          margin-bottom: $spacing-xs;
+
+          label {
+            margin-bottom: 1px;
+          }
+        }
       }
-      
-      .ingredient-quantity,
-      .ingredient-unit {
-        grid-column: span 1;
+
+      .remove-btn {
+        @include flex-center;
+        gap: $spacing-xs;
+
+        &::after {
+          content: "הסר רכיב";
+          font-size: $font-xs;
+          font-family: inherit;
+        }
       }
     }
   }
-}
 
-// Error states for ingredient fields
-.ingredient-input.error,
-.ingredient-select.error {
-  border-color: $error-color;
-  background: rgba($error-color, 0.05);
-}
+  // Tablet responsiveness 
+  @include tablet {
+    .ingredient-item {
+      .ingredient-row {
 
-// Enhanced add button for ingredients
-.add-btn {
-  @include button-secondary;
-  width: 100%;
-  margin-top: $spacing-sm;
-  @include flex-center;
-  gap: $spacing-xs;
-  padding: $spacing-sm;
-  border: 2px dashed $border-medium;
-  background: transparent;
-  
-  &:hover {
-    border-color: $primary-color;
-    color: $primary-color;
-    background: rgba($primary-color, 0.05);
-  }
-  
-  i {
-    font-size: $font-sm;
-  }
-}
-.error-banner {
-  background: rgba($error-color, 0.1);
-  border: 1px solid $error-color;
-  color: $error-color;
-  padding: $spacing-sm $spacing-md;
-  margin: $spacing-sm;
-  border-radius: $radius-md;
-  @include flex-center;
-  gap: $spacing-xs;
-  
-  i {
-    font-size: $font-lg;
-  }
-}
+        .ingredient-name,
+        .ingredient-notes {
+          grid-column: span 1;
+        }
 
-.selected-image {
-  @include flex-center;
-  flex-direction: column;
-  gap: $spacing-xs;
-  
-  .success-icon {
-    color: $success-color;
-    font-size: $font-2xl;
+        .ingredient-quantity,
+        .ingredient-unit {
+          grid-column: span 1;
+        }
+      }
+    }
   }
-  
-  .upload-text {
-    font-weight: $font-medium;
-    color: $success-color;
+
+  // Error states for ingredient fields
+  .ingredient-input.error,
+  .ingredient-select.error {
+    border-color: $error-color;
+    background: rgba($error-color, 0.05);
   }
-  
-  .upload-hint {
-    font-size: $font-sm;
-    color: $text-lighter;
+
+  // Enhanced add button for ingredients
+  .add-btn {
+    @include button-secondary;
+    width: 100%;
+    margin-top: $spacing-sm;
+    @include flex-center;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    border: 2px dashed $border-medium;
+    background: transparent;
+
+    &:hover {
+      border-color: $primary-color;
+      color: $primary-color;
+      background: rgba($primary-color, 0.05);
+    }
+
+    i {
+      font-size: $font-sm;
+    }
   }
-}
+
+  .error-banner {
+    background: rgba($error-color, 0.1);
+    border: 1px solid $error-color;
+    color: $error-color;
+    padding: $spacing-sm $spacing-md;
+    margin: $spacing-sm;
+    border-radius: $radius-md;
+    @include flex-center;
+    gap: $spacing-xs;
+
+    i {
+      font-size: $font-lg;
+    }
+  }
+
+  .selected-image {
+    @include flex-center;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    .success-icon {
+      color: $success-color;
+      font-size: $font-2xl;
+    }
+
+    .upload-text {
+      font-weight: $font-medium;
+      color: $success-color;
+    }
+
+    .upload-hint {
+      font-size: $font-sm;
+      color: $text-lighter;
+    }
+  }
 }
 
 // RTL Support
@@ -741,12 +775,12 @@
     .header .back-btn {
       right: auto;
       left: $spacing-md;
-      
+
       i {
         transform: scaleX(-1);
       }
     }
-    
+
     .section-header h3 {
       justify-content: flex-end;
     }
