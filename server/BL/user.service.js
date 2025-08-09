@@ -63,6 +63,7 @@ async function login(userInput) {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            savedRecipes:user.savedRecipes
         }
     };
 }
