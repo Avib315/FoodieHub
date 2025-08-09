@@ -33,6 +33,25 @@
     }
   }
 
+  .back-btn {
+    background: rgba($text-white, 0.2);
+    color: $text-white;
+    border: 2px solid rgba($text-white, 0.3);
+    font-size: $font-base;
+    font-weight: $font-medium;
+    padding: $spacing-sm $spacing-lg;
+
+    span {
+      margin-right: $spacing-xs;
+    }
+
+    &:hover {
+      background: rgba($text-white, 0.3);
+      border-color: rgba($text-white, 0.5);
+      transform: translateY(-1px);
+    }
+  }
+
   .add-recipe-btn {
     @include button-base;
     background: rgba($text-white, 0.2);
@@ -41,7 +60,7 @@
     font-size: $font-base;
     font-weight: $font-medium;
     padding: $spacing-sm $spacing-lg;
-    
+
     span {
       margin-left: $spacing-xs;
     }
@@ -71,7 +90,7 @@
       width: 100%;
       font-size: $font-base;
       background: $bg-white;
-      
+
       &::placeholder {
         color: $text-lighter;
       }
@@ -495,8 +514,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 // Accessibility improvements
@@ -508,6 +532,7 @@
 }
 
 @media (prefers-contrast: high) {
+
   .stat-card,
   .table-section,
   .recipe-details {
