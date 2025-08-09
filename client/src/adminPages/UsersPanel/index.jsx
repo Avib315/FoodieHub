@@ -3,15 +3,15 @@ import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import Table from '../../component/Table';
 import './style.scss';
+import { MdFullscreen } from 'react-icons/md';
 
 const userColumns = [
   { title: 'שם המשתמש', field: 'username', typeof: 'string' },
+  { title: 'שם מלא', field: 'fullName', typeof: 'string' },
   { title: 'אימייל', field: 'email', typeof: 'string' },
   { title: 'סטטוס', field: 'status', typeof: 'badge' },
-  // { title: 'תאריך יצירה', field: 'createdAt', typeof: 'date' },
-  { title: 'פעולות', field: 'actions', typeof: 'actions' } // מה זה??
+  { title: 'פעולות', field: 'actions', typeof: 'actions' }
 ];
-
 
 export default function UserPanel() {
 
@@ -19,13 +19,18 @@ export default function UserPanel() {
   const { data } = useAxiosRequest({ url: `/admin/getAllUsers`, method: "GET" });
 
   const [userData, setUserData] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [deletedUsers, setDeletedUsers] = useState([]);
 
   useEffect(() => {
-    if (data) { setUserData(data); }
+    if (data) {
+      setUserData(data);
+      setDeletedUsers(data.
+        filter(user => user.status === 'inactive').
+        map(user => user._id));
+    }
   }, [data]);
 
   // Filter users based on search and filters
@@ -41,22 +46,9 @@ export default function UserPanel() {
   // Add action buttons to table data
   const tableDataWithActions = filteredUsers.map(user => ({
     ...user,
+    fullName: user.firstName + ' ' + user.lastName,
     actions: (
       <div className="user-actions">
-        <button
-          className="action-btn view-btn"
-          onClick={() => viewUser(user._id)}
-          title="צפייה במשתמש"
-        >
-          <span>👁️</span>
-        </button>
-        <button
-          className="action-btn edit-btn"
-          onClick={() => editUser(user._id)}
-          title="עריכת משתמש"
-        >
-          <span>✏️</span>
-        </button>
         <button
           className="action-btn status-btn"
           onClick={() => toggleUserStatus(user._id, user.status)}
@@ -64,27 +56,18 @@ export default function UserPanel() {
         >
           <span>{user.status === 'active' ? '⏸️' : '▶️'}</span>
         </button>
-        <button
-          className="action-btn delete-btn"
-          onClick={() => deleteUser(user._id)}
-          title="מחיקת משתמש"
-        >
-          <span>🗑️</span>
-        </button>
+        {user.status !== 'inactive' && (
+          <button
+            className="action-btn delete-btn"
+            onClick={() => deleteUser(user._id)}
+            title="מחיקת משתמש"
+          >
+            <span>🗑️</span>
+          </button>
+        )}
       </div>
     )
   }));
-
-  const viewUser = (userId) => {
-    const user = userData.find(u => u.id === userId);
-    setSelectedUser(user);
-    console.log(`Viewing user with ID: ${userId}`);
-  };
-
-  const editUser = (userId) => {
-    console.log(`Editing user with ID: ${userId}`);
-    // Add your edit logic here
-  };
 
   const toggleUserStatus = async (userId, status) => {
     const newStatus = status === 'active' ? 'blocked' : 'active';
@@ -100,6 +83,11 @@ export default function UserPanel() {
       return;
     }
 
+
+    if (newStatus === 'active') {
+      setDeletedUsers(prev => prev.filter(id => id !== userId));
+    }
+
     setUserData(prevData =>
       prevData.map(user =>
         user._id === userId
@@ -112,46 +100,32 @@ export default function UserPanel() {
   const deleteUser = async (userId) => {
     if (window.confirm('האם אתה בטוח שברצונך למחוק את המשתמש?')) {
 
-    const res = await axiosRequest({
-      url: `/admin/updateUserStatus`,
-      body: { status: 'inactive', id: userId },
-      method: 'PUT'
-    });
+      const res = await axiosRequest({
+        url: `/admin/updateUserStatus`,
+        body: { status: 'inactive', id: userId },
+        method: 'PUT'
+      });
 
-    if (!res.data.success) {
-      alert('שגיאה במחיקת המשתמש');
-      return;
-    }
-
-      setUserData(prevData => prevData.filter(user => user._id !== userId));
-      if (selectedUser && selectedUser._id === userId) {
-        setSelectedUser(null);
+      if (!res.data.success) {
+        alert('שגיאה במחיקת המשתמש');
+        return;
       }
-    }
-  };
 
-  const addNewUser = () => {
-    console.log('Adding new user');
-    // Add your new user logic here
+      setDeletedUsers(prev => [...prev, userId]);
+
+      setUserData(prevData =>
+        prevData.map(user =>
+          user._id === userId
+            ? { ...user, status: 'inactive' }
+            : user
+        )
+      );
+    }
   };
 
   const clearFilters = () => {
     setSearchTerm('');
     setFilterStatus('all');
-  };
-
-  const closeUserDetails = () => {
-    setSelectedUser(null);
-  };
-
-  const sendPasswordReset = (userId) => {
-    console.log(`Sending password reset for user ${userId}`);
-    // Add password reset logic here
-  };
-
-  const exportUsers = () => {
-    console.log('Exporting users data');
-    // Add export logic here
   };
 
   // Status translation helper
@@ -173,14 +147,6 @@ export default function UserPanel() {
           <p>נהל את המשתמשים והרשאות המערכת</p>
         </div>
         <div className="header-actions">
-          <button className="export-btn" onClick={exportUsers}>
-            <span>📊</span>
-            ייצוא נתונים
-          </button>
-          <button className="add-user-btn" onClick={addNewUser}>
-            <span>👤</span>
-            הוסף משתמש חדש
-          </button>
           <a className="back-btn" href="/admin-panel">
             חזור לפאנל
             <span>← </span>
@@ -209,7 +175,7 @@ export default function UserPanel() {
             <option value="all">כל הסטטוסים</option>
             <option value="active">פעיל</option>
             <option value="inactive">לא פעיל</option>
-            <option value="pending">חסום</option>
+            <option value="blocked">חסום</option>
           </select>
 
           <button className="clear-filters-btn" onClick={clearFilters}>
@@ -234,12 +200,9 @@ export default function UserPanel() {
             <span className="stat-label">פעילים</span>
           </div>
         </div>
-        <div className="stat-card pending">
-          <div className="stat-icon">⏳</div>
-          <div className="stat-content">
-            <span className="stat-number">{userData.filter(u => u.status === 'pending').length}</span>
-            <span className="stat-label">ממתינים</span>
-          </div>
+        <div className="stat-card">
+          <span className="stat-number">{filteredUsers.length}</span>
+          <span className="stat-label">תוצאות מסוננות</span>
         </div>
       </div>
 
@@ -250,102 +213,13 @@ export default function UserPanel() {
           <Table
             tableColumns={userColumns}
             tableData={tableDataWithActions}
+            deletedUsers={deletedUsers}
             loading={loading}
             emptyMessage="לא נמצאו משתמשים"
             striped={true}
             hoverable={true}
           />
         </div>
-
-        {/* User Details Sidebar */}
-        {selectedUser && (
-          <div className="user-details">
-            <div className="details-header">
-              <div className="user-header-info">
-                <img
-                  src={selectedUser.avatar}
-                  alt={selectedUser.userName}
-                  className="user-avatar"
-                />
-                <div className="user-header-text">
-                  <h2>{selectedUser.userName}</h2>
-                  <span className="user-email">{selectedUser.email}</span>
-                </div>
-              </div>
-              <button className="close-btn" onClick={closeUserDetails}>
-                ✕
-              </button>
-            </div>
-
-            <div className="details-content">
-              <div className="user-info">
-                <div className="info-section">
-                  <h3>פרטים כלליים</h3>
-                  <div className="info-item">
-                    <strong>סטטוס:</strong>
-                    <span className={`status-badge ${selectedUser.status}`}>
-                      {getStatusLabel(selectedUser.status)}
-                    </span>
-                  </div>
-
-                  <div className="info-item">
-                    <strong>טלפון:</strong>
-                    <span>{selectedUser.phone}</span>
-                  </div>
-
-                  <div className="info-item">
-                    <strong>תאריך הצטרפות:</strong>
-                    <span>{new Date(selectedUser.createdAt).toLocaleDateString('he-IL')}</span>
-                  </div>
-
-                  <div className="info-item">
-                    <strong>כניסה אחרונה:</strong>
-                    <span>
-                      {selectedUser.lastLogin
-                        ? new Date(selectedUser.lastLogin).toLocaleDateString('he-IL')
-                        : 'אף פעם'
-                      }
-                    </span>
-                  </div>
-                </div>
-
-                <div className="info-section">
-                  <h3>הרשאות</h3>
-                  <div className="permissions-list">
-                    {selectedUser.permissions.map((permission, index) => (
-                      <span key={index} className={`permission-badge ${permission}`}>
-                        {permission === 'read' ? 'קריאה' :
-                          permission === 'write' ? 'כתיבה' :
-                            permission === 'delete' ? 'מחיקה' : permission}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="user-actions-full">
-                <button
-                  className="edit-full-btn"
-                  onClick={() => editUser(selectedUser._id)}
-                >
-                  ערוך פרטים
-                </button>
-                <button
-                  className="password-reset-btn"
-                  onClick={() => sendPasswordReset(selectedUser._id)}
-                >
-                  שלח איפוס סיסמה
-                </button>
-                <button
-                  className={`status-toggle-btn ${selectedUser.status}`}
-                  onClick={() => toggleUserStatus(selectedUser._id)}
-                >
-                  {selectedUser.status === 'active' ? 'השבת משתמש' : 'הפעל משתמש'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

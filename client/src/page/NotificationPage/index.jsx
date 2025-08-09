@@ -4,7 +4,6 @@ import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import { notificationTypes } from '../../data/notificationTypes';
 import useUserStore from '../../store/userStore';
-import updateData from '../../services/updateData';
 export default function NotificationPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -14,16 +13,11 @@ export default function NotificationPage() {
     method: 'get',
     defaultValue: []
   });
-  // מה שקורל עשתה -------------------------------------
   async function markAsRead(ids) {
     const body = { notificationIds: ids }
     const res = await axiosRequest({ url: "/notification/markAsRead", method: "PUT", body: body })
     console.log(res)
   }
-
-
-
-
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -81,12 +75,11 @@ export default function NotificationPage() {
 
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
-    const res = await axiosRequest({ url: `/notification/delete/${id}`, method: "DELETE" })
-    if(res.success){
-      updateData()
-      console.log('Notification deleted:');
-      const updatedData = data.filter(n => n._id !== notificationId);
-      setData(updatedData);
+    console.log('Deleting notification:', notificationId);
+    const res = await axiosRequest({ url: `/notification/delete/${notificationId}`, method: "DELETE" })
+    if(res.data.success){
+      console.log('Notification deleted');
+      setData(previousData => previousData.filter(n => n._id !== notificationId));
     }
   };
 
