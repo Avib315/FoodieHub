@@ -21,7 +21,7 @@ export default function SavedRecipesPage() {
        <>
 
       <HeaderTitle title="מתכונים שאהבתי" />
-    <RecipesDisplay pageType="saved" setData={setData} data={unArrayData}/> 
+    <RecipesDisplay pageType="saved" setData={setData}  addSaveBtn={false} data={unArrayData}/> 
        </>
   )
 }

@@ -1,24 +1,30 @@
-import { useEffect, useState } from "react";
+
+// Updated ProtectedPage component
 import LoadingPage from "../page/LoadingPage/index";
 import NotFoundPage from "../page/NotFoundPage";
 import NavBar from "../component/NavBar";
-import useAuth from "../store/useAuth";
+import { useHydration } from "./useHydration";
+import useAuth from '../store/useAuth';
 
 export default function ProtectedPage({ element }) {
-    const [loading, setLoading] = useState(true);
-    const { auth } = useAuth()
-    useEffect(() => {
-        console.log('Auth changed to:', auth);
-        if (auth || auth ===false) {
-            setLoading(false)
-        }
-    }, [auth])
+    const { auth } = useAuth();
+    const isHydrated = useHydration();
 
-if(loading) return <LoadingPage />
+
+    if (!isHydrated) {
+        return <LoadingPage />;
+    }
 
     return (
         <>
-            { auth ? <>  {element} <NavBar /> </> : <NotFoundPage type={1} /> }
-
-        </>)
+            {auth ? (
+                <>
+                    {element}
+                    <NavBar />
+                </>
+            ) : (
+                <NotFoundPage type={1} />
+            )}
+        </>
+    );
 }

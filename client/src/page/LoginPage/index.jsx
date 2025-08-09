@@ -6,7 +6,6 @@ import FloatingElements from '../../component/FloatingElements'
 import axiosRequest from '../../services/axiosRequest'
 import useAuth from '../../store/useAuth'
 export default function LoginPage() {
-  localStorage.removeItem('auth-storage')
   const [formData, setFormData] = useState({
     email: '',
     password: '',

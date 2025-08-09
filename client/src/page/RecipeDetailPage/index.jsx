@@ -8,17 +8,14 @@ import LoadingPage from '../LoadingPage';
 import unitTypes from '../../data/unitTypes';
 import useUserStore from '../../store/userStore';
 import CommentSection from '../../component/CommentSections';
-
-// Mock data based on the provided structure
-
-// Mock user data
+import categories from "../../data/categories"
 
 
 export default function RecipeDetailPage() {
 
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
   const [userRating, setUserRating] = useState(0);
-  const { addToSaved, removedSaved , user} = useUserStore()
+  const { addToSaved, removedSaved, user } = useUserStore()
   const { id } = useParams()
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET", defaultValue: {} });
@@ -37,7 +34,7 @@ export default function RecipeDetailPage() {
   useEffect(() => {
     setSaved(data.saved)
   }, [data?._id])
- 
+
 
   async function saveRecipe() {
     const body = {
@@ -118,9 +115,11 @@ export default function RecipeDetailPage() {
       }
     }
   };
+  function getCategoryTagData(categoryData) {
+    return categories.find(c=>c.key == categoryData) || {}
+  }
 
 
-  
   async function handleSaveClick() {
     try {
       if (saved) {
@@ -240,7 +239,11 @@ export default function RecipeDetailPage() {
               <div className="meta-value">{getDifficultyText(data.difficultyLevel)}</div>
               <div className="meta-label">רמת קושי</div>
             </div>
-
+            <div className="meta-card">
+              <i className={`fas fa-${getCategoryTagData(data.category).icon}`}></i>
+              <div className="meta-value">{getCategoryTagData(data.category).text}</div>
+              <div className="meta-label">קטגוריה</div>
+            </div>
           </div>
         </div>
 
@@ -320,8 +323,8 @@ export default function RecipeDetailPage() {
             }
           </div>
         </div>
-            <CommentSection recipeId={id} data={data.comments}/>
-      
+        <CommentSection recipeId={id} data={data.comments} />
+
       </div>
 
 
