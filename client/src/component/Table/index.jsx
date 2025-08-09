@@ -46,9 +46,10 @@ const sampleTableData = [
   }
 ];
 
-export default function Table({ 
-  tableColumns = sampleTableColumns, 
+export default function Table({
+  tableColumns = sampleTableColumns,
   tableData = sampleTableData,
+  deletedUsers = [],
   loading = false,
   emptyMessage = 'אין נתונים להצגה',
   className = '',
@@ -56,7 +57,7 @@ export default function Table({
   hoverable = true,
   bordered = false
 }) {
-  
+
   // Format cell content based on type
   const formatCellContent = (value, type) => {
     if (value === null || value === undefined) {
@@ -70,10 +71,10 @@ export default function Table({
             {value ? '✓' : '✗'}
           </span>
         );
-      
+
       case 'number':
         return typeof value === 'number' ? value.toLocaleString('he-IL') : value;
-      
+
       case 'date':
         if (value instanceof Date) {
           return value.toLocaleDateString('he-IL');
@@ -83,30 +84,32 @@ export default function Table({
           return isNaN(date.getTime()) ? value : date.toLocaleDateString('he-IL');
         }
         return value;
-      
+
       case 'link':
         return (
-          <a 
-            href={value} 
-            target="_blank" 
+          <a
+            href={value}
+            target="_blank"
             rel="noopener noreferrer"
             className="table-link"
           >
             {value}
           </a>
         );
-      
+
       case 'badge':
         return (
           <span className={`status-badge ${value}`}>
-            {value === 'active' ? 'פעיל' : 
-             value === 'rejected' ? 'לא פעיל' :
-             value === 'pending' ? 'ממתין' :
-             value === 'draft' ? 'טיוטה' : 
-             value}
+            {value === 'active' ? 'פעיל' :
+              value === 'rejected' ? 'לא פעיל' :
+                value === 'pending' ? 'ממתין' :
+                  value === 'draft' ? 'טיוטה' :
+                    value === 'inactive' ? 'לא פעיל' :
+                      value === 'blocked' ? 'חסום' :
+                        value}
           </span>
         );
-      
+
       default:
         return value;
     }
@@ -155,7 +158,7 @@ export default function Table({
           </thead>
           <tbody>
             {tableData.map((row, rowIndex) => (
-              <tr key={rowIndex}>
+              <tr key={rowIndex} className={deletedUsers.includes(row._id) ? 'faded-row' : ''}>
                 {tableColumns.map((col) => (
                   <td key={col.field} className={`column-${col.typeof}`}>
                     {formatCellContent(row[col.field], col.typeof)}
