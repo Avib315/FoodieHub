@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import './style.scss'
 import { AiOutlineFilter, AiOutlineClose } from 'react-icons/ai'
 import useApiRequest from '../../services/useApiRequest'
 import RecipesDisplay from '../../component/RecipeDisplay'
