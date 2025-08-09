@@ -23,7 +23,8 @@ router.post('/login', async (req, res) => {
         console.error('RouteName: admin , Path: login , error message: ', error.message);
         res.status(500).send({
             success: false,
-            message: error.message || ApiMessages.errorMessages.serverError
+            message: error.message || ApiMessages.errorMessages.serverError,
+            notAuth:true
         });
     }
 });

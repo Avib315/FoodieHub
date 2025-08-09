@@ -4,11 +4,11 @@ async function auth(req, res, next) {
     try {
         let token = req.cookies.token; 
         if (!token) {
-            return res.status(403).send({ message: 'No token provided.' , notAuth:false });
+            return res.status(403).send({ message: 'No token provided.' , notAuth:true });
         }
         jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
             if (err) {
-                return res.status(403).send({ message: 'Failed to authenticate token.', notAuth:false });
+                return res.status(403).send({ message: 'Failed to authenticate token.', notAuth:true });
             } else {
                 req.user = user;
                 req.body.userId = user.id; 

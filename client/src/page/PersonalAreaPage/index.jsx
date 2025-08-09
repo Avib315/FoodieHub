@@ -8,7 +8,7 @@ import useUserStore from '../../store/userStore';
 import useAuth from '../../store/useAuth';
 
 export default function PersonalAreaPage() {
-  const {setAuth} = useAuth()
+  const {logout} = useAuth()
 
   const { user, clearUser } = useUserStore()
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function PersonalAreaPage() {
       url: '/user/logout', // או כל endpoint שיש לך להתנתקות
       method: 'POST'
     });
-    setAuth(false)
+    logout()
 
     clearUser();
 

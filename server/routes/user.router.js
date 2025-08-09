@@ -22,7 +22,7 @@ router.post('/login', async (req, res) => {
             
     } catch (error) {
         console.error("RouteName: user : login : error message:", error.message);
-        res.status(500).send({ login: false, message: error.message || ApiMessages.errorMessages.serverError });
+        res.status(500).send({ login: false, notAuth:true,  message: error.message || ApiMessages.errorMessages.serverError });
     }
 });
 
