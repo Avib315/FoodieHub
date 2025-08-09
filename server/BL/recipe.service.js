@@ -477,9 +477,7 @@ const getRecipesByUser = async (userId, requestType) => {
 
     // אם אין מתכונים - זה לא שגיאה, רק מערך ריק
     if (!recipes || recipes.length === 0) {
-        return {
-            data: []
-        };
+        return [];
     }
 
     // שליפת דירוגים לכל מתכון במקביל
