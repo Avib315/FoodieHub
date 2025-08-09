@@ -18,9 +18,8 @@ export default function RecipeDetailPage() {
 
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
   const [userRating, setUserRating] = useState(0);
-  const { addToSaved, removedSaved } = useUserStore()
+  const { addToSaved, removedSaved , user} = useUserStore()
   const { id } = useParams()
-  const { user } = useUserStore()
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET", defaultValue: {} });
   //מה שקורל עשתה -------------------------------
