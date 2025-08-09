@@ -525,10 +525,7 @@ export default function NewRecipePage() {
               </button>
             </div>
           </div>
-        </form>
-      </div>
-
-      <div className="submit-section">
+             <div className="submit-section">
         <button
           type="submit"
           className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
@@ -542,6 +539,11 @@ export default function NewRecipePage() {
           <div className="spinner"></div>
         </button>
       </div>
+        </form>
+        
+      </div>
+
+   
 
       {/* Show general errors */}
       {errors.general && (
