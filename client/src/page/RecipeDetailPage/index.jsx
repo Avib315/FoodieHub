@@ -116,7 +116,7 @@ export default function RecipeDetailPage() {
     }
   };
   function getCategoryTagData(categoryData) {
-    return categories.find(c=>c.key == categoryData) || {}
+    return categories.find(c => c.key == categoryData) || {}
   }
 
 

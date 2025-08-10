@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import FloatingElements from '../../component/FloatingElements';
@@ -8,11 +8,10 @@ import useUserStore from '../../store/userStore';
 import useAuth from '../../store/useAuth';
 
 export default function PersonalAreaPage() {
-  const {logout} = useAuth()
+  const { logout } = useAuth()
 
-  const { user, clearUser } = useUserStore()
+  const { user, clearUser, setUser } = useUserStore()
   const navigate = useNavigate();
-  const data = user;
 
 
 
@@ -31,20 +30,23 @@ export default function PersonalAreaPage() {
     navigate('/login');
   };
 
-
-
-  const userData = {
-    name: 'שרה כהן',
-    avatar: "ש",
-    joinDate: 'ינואר 2024',
-    email: 'sarah.cohen@example.com',
-    stats: {
-      myRecipes: 12,
-      savedRecipes: 8,
-      followers: 45,
-      following: 23
+  const getUserData = async () => {
+    const res = await axiosRequest({ url: "user/getUserData", method: "GET" })
+    if (!res) {
+      nav("/login")
+      return
     }
-  };
+    console.log(res.data);
+    
+    setUser(res.data)
+  }
+
+
+  useEffect(() => {
+    if (user == null) {
+      getUserData()
+    }
+  }, [])
 
   const quickActions = [
     {
@@ -58,14 +60,14 @@ export default function PersonalAreaPage() {
       to: '/favorites',
       icon: '❤️',
       title: 'מועדפים',
-      subtitle: `${data.savedRecipesCount} מתכונים`,
+      subtitle: `${user?.savedRecipesCount} מתכונים`,
       color: 'secondary'
     },
     {
       to: '/my-recipes',
       icon: '📝',
       title: 'המתכונים שלי',
-      subtitle: `${data.createdRecipesCount} מתכונים`,
+      subtitle: `${user?.createdRecipesCount} מתכונים`,
       color: 'success'
     },
     {
@@ -87,12 +89,11 @@ export default function PersonalAreaPage() {
           <div className="profile-header">
             <div className="profile-card">
               <div className="profile-avatar">
-                <span>{data.avatar}</span>
+                <span>{user?.avatar}</span>
               </div>
               <div className="profile-info">
-                <h1 className="profile-name">{data.name}</h1>
-                <p className="profile-email">{data.email}</p>
-                <p className="profile-join-date">חבר מאז {userData.joinDate}</p>
+                <h1 className="profile-name">{user?.name}</h1>
+                <p className="profile-email">{user?.email}</p>
               </div>
               <Link to="/settings" className="edit-profile-btn">
                 ✏️ ערוך פרופיל
@@ -108,12 +109,12 @@ export default function PersonalAreaPage() {
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-icon">📝</div>
-                <div className="stat-number">{data.createdRecipesCount}</div>
+                <div className="stat-number">{user?.createdRecipesCount}</div>
                 <div className="stat-label">המתכונים שלי</div>
               </div>
               <div className="stat-card">
                 <div className="stat-icon">❤️</div>
-                <div className="stat-number">{data.savedRecipesCount}</div>
+                <div className="stat-number">{user?.savedRecipesCount}</div>
                 <div className="stat-label">מועדפים</div>
               </div>
 

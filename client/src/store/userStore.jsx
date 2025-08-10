@@ -11,14 +11,23 @@ const useUserStore = create(
       setUser: (userData) => set({
         user: userData,
       }),
-      addToSaved: () => set((state)=>({
+      
+      addToSaved: () => set((state) => ({
         ...state,
-        savedRecipesCount: state.user?.savedRecipesCount + 1
+        user: state.user ? {
+          ...state.user,
+          savedRecipesCount: (state.user.savedRecipesCount || 0) + 1
+        } : state.user
       })),
-      removedSaved:  () => set((state)=>({
+      
+      removedSaved: () => set((state) => ({
         ...state,
-        savedRecipesCount: state.user?.savedRecipesCount -1
+        user: state.user ? {
+          ...state.user,
+          savedRecipesCount: Math.max((state.user?.savedRecipesCount || 0) - 1, 0)
+        } : state.user
       })),
+      
       updateUser: (updates) => set((state) => ({
         user: state.user ? { ...state.user, ...updates } : null
       })),
@@ -31,9 +40,10 @@ const useUserStore = create(
         error: error
       }),
 
-
     }),
-
+    {
+      name: 'user-storage', // unique name for localStorage key
+    }
   )
 )
 
