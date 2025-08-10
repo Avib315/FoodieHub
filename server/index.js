@@ -12,6 +12,7 @@ const PORT = 3001;
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
+    'https://foodieub.netlify.app',
     'https://foodie-hub-9rht.vercel.app',
     'https://foodie-hub-9rht-57qwciafl-avib315s-projects.vercel.app'
 ];
