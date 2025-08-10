@@ -201,6 +201,9 @@ export default function LoginPage() {
           <div className="register-link">
             אין לך חשבון? <Link to="/signup" className="register-link-btn">הרשם כאן</Link>
           </div>
+          <div className="register-link">
+            <Link to="/admin-login" className="register-link-btn">התחבר כמנהל</Link>
+          </div>
         </div>
       </div>
     </div>
