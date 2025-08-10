@@ -4,7 +4,7 @@ import useAuth from '../store/useAuth';
 axios.defaults.withCredentials = true;
 
 export default async function axiosRequest({ method = "POST", body = {}, url = "" }) {
-    const API_BASE_URL = import.meta.env.VITE_API || "https://foodie-hub-three.vercel.app/" || 'http://localhost:3001/api';
+    const API_BASE_URL = import.meta.env.VITE_API || "https://4chcvdxz-3001.euw.devtunnels.ms/" || 'http://localhost:3001/api';
     console.log('Using API URL:', API_BASE_URL);
 
     try {
