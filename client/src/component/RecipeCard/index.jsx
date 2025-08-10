@@ -23,9 +23,9 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     description = 'אין תיאור',
     prepTime = '0 דק\'',
     difficultyLevel = 'לא ידוע',
-    averageRating = 0,
+    averageRating = recipe.averageRating,
     servings = 1,
-    totalRatings = 0,
+    totalRatings = recipe.ratingsCount,
     saved,
     _id
   } = recipe || {}
