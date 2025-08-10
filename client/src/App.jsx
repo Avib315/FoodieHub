@@ -12,7 +12,6 @@ import NewRecipePage from './page/NewRecipePage/index.jsx'
 // Auth Pages
 import LoginPage from './page/LoginPage/index.jsx'
 import SignupPage from './page/SignupPage/index.jsx'
-
 import RecipeDetailPage from './page/RecipeDetailPage/index.jsx'
 import AboutPage from './page/AboutPage/index.jsx'
 import ForgotPasswordPage from './page/ForgotPasswordPage/index.jsx'
@@ -28,6 +27,7 @@ import AdminPage from './adminPages/AdminPage/index.jsx'
 import RecipesPanel from './adminPages/RecipesPanel/index.jsx'
 import UserPanel from './adminPages/UsersPanel/index.jsx'
 import MyRecipesPage from './page/MyRecipesPage/index.jsx'
+import ProtectedAdminPage from './common/ProtectedAdminPage.jsx'
 
 function App() {
   return (
@@ -123,13 +123,14 @@ function App() {
           <AdminLogin />
         } />
         <Route path="/admin-panel" element={
-          <AdminPage />
+          <ProtectedAdminPage element={<AdminPage />} />
+
         } />
         <Route path="/admin-recipe-panel" element={
-          <RecipesPanel />
+          <ProtectedAdminPage element={<RecipesPanel />} />
         } />
         <Route path="/admin-users-panel" element={
-          <UserPanel />
+          <ProtectedAdminPage element={<UserPanel />} />
         } />
         {/* Utility Routes */}
         <Route path="/loading" element={<LoadingPage />} />
