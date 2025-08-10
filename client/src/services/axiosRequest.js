@@ -2,6 +2,8 @@ import axios from 'axios';
 import useAuth from '../store/useAuth';
 
 const API_BASE_URL = import.meta.env.VITE_API || 'http://localhost:3001/api';
+console.log(import.meta.env.VITE_API);
+
 axios.defaults.withCredentials = true;
 
 export default async function axiosRequest({ method = "POST", body = {}, url = "" }) {
