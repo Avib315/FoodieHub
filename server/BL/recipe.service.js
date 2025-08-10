@@ -52,9 +52,7 @@ async function getAllRecipes(filterByActive = true, userId) {
     return filteredRecipes;
 }
 
-async function getRecipeById(id) {
-
-
+async function getRecipeById(id, currentUserId = null) {
     if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
         console.log("getRecipeById: Invalid or missing recipe ID");
         throw new Error(ApiMessages.errorMessages.invalidData);
@@ -67,25 +65,49 @@ async function getRecipeById(id) {
         throw new Error(ApiMessages.errorMessages.notFound);
     }
 
-    // ביצוע כל השליפות במקביל (כולל ההערות!)
-    const [userResult, ratingResult, comments] = await Promise.all([
+    // ביצוע כל השליפות במקביל
+    const promises = [
+        // Get recipe creator info
         recipe.userId ? userController.readOne({ _id: recipe.userId }) : Promise.resolve(null),
+        // Get ratings
         ratingController.getAllRatings(id),
-        commentService.getRecipeComments(id).catch(() => []) // אם אין הערות, החזר מערך ריק
-    ]);
+        // Get comments
+        commentService.getRecipeComments(id).catch(() => [])
+    ];
+
+    // If we have a current user, also get their info to check saved recipes
+    if (currentUserId) {
+        promises.push(userController.readOne({ _id: currentUserId }));
+    }
+
+    const results = await Promise.all(promises);
+    const [recipeCreator, ratingResult, comments] = results;
+
     // עיבוד התוצאות
-    const userName = userResult?.username || 'Unknown User';
-    const fullName = userResult?.firstName + " " + userResult?.lastName || 'Unknown User';
+    const userName = recipeCreator?.username || 'Unknown User';
+    const fullName = recipeCreator?.firstName + " " + recipeCreator?.lastName || 'Unknown User';
     const averageRating = ratingResult.data.averageRating;
     const totalRatings = ratingResult.data.totalCount;
-
+    const currentUser = await userController.readOne({_id:currentUserId})
     // המרה לאובייקט רגיל ומחיקת userId
     const recipeObj = recipe.toObject();
-    const savedRecipeIds = userResult?.savedRecipes || [];
-    const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
-    recipeObj.saved = savedRecipeIdsSet.has(recipeObj._id.toString());
+    
+    // Check if CURRENT USER has saved this recipe (not the recipe creator!)
+    let isSaved = false;
+    if (currentUser && currentUser.savedRecipes) {
+        const savedRecipeIds = currentUser.savedRecipes || [];
+        const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
+        isSaved = savedRecipeIdsSet.has(recipeObj._id.toString());
+        
+        console.log("Current User ID:", currentUserId);
+        console.log("Recipe ID:", id);
+        console.log("User's saved recipes:", savedRecipeIds);
+        console.log("Is recipe saved by current user:", isSaved);
+    }
+    
+    recipeObj.saved = isSaved;
     const { userId, ...recipeWithoutUserId } = recipeObj;
-
+        
     // החזרת המתכון עם הנתונים הנוספים
     return {
         ...recipeWithoutUserId,
@@ -93,7 +115,8 @@ async function getRecipeById(id) {
         fullName: fullName,
         averageRating: averageRating,
         ratingsCount: totalRatings,
-        comments: comments // עכשיו זה יעבוד!
+        comments: comments,
+        saved: isSaved
     };
 }
 

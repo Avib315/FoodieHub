@@ -27,8 +27,9 @@ router.get("/getAll", auth, async (req, res) => {
 
 router.get("/getById", auth, async (req, res) => {
     try {
+         const userId = req.body.userId
         const { id } = req.query;
-        const result = await service.getRecipeById(id);
+        const result = await service.getRecipeById(id , userId);
         res.status(200).send({
             success: true,
             data: result
