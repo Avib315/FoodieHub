@@ -284,4 +284,21 @@
   * {
     font-family: inherit;
   }
+
+}
+
+
+.user-link {
+  text-align: center;
+  
+  .register-link-btn {
+    font-weight: 600;
+    text-decoration: none;
+    color: #ee5a24;
+    padding: 20px;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
