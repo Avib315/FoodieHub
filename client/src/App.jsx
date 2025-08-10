@@ -140,6 +140,11 @@ function App() {
         <Route path="/register" element={<Navigate to="/signup" replace />} />
 
         {/* 404 - Must be last */}
+          <Route path="/notFoundPage/:type" element={
+          <AuthPageLayout>
+            <NotFoundPage />
+          </AuthPageLayout>
+        } />
         <Route path="*" element={
           <AuthPageLayout>
             <NotFoundPage />

@@ -1,19 +1,23 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import './style.scss'
 import FloatingElements from '../../component/FloatingElements'
 
-export default function NotFoundPage({ type = 2 }) {
+export default function NotFoundPage({ type: propType = 2 }) {
+  const { type: paramType } = useParams()
+  const navigate = useNavigate()
+  
+  // Use URL parameter if available, otherwise use prop, fallback to 2
+  const finalType = paramType ? parseInt(paramType) : propType
+  
   const types = {
     1: "notAllowed",
     2: "notFound"
   }
   
-  const navigate = useNavigate()
-  
   // Content based on type
   const getContent = () => {
-    if (type === 1) {
+    if (finalType === 1) {
       return {
         code: "403",
         title: "אין הרשאה",
@@ -42,7 +46,7 @@ export default function NotFoundPage({ type = 2 }) {
           <p>{content.description}</p>
           
           <div className="error-actions">
-            {type === 1 ? (
+            {finalType === 1 ? (
               <>
                 <Link to="/login" className="btn btn-primary">התחבר</Link>
                 <button onClick={() => navigate(-1)} className="btn btn-secondary">
@@ -59,7 +63,7 @@ export default function NotFoundPage({ type = 2 }) {
             )}
           </div>
           
-          {type === 2 && (
+          {finalType === 2 && (
             <div className="suggestions">
               <h3>אולי תמצא מה שאתה מחפש כאן:</h3>
               <ul>

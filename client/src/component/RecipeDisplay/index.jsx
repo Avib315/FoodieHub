@@ -9,16 +9,17 @@ import useApiRequest from '../../services/useApiRequest'
 import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
+import LoadingPage from '../../page/LoadingPage'
 
-export default function RecipesDisplay({ data = [], isMyRecipes, addSaveBtn=true }) {
+export default function RecipesDisplay({ data = [], loading = false, isMyRecipes, addSaveBtn=true }) {
   // State for filtered data - this is what gets displayed
-  const [filteredData, setFilteredData] = useState(data);
+
 
   // Update filtered data when original data changes
-  useEffect(() => {
-    setFilteredData(data);
-  }, [data]);
-
+ 
+  if(loading){
+    return <LoadingPage />
+  }
   return (
     <>
       <div className='recipes-page'>
@@ -31,7 +32,7 @@ export default function RecipesDisplay({ data = [], isMyRecipes, addSaveBtn=true
 
         <div className='recipes-list'>
           {/* Display filtered data, not original data */}
-          {filteredData.map(recipe => (
+          {data.map(recipe => (
             <RecipeCard
             addSaveBtn={addSaveBtn}
               isMyRecipes={isMyRecipes}
@@ -43,7 +44,7 @@ export default function RecipesDisplay({ data = [], isMyRecipes, addSaveBtn=true
         </div>
 
         {/* Empty State */}
-        {filteredData.length === 0 && data.length > 0 && (
+        {data.length === 0 && data.length > 0 && (
           <div className="empty-state">
             <div className="empty-icon">🔍</div>
             <h3>לא נמצאו מתכונים</h3>

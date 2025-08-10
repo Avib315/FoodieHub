@@ -10,7 +10,7 @@ import { useEffect } from "react";
 export default function ProtectedAdminPage({ element }) {
     const { adminAuth } = useAdminAuth();
     const isHydrated = useHydration();
-
+    
 
     if (!isHydrated) {
         return <LoadingPage />;

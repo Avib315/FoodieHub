@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axiosRequest from './axiosRequest';
+import { useNavigate } from 'react-router-dom';
 
 const useApiRequest = (
   { url,
@@ -9,7 +10,7 @@ const useApiRequest = (
     dependencies = [],
     errorMessage = null }
 ) => {
-
+  const nav = useNavigate()
   const [data, setData] = useState(defaultValue);
   const [loading, setLoading] = useState(true); // Start with loading true
   const [error, setError] = useState(null);
@@ -32,7 +33,7 @@ const useApiRequest = (
           const responseData = response.data.data;
           setData(responseData);
         } else {
-          // Handle unsuccessful response
+          nav('/notFoundPage/2')
           const errorMsg = response?.data?.message || errorMessage || 'Unknown error occurred';
           setError(errorMsg);
           console.error('API Error:', errorMsg);

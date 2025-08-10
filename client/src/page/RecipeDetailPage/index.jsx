@@ -32,6 +32,7 @@ export default function RecipeDetailPage() {
   }
   const [saved, setSaved] = useState(data.saved);
   useEffect(() => {
+    
     setSaved(data.saved)
   }, [data?._id])
 
