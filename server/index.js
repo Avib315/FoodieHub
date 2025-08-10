@@ -9,7 +9,7 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'http://localhost:5173' || "https://foodie-hub-9rht-57qwciafl-avib315s-projects.vercel.app",
     credentials: true
 }));
 app.use(express.json());
