@@ -9,12 +9,14 @@ import unitTypes from '../../data/unitTypes';
 import useUserStore from '../../store/userStore';
 import CommentSection from '../../component/CommentSections';
 import categories from "../../data/categories"
+import RatingSection from '../../component/RatingSection';
 
 
 export default function RecipeDetailPage() {
-
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
+  // const [rating , setRating] = useState()
   const [userRating, setUserRating] = useState(0);
+
   const { addToSaved, removedSaved, user } = useUserStore()
   const { id } = useParams()
   // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
@@ -105,8 +107,6 @@ export default function RecipeDetailPage() {
   const submitRating = async () => {
     if (userRating > 0) {
       const result = await addRating(userRating);
-      console.log(result);
-      console.log(result.success);
 
       if (result.success === false) {
         alert('לא ניתן לשלוח דירוג');
@@ -292,38 +292,8 @@ export default function RecipeDetailPage() {
         </div>
 
         {/* Rating Section */}
-        <div className="recipe-section">
-          <h2 className="section-title">
-            <i className="fas fa-star"></i>
-            דירוגים וחוות דעת
-          </h2>
+        <RatingSection ratedByMe={data.ratedByMe} averageRating={data.averageRating} ratingsCount={data.ratingsCount} userName={data.userName} id={id}  />
 
-          <div className="rating-section">
-            <div className="current-rating">
-              <div className="rating-stars">
-                {renderStars(Math.round(data.averageRating))}
-              </div>
-              <div className="rating-text">
-                {data.averageRating} מתוך 5 ({data.ratingsCount} דירוגים)
-              </div>
-            </div>
-            {data.userName != user.username &&
-              <div className="your-rating">
-                <h4>דרג את המתכון</h4>
-                <div className="rating-input">
-                  {renderStars(userRating, true, setRating)}
-                </div>
-                <button
-                  className="rating-submit"
-                  onClick={submitRating}
-                  disabled={userRating === 0}
-                >
-                  שלח דירוג
-                </button>
-              </div>
-            }
-          </div>
-        </div>
         <CommentSection recipeId={id} data={data.comments} />
 
       </div>

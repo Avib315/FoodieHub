@@ -4,6 +4,7 @@ import axiosRequest from '../../services/axiosRequest';
 import Table from '../../component/Table';
 import './style.scss';
 import { MdFullscreen } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
 const userColumns = [
   { title: 'שם המשתמש', field: 'username', typeof: 'string' },
@@ -147,10 +148,10 @@ export default function UserPanel() {
           <p>נהל את המשתמשים והרשאות המערכת</p>
         </div>
         <div className="header-actions">
-          <a className="back-btn" href="/admin-panel">
+          <Link className="back-btn" to="/admin-panel">
             חזור לפאנל
             <span>← </span>
-          </a>
+          </Link>
         </div>
       </div>
 

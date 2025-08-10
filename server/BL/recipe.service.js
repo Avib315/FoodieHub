@@ -83,31 +83,38 @@ async function getRecipeById(id, currentUserId = null) {
     const results = await Promise.all(promises);
     const [recipeCreator, ratingResult, comments] = results;
 
+
+
     // עיבוד התוצאות
     const userName = recipeCreator?.username || 'Unknown User';
     const fullName = recipeCreator?.firstName + " " + recipeCreator?.lastName || 'Unknown User';
     const averageRating = ratingResult.data.averageRating;
     const totalRatings = ratingResult.data.totalCount;
-    const currentUser = await userController.readOne({_id:currentUserId})
+    const currentUser = await userController.readOne({ _id: currentUserId })
     // המרה לאובייקט רגיל ומחיקת userId
     const recipeObj = recipe.toObject();
-    
+
     // Check if CURRENT USER has saved this recipe (not the recipe creator!)
     let isSaved = false;
     if (currentUser && currentUser.savedRecipes) {
         const savedRecipeIds = currentUser.savedRecipes || [];
         const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
         isSaved = savedRecipeIdsSet.has(recipeObj._id.toString());
-        
-        console.log("Current User ID:", currentUserId);
-        console.log("Recipe ID:", id);
-        console.log("User's saved recipes:", savedRecipeIds);
-        console.log("Is recipe saved by current user:", isSaved);
+        if (ratingResult) {
+            // check if the current user has rated this recipe here // userId = currentUserId
+            console.log(ratingResult.data.ratings);
+
+            const ratedByMe = ratingResult.data.ratings.some(rating =>
+                rating.userId.toString() === currentUserId.toString()
+            );
+            
+            recipeObj.ratedByMe = ratedByMe;
+        }
     }
-    
+
     recipeObj.saved = isSaved;
     const { userId, ...recipeWithoutUserId } = recipeObj;
-        
+
     // החזרת המתכון עם הנתונים הנוספים
     return {
         ...recipeWithoutUserId,
