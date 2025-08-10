@@ -4,6 +4,7 @@ import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import categoryOptions from '../../data/options/categoryOptions';
+import { Link } from 'react-router-dom';
 
 const recipeColumns = [
   { title: 'שם המתכון', field: 'title', typeof: 'string' },
@@ -153,10 +154,10 @@ export default function RecipesPanel() {
           <h1>ניהול מתכונים</h1>
           <p>נהל את המתכונים שלך בקלות</p>
         </div>
-        <a className="back-btn" href="/admin-panel">
+        <Link className="back-btn" to="/admin-panel">
           חזור לפאנל
           <span>← </span>
-        </a>
+        </Link>
       </div>
 
       {/* Filters */}

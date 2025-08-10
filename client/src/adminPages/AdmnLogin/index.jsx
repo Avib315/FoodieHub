@@ -56,7 +56,6 @@ export default function AdminLogin() {
     }
     else {
       setLoading(false);
-      setMessage('התחברות מוצלחת! מפנה...');
       setTimeout(() => {
         nav('/admin-panel');
         login()
