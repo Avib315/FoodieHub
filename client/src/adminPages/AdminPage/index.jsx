@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import './style.scss'
+import useAdminAuth from '../../store/useAdminAuth';
 
 export default function AdminPage() {
   const { data, loading, error } = useAxiosRequest({
@@ -10,10 +11,10 @@ export default function AdminPage() {
     method: "GET",
     defaultValue: []
   });
-
+  
   const navigate = useNavigate();
-
-  console.log('Admin logs data:', data);
+  
+  const {logout} = useAdminAuth()
 
   // Function to get Hebrew text and icon for each action
   const getLogDetails = (action) => {
@@ -93,6 +94,7 @@ export default function AdminPage() {
       alert("בעיה בהתנתקות")
     }
     else {
+      logout()
       navigate('/admin-login');
     }
   };

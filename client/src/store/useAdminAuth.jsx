@@ -5,15 +5,15 @@ import { persist } from 'zustand/middleware'
 const useAdminAuth = create(
   persist(
     (set, get) => ({
-      auth: false,
+      adminAuth: false,
       _hasHydrated: false,
       
       login: () => {
-        set({ auth: true });
+        set({ adminAuth: true });
       },
       
       logout: () => {
-        set({ auth: false });
+        set({ adminAuth: false });
         // Clear the persisted storage on logout
         localStorage.removeItem('auth-storage');
       },
@@ -25,7 +25,7 @@ const useAdminAuth = create(
     }),
     {
       name: 'auth-storage',
-      partialize: (state) => ({ auth: state.auth }),
+      partialize: (state) => ({ adminAuth: state.adminAuth }),
       onRehydrateStorage: () => (state) => {
         state?.setHasHydrated(true);
       },

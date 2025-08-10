@@ -5,9 +5,10 @@ import NotFoundPage from "../page/NotFoundPage";
 import NavBar from "../component/NavBar";
 import { useHydration } from "./useHydration";
 import useAdminAuth from '../store/useAdminAuth';
+import { useEffect } from "react";
 
 export default function ProtectedAdminPage({ element }) {
-    const { auth } = useAdminAuth();
+    const { adminAuth } = useAdminAuth();
     const isHydrated = useHydration();
 
 
@@ -17,10 +18,9 @@ export default function ProtectedAdminPage({ element }) {
 
     return (
         <>
-            {auth ? (
+            {adminAuth ? (
                 <>
                     {element}
-                    <NavBar />
                 </>
             ) : (
                 <NotFoundPage type={1} />

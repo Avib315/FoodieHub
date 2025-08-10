@@ -3,8 +3,10 @@ import './style.scss';
 import axiosRequest from '../../services/axiosRequest';
 import Input from '../../component/Input';
 import { Link, useNavigate } from 'react-router-dom'
+import useAdminAuth from '../../store/useAdminAuth';
 
 export default function AdminLogin() {
+  const {login} = useAdminAuth()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -55,6 +57,7 @@ export default function AdminLogin() {
         setMessage('התחברות מוצלחת! מפנה...');
         setTimeout(() => {
           nav('/admin-panel');
+          login()
         }, 2000);
       }
       console.log('Login successful:', response.data);
