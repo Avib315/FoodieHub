@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './style.scss';
 import axiosRequest from '../../services/axiosRequest';
 import Input from '../../component/Input';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -123,8 +123,12 @@ export default function AdminLogin() {
           >
             {loading ? 'מתחבר...' : 'התחבר'}
           </button>
-        </div>
 
+           <div className="user-link">
+            <Link to="/login" className="register-link-btn">התחבר כאורח</Link>
+          </div>
+
+        </div>
    
       </div>
     </div>
