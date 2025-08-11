@@ -1,26 +1,25 @@
-// Updated ProtectedPage component with login redirect
+// Updated ProtectedPage component with proper hydration check
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingPage from "../page/LoadingPage/index";
 import NotFoundPage from "../page/NotFoundPage";
 import NavBar from "../component/NavBar";
-import { useHydration } from "./useHydration";
 import useAuth from '../store/useAuth';
 
 export default function ProtectedPage({ element }) {
-    const { auth } = useAuth();
-    const isHydrated = useHydration();
+    const { auth, _hasHydrated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
-        // Check if user is on root route and not authenticated
-        if (isHydrated && !auth && location.pathname === '/') {
+        // Only redirect after Zustand has fully hydrated
+        if (_hasHydrated && !auth && location.pathname === '/') {
             navigate('/login', { replace: true });
         }
-    }, [auth, isHydrated, location.pathname, navigate]);
+    }, [auth, _hasHydrated, location.pathname, navigate]);
 
-    if (!isHydrated) {
+    // Show loading until Zustand has hydrated
+    if (!_hasHydrated) {
         return <LoadingPage />;
     }
 

@@ -1,4 +1,4 @@
-// store/useAuth.js
+// store/useAdminAuth.js  
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -8,26 +8,27 @@ const useAdminAuth = create(
       adminAuth: false,
       _hasHydrated: false,
       
-      login: () => {
+      adminLogin: () => {
         set({ adminAuth: true });
       },
       
-      logout: () => {
+      adminLogout: () => {
         set({ adminAuth: false });
-        // Clear the persisted storage on logout
-        localStorage.removeItem('auth-storage');
+        // Only clear this specific store's data
+        localStorage.removeItem('admin-auth-storage');
       },
       
       setHasHydrated: (state) => {
-        console.log('Setting hydrated to:', state);
         set({ _hasHydrated: state });
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'admin-auth-storage', // ← DIFFERENT UNIQUE KEY
       partialize: (state) => ({ adminAuth: state.adminAuth }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => {
+        return (state) => {
+          state?.setHasHydrated(true);
+        };
       },
     }
   )

@@ -1,4 +1,3 @@
-// store/useAuth.js
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
@@ -9,25 +8,28 @@ const useAuth = create(
       _hasHydrated: false,
       
       login: () => {
+        console.log('🔐 LOGIN called');
         set({ auth: true });
       },
       
       logout: () => {
+        console.log('🚪 LOGOUT called');
         set({ auth: false });
-        // Clear the persisted storage on logout
-        localStorage.removeItem('auth-storage');
+        // Only clear this specific store's data
+        localStorage.removeItem('user-auth-storage');
       },
       
       setHasHydrated: (state) => {
-        console.log('Setting hydrated to:', state);
         set({ _hasHydrated: state });
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'user-auth-storage', // ← UNIQUE KEY
       partialize: (state) => ({ auth: state.auth }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+      onRehydrateStorage: () => {
+        return (state) => {
+          state?.setHasHydrated(true);
+        };
       },
     }
   )
