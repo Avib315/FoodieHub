@@ -97,11 +97,6 @@ function App() {
         <Route path="/my-recipes" element={
           <ProtectedPage element={<MyRecipesPage />} />
         } />
-        <Route path="/edit-recipe/:id" element={
-          <ProtectedPage element={<NewRecipePage />} />
-
-        } />
-
 
         {/* Static/Info Pages */}
         <Route path="/about" element={
