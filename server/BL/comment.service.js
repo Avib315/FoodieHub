@@ -27,11 +27,11 @@ async function getRecipeComments(recipeId) {
         comments.map(async (comment) => {
             // אם זה Mongoose document, המר לאובייקט רגיל
             const commentObj = comment.toObject ? comment.toObject() : comment;
-            
+
             // שלוף את שם המשתמש
             let userName = 'Unknown User';
             let fullName = 'Unknown User';
-            
+
             if (commentObj.userId) {
                 try {
                     const user = await userController.readOne({ _id: commentObj.userId });
@@ -43,7 +43,7 @@ async function getRecipeComments(recipeId) {
                     console.error('Error fetching user for comment:', error);
                 }
             }
-            
+
             // החזר הערה ללא userId אבל עם שם המשתמש
             const { userId, ...commentWithoutUserId } = commentObj;
             return {
@@ -76,9 +76,13 @@ async function createComment({ userId, recipeId, content }) {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
-    // Send a notification to the recipe owner
-    await addRecipeCommentedNotification(recipeId);
+    // Send a notification to the recipe owner if commenter is not recipe owner
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (recipe.userId.toString() !== userId) {
+        await addRecipeCommentedNotification(recipeId);
+    }
 
+    console.log("i got till here")
     return comment._id;
 }
 

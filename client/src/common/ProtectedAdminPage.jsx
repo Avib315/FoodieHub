@@ -25,7 +25,7 @@ export default function ProtectedAdminPage({ element }) {
 
     useEffect(() => {
         // Only redirect after Zustand has fully hydrated
-        if (_hasHydrated && !adminAuth && location.pathname === '/admin') {
+        if (_hasHydrated && !adminAuth && location.pathname.startsWith('/admin')) {
             navigate('/admin-login', { replace: true });
         }
     }, [adminAuth, _hasHydrated, location.pathname, navigate]);

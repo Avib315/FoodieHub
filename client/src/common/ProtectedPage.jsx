@@ -47,7 +47,7 @@ export default function ProtectedPage({ element }) {
 
     useEffect(() => {
         // Only redirect after Zustand has fully hydrated
-        if (_hasHydrated && !auth && location.pathname === '/') {
+        if (_hasHydrated && !auth && location.pathname === '/home') {
             console.log('Redirecting to login from home');
             navigate('/login', { replace: true });
         }

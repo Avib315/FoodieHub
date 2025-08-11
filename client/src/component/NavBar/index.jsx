@@ -1,22 +1,22 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { 
-  AiFillHome, 
-  AiOutlineUser, 
-  AiOutlineShoppingCart, 
-  AiOutlineBell, 
-  AiOutlinePlusCircle, 
-  AiOutlineSetting 
+import {
+  AiFillHome,
+  AiOutlineUser,
+  AiOutlineShoppingCart,
+  AiOutlineBell,
+  AiOutlinePlusCircle,
+  AiOutlineSetting
 } from "react-icons/ai"
 import './style.scss'
 import useUserStore from '../../store/userStore'
 
 export default function NavBar() {
-  const {user} = useUserStore()
-  const badgeCount = user?.notification || 0; // Assuming user.notifications is an array of notifications
-  
+  const { user } = useUserStore()
+  const badgeCount = user?.notification || 0; // user.notification is amount of user's notifications
+    
   const badgeObj = {}
-  if(badgeCount !== 0 ) {
+  if (badgeCount !== 0) {
     badgeObj.badge = badgeCount
   }
   const navArr = [
@@ -37,10 +37,10 @@ export default function NavBar() {
           <span>🍳</span>
         </div>
         {navArr.map((item, index) => (
-          <NavLink 
-            key={index} 
-            to={item.path} 
-            className={({ isActive }) => 
+          <NavLink
+            key={index}
+            to={item.path}
+            className={({ isActive }) =>
               `sidebar-item ${isActive ? 'active' : ''}`
             }
             aria-label={item.label}
@@ -55,10 +55,10 @@ export default function NavBar() {
       {/* Mobile Bottom Navigation */}
       <div className="bottom-nav">
         {navArr.slice(0, 4).map((item, index) => (
-          <NavLink 
-            key={index} 
-            to={item.path} 
-            className={({ isActive }) => 
+          <NavLink
+            key={index}
+            to={item.path}
+            className={({ isActive }) =>
               `nav-item ${isActive ? 'active' : ''}`
             }
             aria-label={item.label}
