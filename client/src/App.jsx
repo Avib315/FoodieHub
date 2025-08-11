@@ -40,27 +40,19 @@ function App() {
         } />
         {/* Auth Pages - No NavBar */}
         <Route path="/login" element={
-          <AuthPageLayout>
-            <LoginPage />
-          </AuthPageLayout>
+          <ProtectedPage element={<LoginPage />} />
         } />
 
         <Route path="/signup" element={
-          <AuthPageLayout>
-            <SignupPage />
-          </AuthPageLayout>
+          <ProtectedPage element={<SignupPage />} />
         } />
 
         <Route path="/register" element={
-          <AuthPageLayout>
-            <SignupPage />
-          </AuthPageLayout>
+          <ProtectedPage element={<SignupPage />} />
         } />
 
         <Route path="/forgot-password" element={
-          <AuthPageLayout>
-            <ForgotPasswordPage />
-          </AuthPageLayout>
+          <ProtectedPage element={<ForgotPasswordPage />} />
         } />
 
         <Route path="/" element={
@@ -115,7 +107,7 @@ function App() {
         } />
 
         <Route path="/admin-login" element={
-          <AdminLogin />
+          <ProtectedAdminPage element={<AdminLogin />} />
         } />
         <Route path="/admin-panel" element={
           <ProtectedAdminPage element={<AdminPage />} />
@@ -135,15 +127,13 @@ function App() {
         <Route path="/register" element={<Navigate to="/signup" replace />} />
 
         {/* 404 - Must be last */}
-          <Route path="/notFoundPage/:type" element={
+        <Route path="/notFoundPage/:type" element={
           <AuthPageLayout>
             <NotFoundPage />
           </AuthPageLayout>
         } />
         <Route path="*" element={
-          <AuthPageLayout>
             <NotFoundPage />
-          </AuthPageLayout>
         } />
       </Routes>
     </Router>
