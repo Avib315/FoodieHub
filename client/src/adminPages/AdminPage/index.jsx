@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
@@ -11,10 +11,14 @@ export default function AdminPage() {
     method: "GET",
     defaultValue: []
   });
-  
+
+  useEffect(() => {
+    console.log('Admin logs data:');
+  }, [])
+
   const navigate = useNavigate();
-  
-  const {adminLogout} = useAdminAuth()
+
+  const { adminLogout } = useAdminAuth()
 
   // Function to get Hebrew text and icon for each action
   const getLogDetails = (action) => {
@@ -87,7 +91,7 @@ export default function AdminPage() {
 
   const handleLogout = async () => {
     const res = await axiosRequest({
-      url: '/user/logout', // למרות שזה מסלול של יוזר זה נראה שזה עובד, אבל מי שמבין צריך לבדוק את זה
+      url: '/user/logout',
       method: 'POST'
     });
     if (res.success === false) {
@@ -95,7 +99,7 @@ export default function AdminPage() {
     }
     else {
       adminLogout()
-      navigate('/admin-login');
+      navigate('/login');
     }
   };
 

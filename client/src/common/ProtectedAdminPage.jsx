@@ -16,7 +16,8 @@ export default function ProtectedAdminPage({ element }) {
     ];
       const notProtected = [
         "/admin-login",
-    ]
+    ];
+
     const { auth } = useAuth()
     const { adminAuth } = useAdminAuth();
     const isHydrated = useHydration();
@@ -29,18 +30,19 @@ export default function ProtectedAdminPage({ element }) {
         return <NotFoundPage type={2} />;
     }
     if (!auth && !adminAuth && notProtected.includes(location.pathname)) { // לא מחובר: מנסה להגיע להתחברות
+        console.log(element);
         return <>{element} </>
     }
-    if (auth && !adminAuth && notProtected.includes(location.pathname)) { // לא מחובר: מנסה להגיע להתחברות
+    if (auth && !adminAuth && notProtected.includes(location.pathname)) {
         return <NotFoundPage type={2} />;
     }
-
     if (auth && notProtected.includes(location.pathname)) { //יוזר שמחובר ומנסה להגיע ללוגין אדמין
         return <NotFoundPage type={2} />;
     }
     if (adminAuth && !allowedPaths.includes(location.pathname)) { // אדמין שמנסה לגשת למסלול של יוזר
         return <NotFoundPage type={2} />;
     }
+
     return (
         <>
             {adminAuth ? (

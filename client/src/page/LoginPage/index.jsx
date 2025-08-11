@@ -67,14 +67,12 @@ export default function LoginPage() {
       // Simulate API call
 
       const data = await axiosRequest({ url: "user/login", method: "POST", body: formData })
-        console.log(data);
-        
-        if (data?.success === true || data.data?.success=== true) {
-          login() // ✅ Add this back!
+      console.log(data);
+
+      if (data?.success === true || data.data?.success === true) {
+        nav("/")
+        login()
         setSuccessMessage('התחברת בהצלחה!')
-        setTimeout(() => {
-          nav("/")
-        }, 800)
       }
 
       else {
@@ -84,7 +82,7 @@ export default function LoginPage() {
 
     } catch (error) {
       console.log(error);
-      
+
       setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
     } finally {
       setIsLoading(false)

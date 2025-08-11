@@ -47,6 +47,7 @@ export default function ProtectedPage({ element }) {
     useEffect(() => {
         // Only redirect after Zustand has fully hydrated
         if (_hasHydrated && !auth && location.pathname === '/') {
+            console.log('Redirecting to login from home');
             navigate('/login', { replace: true });
         }
     }, [auth, _hasHydrated, location.pathname, navigate]);
@@ -56,12 +57,11 @@ export default function ProtectedPage({ element }) {
         return <LoadingPage />;
     }
 
-
     if (!auth && location.pathname === '/') { // לא מוצא את האוטנקציה צריך לחכות עד שמסך הבית יחזיר תשובה
         return <LoadingPage />;
     }
-    if(adminAuth && notProtected.includes(location.pathname)){        
-        return <NotFoundPage type={2}  isAdmin={true} />;
+    if (adminAuth && notProtected.includes(location.pathname)) {
+        return <NotFoundPage type={2} isAdmin={true} />;
     }
     if (auth && notProtected.includes(location.pathname)) {  // מחובר . מנסה להגיע להתחברות
         return <NotFoundPage type={2} />;
@@ -70,9 +70,8 @@ export default function ProtectedPage({ element }) {
         return <>{element} </>
     }
     if (adminAuth && allowedPaths.includes(location.pathname)) { // אם אדמין מחובר ורוצה להגיע לנתיב של יוזר
-        return <NotFoundPage type={2} isAdmin={true}/>;
+        return <NotFoundPage type={2} isAdmin={true} />;
     }
-    // If authenticated but trying to access a non-allowed path
     if (auth && location.pathname !== '/' && !isAllowedPath(location.pathname)) { // משתמש רגיל לא יוכל להגיע למה שהוא לא בנתיבים שלו
         return <NotFoundPage type={2} />;
     }
