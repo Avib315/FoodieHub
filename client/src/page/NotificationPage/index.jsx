@@ -37,9 +37,15 @@ export default function NotificationPage() {
     }, {})
   };
 
-  const filteredNotifications = activeFilter === 'all'
+  const filteredNotifications = (activeFilter === 'all'
     ? data
-    : data.filter(n => n.type === activeFilter);
+    : data.filter(n => n.type === activeFilter)
+  ).sort((a, b) => {
+    if (a.isRead === b.isRead) {
+      return new Date(b.createdAt) - new Date(a.createdAt); // newest first
+    }
+    return a.isRead ? 1 : -1; // unread first
+  });
 
   const markAllAsRead = async () => {
     try {
@@ -77,7 +83,7 @@ export default function NotificationPage() {
     event.stopPropagation();
     console.log('Deleting notification:', notificationId);
     const res = await axiosRequest({ url: `/notification/delete/${notificationId}`, method: "DELETE" })
-    if(res.data.success){
+    if (res.data.success) {
       console.log('Notification deleted');
       setData(previousData => previousData.filter(n => n._id !== notificationId));
     }
@@ -174,7 +180,7 @@ export default function NotificationPage() {
             </p>
           </div>
         ) : (
-          filteredNotifications?.reverse()?.map((notification, index) => (
+          filteredNotifications.map((notification, index) => (
             <div
               key={notification._id}
               className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
