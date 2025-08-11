@@ -8,6 +8,13 @@ import useAdminAuth from '../store/useAdminAuth';
 import { useEffect } from "react";
 
 export default function ProtectedAdminPage({ element }) {
+    const allowedPaths = [
+        "/admin-panel",
+        "/admin-recipe-panel",
+        "/admin-users-panel",
+        "/loading"
+    ];
+
     const { adminAuth } = useAdminAuth();
     const isHydrated = useHydration();
     useEffect(()=>{

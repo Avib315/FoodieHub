@@ -7,6 +7,20 @@ import NavBar from "../component/NavBar";
 import useAuth from '../store/useAuth';
 
 export default function ProtectedPage({ element }) {
+
+    const allowedPaths = [
+        "/",
+        "/home",
+        "/recipe/:id",
+        "/favorites",
+        "/personal-area",
+        "/notifications",
+        "/settings",
+        "/new-recipe",
+        "/my-recipes",
+        "/loading"
+    ];
+
     const { auth, _hasHydrated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
