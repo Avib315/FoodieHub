@@ -14,7 +14,7 @@ export default function AdminPage() {
   
   const navigate = useNavigate();
   
-  const {logout} = useAdminAuth()
+  const {adminLogout} = useAdminAuth()
 
   // Function to get Hebrew text and icon for each action
   const getLogDetails = (action) => {
@@ -94,7 +94,7 @@ export default function AdminPage() {
       alert("בעיה בהתנתקות")
     }
     else {
-      logout()
+      adminLogout()
       navigate('/admin-login');
     }
   };
