@@ -35,8 +35,7 @@ router.post("/create", auth, async (req, res) => {
 router.delete("/deleteAll/:recipeId", auth, async (req, res) => {
     try {
         const { recipeId } = req.params;
-        const { userId } = req.body;
-        const result = await service.deleteCommentsByRecipeId(userId, recipeId);
+        const result = await service.deleteCommentsByRecipeId(recipeId);
         res.status(200).send({ success: result }); // will be true since didn't throw
     } catch (error) {
         console.error('RouteName: comment , Path: deleteAll/ , error message: ', error.message);
