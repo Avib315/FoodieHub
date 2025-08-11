@@ -9,7 +9,7 @@ import useAdminAuth from '../store/useAdminAuth';
 export default function ProtectedPage({ element }) {
     const allowedPaths = [
         "/home",
-        "/recipe/:id", // Note: This might need to be handled differently for dynamic routes
+        "/recipe/:id",
         "/favorites",
         "/personal-area",
         "/notifications",
@@ -23,7 +23,8 @@ export default function ProtectedPage({ element }) {
         "/login",
         "/register",
         "/signup"
-    ]
+    ];
+
     const { auth, _hasHydrated } = useAuth();
     const { adminAuth } = useAdminAuth();
     const navigate = useNavigate();

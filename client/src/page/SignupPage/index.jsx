@@ -112,12 +112,6 @@ export default function SignupPage() {
 
     try {
       const data = await axiosRequest({ url: "user/register", method: "POST", body: formData })
-      console.log(data);
-
-      if (data) {
-
-      }
-      console.log('Registration data:', data)
 
       // Redirect to login or dashboard
       navigate('/login', {

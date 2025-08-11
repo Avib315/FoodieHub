@@ -11,30 +11,18 @@ import { Link } from 'react-router-dom'
 import FilterBar from '../FilterBar'
 import LoadingPage from '../../page/LoadingPage'
 
-export default function RecipesDisplay({ data = [], loading = false, isMyRecipes, addSaveBtn=true }) {
-  // State for filtered data - this is what gets displayed
-
-
-  // Update filtered data when original data changes
- 
-  if(loading){
+export default function RecipesDisplay({ data = [], loading = false, isMyRecipes, addSaveBtn = true }) {
+  if (loading) {
     return <LoadingPage />
   }
   return (
     <>
       <div className='recipes-page'>
-        {/* Desktop/Tablet Filter Container */}
-        {/* <FilterBar 
-          originalData={data} 
-          data={filteredData} 
-          setData={setFilteredData} 
-        /> */}
-
         <div className='recipes-list'>
           {/* Display filtered data, not original data */}
           {data.map(recipe => (
             <RecipeCard
-            addSaveBtn={addSaveBtn}
+              addSaveBtn={addSaveBtn}
               isMyRecipes={isMyRecipes}
               key={recipe._id}
               recipe={recipe}
