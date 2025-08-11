@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import './style.scss'
 import FloatingElements from '../../component/FloatingElements'
 
-export default function NotFoundPage({ type: propType = 2 }) {
+export default function NotFoundPage({ type: propType = 2 , isAdmin=false }) {
   const { type: paramType } = useParams()
   const navigate = useNavigate()
   
@@ -55,16 +55,17 @@ export default function NotFoundPage({ type: propType = 2 }) {
               </>
             ) : (
               <>
-                <Link to="/" className="btn btn-primary">חזור לעמוד הבית</Link>
-                <button onClick={() => navigate(-1)} className="btn btn-secondary">
+                {!isAdmin && <Link to="/" className="btn btn-primary">חזור לעמוד הבית</Link>}
+               <button onClick={() => navigate(-1)} className="btn btn-secondary">
                   חזור לדף הקודם
                 </button>
               </>
             )}
           </div>
-          
-          {finalType === 2 && (
-            <div className="suggestions">
+          {
+            !isAdmin&& <>
+            {finalType === 2 && (
+              <div className="suggestions">
               <h3>אולי תמצא מה שאתה מחפש כאן:</h3>
               <ul>
                 <li><Link to="/">מתכונים</Link></li>
@@ -72,6 +73,8 @@ export default function NotFoundPage({ type: propType = 2 }) {
               </ul>
             </div>
           )}
+          </>
+        }
         </div>
       </div>
     </div>
