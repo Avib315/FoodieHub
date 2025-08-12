@@ -2,9 +2,9 @@
 import LoadingPage from "../page/LoadingPage/index";
 import NotFoundPage from "../page/NotFoundPage";
 import NavBar from "../component/NavBar";
-import { useHydration } from "./useHydration";
 import useAdminAuth from '../store/useAdminAuth';
 import { useEffect } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuth from "../store/useAuth";
 
 export default function ProtectedAdminPage({ element }) {
@@ -14,33 +14,45 @@ export default function ProtectedAdminPage({ element }) {
         "/admin-users-panel",
         "/loading"
     ];
-      const notProtected = [
+    const notProtected = [
         "/admin-login",
-    ]
+    ];
+
     const { auth } = useAuth()
-    const { adminAuth } = useAdminAuth();
-    const isHydrated = useHydration();
+    const { adminAuth, _hasHydrated } = useAdminAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
 
+    useEffect(() => {
+        // Only redirect after Zustand has fully hydrated
+        if (_hasHydrated && !adminAuth && location.pathname.startsWith('/admin')) {
+            navigate('/admin-login', { replace: true });
+        }
+    }, [adminAuth, _hasHydrated, location.pathname, navigate]);
 
-    if (!isHydrated) {
+    if (!_hasHydrated) {
         return <LoadingPage />;
     }
+
     if (adminAuth && notProtected.includes(location.pathname)) {  // מחובר . מנסה להגיע להתחברות
-        return <NotFoundPage type={2} />;
+        return <NotFoundPage type={2} isAdmin={true} />;
     }
     if (!auth && !adminAuth && notProtected.includes(location.pathname)) { // לא מחובר: מנסה להגיע להתחברות
         return <>{element} </>
     }
-    if (auth && !adminAuth && notProtected.includes(location.pathname)) { // לא מחובר: מנסה להגיע להתחברות
+    if (auth && !adminAuth && notProtected.includes(location.pathname)) {
         return <NotFoundPage type={2} />;
     }
-
     if (auth && notProtected.includes(location.pathname)) { //יוזר שמחובר ומנסה להגיע ללוגין אדמין
+        return <NotFoundPage type={2} />;
+    }
+    if (auth && allowedPaths.includes(location.pathname)) {
         return <NotFoundPage type={2} />;
     }
     if (adminAuth && !allowedPaths.includes(location.pathname)) { // אדמין שמנסה לגשת למסלול של יוזר
         return <NotFoundPage type={2} />;
     }
+
     return (
         <>
             {adminAuth ? (

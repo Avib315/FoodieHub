@@ -27,11 +27,11 @@ async function getRecipeComments(recipeId) {
         comments.map(async (comment) => {
             // אם זה Mongoose document, המר לאובייקט רגיל
             const commentObj = comment.toObject ? comment.toObject() : comment;
-            
+
             // שלוף את שם המשתמש
             let userName = 'Unknown User';
             let fullName = 'Unknown User';
-            
+
             if (commentObj.userId) {
                 try {
                     const user = await userController.readOne({ _id: commentObj.userId });
@@ -43,7 +43,7 @@ async function getRecipeComments(recipeId) {
                     console.error('Error fetching user for comment:', error);
                 }
             }
-            
+
             // החזר הערה ללא userId אבל עם שם המשתמש
             const { userId, ...commentWithoutUserId } = commentObj;
             return {
@@ -76,34 +76,36 @@ async function createComment({ userId, recipeId, content }) {
         throw new Error(ApiMessages.errorMessages.creationFailed);
     }
 
-    // Send a notification to the recipe owner
-    await addRecipeCommentedNotification(recipeId);
-
+    // Send a notification to the recipe owner if commenter is not recipe owner
+    const recipe = await recipeController.readOne({ _id: recipeId });
+    if (recipe.userId.toString() !== userId) {
+        await addRecipeCommentedNotification(recipeId);
+    }
+    
     return comment._id;
 }
 
 // Delete all comments related to a specific recipe
-async function deleteCommentsByRecipeId(userId, recipeId) { // maybe recieve userId to confirm recipe belongs to user
-    if (!userId || !recipeId) {
-        console.log("function deleteCommentsByRecipeId: Missing required fields: userId or recipeId");
-        throw new Error(ApiMessages.errorMessages.missingRequiredFields);
+async function deleteCommentsByRecipeId(recipeId) {
+    if (!recipeId) {
+        console.log("function deleteCommentsByRecipeId: Missing required field: recipeId");
+        return false;
     }
-    if (![userId, recipeId].every(id => id.match(/^[0-9a-fA-F]{24}$/))) {
-        console.log("function deleteCommentsByRecipeId: Invalid userId or recipeId format provided");
-        throw new Error(ApiMessages.errorMessages.invalidData);
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("function deleteCommentsByRecipeId: Invalid recipeId format provided");
+        return false;
     }
     const recipe = await recipeController.readOne({ _id: recipeId });
-    if (!recipe || recipe.userId.toString() !== userId) {
-        console.log("function deleteCommentsByRecipeId: Unauthorized action or recipe not found");
-        throw new Error(ApiMessages.errorMessages.unauthorized);
+    if (!recipe) {
+        console.log("function deleteCommentsByRecipeId: recipe not found");
+        return false;
     }
-
 
     const result = await commentController.deleteMany({ recipeId });
 
     if (!result || result.deletedCount === 0) {
         console.log("function deleteCommentsByRecipeId: No comments found for the given recipeId or deletion failed");
-        throw new Error(ApiMessages.errorMessages.notFound);
+        return false;
     }
 
     return true;

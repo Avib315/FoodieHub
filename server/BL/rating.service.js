@@ -290,7 +290,26 @@ const updateRating = async (ratingInput) => {
 
 
 
+// Delete all ratings for a specific recipe
+async function deleteRatingsByRecipeId(recipeId) {
+    if (!recipeId) {
+        console.log("deleteRatingsByRecipeId: Missing required fields: recipeId");
+        return false;
+    }
+    if (!recipeId.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("deleteRatingsByRecipeId: Invalid recipeId format provided");
+        return false
+    }
 
+    const result = await ratingController.deleteMany({ recipeId });
+
+    if (!result || result.deletedCount === 0) {
+        console.log("function deleteRatingsByRecipeId: No ratings found for the given recipeId or deletion failed");
+        return false;
+    }
+
+    return true;
+}
 
 
 
@@ -298,5 +317,6 @@ module.exports = {
     getAllRatings,
     createRating,
     deleteRating,
-    updateRating
+    updateRating,
+    deleteRatingsByRecipeId
 };

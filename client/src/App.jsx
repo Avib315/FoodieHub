@@ -55,10 +55,15 @@ function App() {
           <ProtectedPage element={<ForgotPasswordPage />} />
         } />
 
-        <Route path="/" element={
+        {/* <Route path="/" element={
+          <ProtectedPage element={<RecipesPage />} />
+        } /> */}
+
+        <Route path="/" element={<Navigate to="/home" replace />} />
+
+        <Route path="/home" element={
           <ProtectedPage element={<RecipesPage />} />
         } />
-
 
         <Route path="/recipe/:id" element={
           <ProtectedPage element={<RecipeDetailPage />} />
@@ -133,7 +138,7 @@ function App() {
           </AuthPageLayout>
         } />
         <Route path="*" element={
-            <NotFoundPage />
+          <NotFoundPage />
         } />
       </Routes>
     </Router>

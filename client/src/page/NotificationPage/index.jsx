@@ -7,12 +7,14 @@ import useUserStore from '../../store/userStore';
 export default function NotificationPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
   const { user, setUser } = useUserStore()
   const { data, setData } = useAxiosRequest({
     url: '/notification/getAll',
     method: 'get',
     defaultValue: []
   });
+
   async function markAsRead(ids) {
     const body = { notificationIds: ids }
     const res = await axiosRequest({ url: "/notification/markAsRead", method: "PUT", body: body })
@@ -20,13 +22,17 @@ export default function NotificationPage() {
   }
 
   React.useEffect(() => {
+    if (data) {
+      setUser({ ...user, notification: data.filter(n => !n.isRead).length });
+    }
+
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [data]);
 
   // Create dynamic filter counts based on notificationTypes
   const filterCounts = {

@@ -1,6 +1,8 @@
 const adminController = require("../DL/controllers/admin.controller.js");
 const recipeController = require("../DL/controllers/recipe.controller.js");
 const userController = require("../DL/controllers/user.controller.js");
+const ratingService = require("./rating.service.js");
+const commentService = require("./comment.service.js");
 const SavedRecipeService = require("./savedRecipe.service.js");
 const activityNotifierService = require("./activityNotifier.service.js");
 const adminLogService = require("./adminLog.service.js");
@@ -12,7 +14,7 @@ async function login(adminInput) {
     if (!adminInput || !adminInput.email || !adminInput.email.trim() ||
         !adminInput.password || adminInput.password.trim() === '') {
         console.log("function login: Missing required fields: email or password");
-        
+
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
@@ -31,11 +33,13 @@ async function login(adminInput) {
 
     if (!admin) {
         console.log("function login: Admin not found with the provided email");
-         throw new Error(ApiMessages.errorMessages.userNotFound); }
+        throw new Error(ApiMessages.errorMessages.userNotFound);
+    }
     const passwordMatch = await bcrypt.compare(adminInput.password, admin?.passwordHash);
     if (!passwordMatch) {
         console.log("function login: Invalid credentials provided");
-         throw new Error(ApiMessages.errorMessages.invalidCredentials); }
+        throw new Error(ApiMessages.errorMessages.invalidCredentials);
+    }
 
     const token = loginAdminAuth({ id: admin._id });
 
@@ -53,8 +57,6 @@ async function login(adminInput) {
         }
     };
 }
-
-//// action
 
 async function getAllRecipes() {
     // שליפת המתכונים
@@ -135,13 +137,13 @@ const updateRecipeStatus = async (recipeId, status) => {
 
 
 const deleteRecipe = async (recipeId, adnimId) => {
-    // ولידציות בסיסיות במשולב
+    // ולידציות בסיסיות במשולב
     if (!recipeId || !adnimId) {
         console.log("function deleteRecipe: Missing required fields: recipeId or adnimId");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);
     }
 
-    // ولידציות פורמט ObjectId במשולב
+    // ולידציות פורמט ObjectId במשולב
     if (!recipeId.match(/^[0-9a-fA-F]{24}$/) || !adnimId.match(/^[0-9a-fA-F]{24}$/)) {
         console.log("function deleteRecipe: Invalid recipeId or adnimId format provided");
         throw new Error(ApiMessages.errorMessages.invalidData);
@@ -161,24 +163,35 @@ const deleteRecipe = async (recipeId, adnimId) => {
             savedRecipes: recipeId
         });
 
-        // מחיקת המתכון מכל המשתמשים שמרו אותו
-        if (usersWithSavedRecipe && usersWithSavedRecipe.length > 0) {
+        if (usersWithSavedRecipe?.length > 0) {
             await Promise.all(
                 usersWithSavedRecipe.map(async (user) => {
                     try {
                         await SavedRecipeService.removeSavedRecipe(user._id.toString(), recipeId);
-
-
                     } catch (error) {
                         console.log(`Error removing saved recipe ${recipeId} from user ${user._id}:`, error.message);
-                        throw new Error(`Failed to remove saved recipe ${recipeId} from user ${user._id}:`, error.message);
+                        console.error(`Failed to remove saved recipe ${recipeId} from user ${user._id}: ${error.message}`);
                     }
                 })
             );
         }
     } catch (error) {
         console.log(`Error removing recipe ${recipeId} from saved lists:`, error.message);
-        throw new Error(`Error removing recipe ${recipeId} from saved lists:`, error.message);
+        throw new Error(`Error removing recipe ${recipeId} from saved lists: ${error.message}`);
+    }
+
+    // מחיקת כל התגובות של המתכון
+    try {
+        await commentService.deleteCommentsByRecipeId(recipeId);
+    } catch (error) {
+        console.log(`Error deleting comments for recipe ${recipeId}:`, error);
+    }
+
+    // מחיקת כל הדירוגים של המתכון
+    try {
+        await ratingService.deleteRatingsByRecipeId(recipeId);
+    } catch (error) {
+        console.log(`Error deleting ratings for recipe ${recipeId}:`, error);
     }
 
     // מחיקת המתכון עצמו
@@ -200,6 +213,7 @@ const deleteRecipe = async (recipeId, adnimId) => {
         message: ApiMessages.successMessages.dataDeleted
     };
 };
+
 
 
 
@@ -231,7 +245,7 @@ const getAllUsers = async () => {
 
 
 const updateUserStatus = async (userId, status) => {
-    // ولידציות בסיסיות במשולב
+    // ולידציות בסיסיות במשולב
     if (!userId || !status) {
         log("function updateUserStatus: Missing required fields: userId or status");
         throw new Error(ApiMessages.errorMessages.missingRequiredFields);

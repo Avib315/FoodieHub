@@ -266,7 +266,7 @@ export default function RecipesPanel() {
                 <div className="info-item">
                   <strong>רמת קושי:</strong>
                   <span className={`difficulty-badge ${selectedRecipe?.difficulty}`}>
-                    {selectedRecipe?.difficulty}
+                    {selectedRecipe?.difficultyLevel}
                   </span>
                 </div>
 

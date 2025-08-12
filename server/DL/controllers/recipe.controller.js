@@ -28,7 +28,7 @@ const readWithUserAndRatings = async (filter = {}) => {
     return await recipeModel.aggregate([
         // שלב 1: סינון (אם יש)
         { $match: filter },
-        
+
         // שלב 2: חיבור עם טבלת המשתמשים
         {
             $lookup: {
@@ -38,7 +38,7 @@ const readWithUserAndRatings = async (filter = {}) => {
                 as: 'userInfo'
             }
         },
-        
+
         // שלב 3: חיבור עם טבלת הדירוגים
         {
             $lookup: {
@@ -48,11 +48,11 @@ const readWithUserAndRatings = async (filter = {}) => {
                 as: 'ratings'
             }
         },
-        
+
         // שלב 4: הוספת שדות מחושבים
         {
             $addFields: {
-                username: { 
+                username: {
                     $ifNull: [
                         { $arrayElemAt: ['$userInfo.username', 0] },
                         'Unknown User'
@@ -79,9 +79,9 @@ const readWithUserAndRatings = async (filter = {}) => {
                 averageRating: {
                     $cond: {
                         if: { $gt: [{ $size: '$ratings' }, 0] },
-                        then: { 
+                        then: {
                             $round: [
-                                { $avg: '$ratings.rating' }, 
+                                { $avg: '$ratings.rating' },
                                 1
                             ]
                         },
@@ -91,7 +91,7 @@ const readWithUserAndRatings = async (filter = {}) => {
                 totalRatings: { $size: '$ratings' }
             }
         },
-        
+
         // שלב 5: הסרת שדות מיותרים
         {
             $project: {
@@ -100,7 +100,7 @@ const readWithUserAndRatings = async (filter = {}) => {
                 userId: 0 // מסיר את userId מהתוצאה
             }
         },
-        
+
         // שלב 6: מיון (אופציונלי)
         { $sort: { createdAt: -1 } }
     ]);

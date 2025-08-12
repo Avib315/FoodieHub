@@ -112,12 +112,6 @@ export default function SignupPage() {
 
     try {
       const data = await axiosRequest({ url: "user/register", method: "POST", body: formData })
-      console.log(data);
-
-      if (data) {
-
-      }
-      console.log('Registration data:', data)
 
       // Redirect to login or dashboard
       navigate('/login', {
@@ -160,19 +154,6 @@ export default function SignupPage() {
             <div className="name-fields">
               <Input
                 type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                placeholder="שם משתמש"
-                label="שם משתמש"
-                error={errors.username}
-                required
-                disabled={isLoading}
-                autoComplete="username"
-              />
-
-              <Input
-                type="text"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
@@ -195,6 +176,20 @@ export default function SignupPage() {
                 required
                 disabled={isLoading}
                 autoComplete="family-name"
+              />
+            </div>
+            <div>
+              <Input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                placeholder="שם משתמש"
+                label="שם משתמש"
+                error={errors.username}
+                required
+                disabled={isLoading}
+                autoComplete="username"
               />
             </div>
 
@@ -285,7 +280,11 @@ export default function SignupPage() {
                   required
                 />
                 <label htmlFor="agreeToTerms">
-                  אני מסכים ל<Link to="/terms" target="_blank">תנאי השימוש</Link> ול<Link to="/privacy" target="_blank">מדיניות הפרטיות</Link>
+                  אני מסכים ל
+                  <Link to="/terms" target="_blank" style={{ pointerEvents: 'none' }}
+                  >תנאי השימוש</Link> ול
+                  <Link to="/privacy" target="_blank" style={{ pointerEvents: 'none' }}
+                  >מדיניות הפרטיות</Link>
                 </label>
                 {errors.agreeToTerms && (
                   <span className="checkbox-error">{errors.agreeToTerms}</span>

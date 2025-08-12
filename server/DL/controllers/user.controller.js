@@ -2,7 +2,7 @@ const userModel = require('../models/user.model.js');
 
 const create = async (data, isPopulate) => {
 
-    
+
     return await userModel.create(data);
 }
 

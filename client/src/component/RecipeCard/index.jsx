@@ -10,11 +10,12 @@ import {
 import { MdSignalCellularAlt } from 'react-icons/md'
 import './style.scss'
 import difLevel from '../../data/difLevel'
+import categories from '../../data/categories'
 import { Link, useParams } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest'
 import useUserStore from '../../store/userStore'
 export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
-  const { addToSaved ,removedSaved } = useUserStore()
+  const { addToSaved, removedSaved } = useUserStore()
   const {
     fullName = 'משתמש לא ידוע',
     title = 'מתכון ללא שם',
@@ -22,6 +23,7 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     updatedAt = 'לא ידוע',
     description = 'אין תיאור',
     prepTime = '0 דק\'',
+    category,
     difficultyLevel = 'לא ידוע',
     averageRating = recipe.averageRating,
     servings = 1,
@@ -37,10 +39,17 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
   const getUserInitial = (name) => {
     return name ? name.charAt(0) : '?'
   }
+
   const difLevelMap = () => {
     const level = difLevel.find(level => level.value === difficultyLevel);
     return level ? level.text : 'לא ידוע';
   }
+
+  const categoriesMap = () => {
+    const resCategory = categories.find(cat => cat.key === category);
+    return resCategory ? resCategory.text : 'לא ידוע';
+  }
+
   // Format time display
   const formatTime = (timeValue) => {
     if (typeof timeValue === 'number') {
@@ -65,15 +74,15 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
       recipeId: _id
     }
     const res = await axiosRequest({ url: "/savedRecipe/add", method: "POST", body: body })
-    if(res){
+    if (res) {
       addToSaved()
       alert("מתכון נוסף לשמורים בהצלחה")
     }
   }
-  
+
   async function unsaveRecipe() {
     const res = await axiosRequest({ url: `/savedRecipe/remove/${_id}`, method: "DELETE" })
-    if(res){
+    if (res) {
       removedSaved()
       alert("מתכון לא בשמורים יותר")
     }
@@ -147,7 +156,6 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
           className="recipe-image"
           style={getImageStyle()}
         >
-    =
         </div>
 
       </Link>
@@ -167,6 +175,9 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
           <div className="meta-item">
             <MdSignalCellularAlt />
             <span>{difLevelMap(difficultyLevel)}</span>
+          </div>
+          <div className="meta-item">
+            <span>{categoriesMap(category)}</span>
           </div>
         </div>
 

@@ -8,8 +8,7 @@ import useAuth from '../../store/useAuth'
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: '',
-    password: '',
-    remember: false
+    password: ''
   })
   const { login } = useAuth()
   const [errors, setErrors] = useState({})
@@ -19,10 +18,10 @@ export default function LoginPage() {
   const nav = useNavigate()
   // Handle input changes
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type } = e.target
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: value
     }))
 
     // Clear error when user starts typing
@@ -67,14 +66,12 @@ export default function LoginPage() {
       // Simulate API call
 
       const data = await axiosRequest({ url: "user/login", method: "POST", body: formData })
-        console.log(data);
-        
-        if (data?.success === true || data.data?.success=== true) {
-          login() // ✅ Add this back!
+      console.log(data);
+
+      if (data?.success === true || data.data?.success === true) {
+        nav("/")
+        login()
         setSuccessMessage('התחברת בהצלחה!')
-        setTimeout(() => {
-          nav("/")
-        }, 800)
       }
 
       else {
@@ -84,7 +81,7 @@ export default function LoginPage() {
 
     } catch (error) {
       console.log(error);
-      
+
       setErrors({ general: 'שגיאה בהתחברות. נסה שוב.' })
     } finally {
       setIsLoading(false)
@@ -166,24 +163,6 @@ export default function LoginPage() {
                 disabled={isLoading}
                 autoComplete="current-password"
               />
-            </div>
-
-            {/* Remember me and forgot password */}
-            <div className="remember-forgot">
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  name="remember"
-                  checked={formData.remember}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                />
-                <label htmlFor="remember">זכור אותי</label>
-              </div>
-              <Link to="/forgot-password" className="forgot-password">
-                שכחתי סיסמה
-              </Link>
             </div>
 
             <button
