@@ -9,19 +9,16 @@ import useAuth from '../../store/useAuth';
 
 export default function PersonalAreaPage() {
   const { logout } = useAuth()
-
   const { user, clearUser, setUser } = useUserStore()
   const navigate = useNavigate();
 
-
-
   const handleLogout = async () => {
-    // מחיקת הטוקן מהקוקי
     // שליחת בקשה לשרת למחיקת הטוקן
     const res = await axiosRequest({
-      url: '/user/logout', // או כל endpoint שיש לך להתנתקות
+      url: '/user/logout',
       method: 'POST'
     });
+
     logout()
 
     clearUser();
@@ -36,11 +33,9 @@ export default function PersonalAreaPage() {
       nav("/login")
       return
     }
-    console.log(res.data);
-    
+
     setUser(res.data)
   }
-
 
   useEffect(() => {
     if (user == null) {
@@ -79,8 +74,6 @@ export default function PersonalAreaPage() {
     }
   ];
 
-
-
   return (
     <>
       <div className="personal-area-page">
@@ -117,7 +110,6 @@ export default function PersonalAreaPage() {
                 <div className="stat-number">{user?.savedRecipesCount}</div>
                 <div className="stat-label">מועדפים</div>
               </div>
-
             </div>
           </div>
 
@@ -144,8 +136,6 @@ export default function PersonalAreaPage() {
               ))}
             </div>
           </div>
-
-
         </div>
       </div>
     </>

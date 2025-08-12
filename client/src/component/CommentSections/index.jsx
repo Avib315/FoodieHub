@@ -8,7 +8,6 @@ export default function CommentSection({ data = [], recipeId }) {
     const [commentText, setCommentText] = useState('');
     const { user } = useUserStore()
     useEffect(() => {
-        console.log('Data received:', data);
         setComments(data);
     }, [data]);
 
@@ -17,9 +16,7 @@ export default function CommentSection({ data = [], recipeId }) {
             recipeId: recipeId,
             content: commentText
         };
-
-        console.log('Adding comment:', body);
-
+        
         const res = await axiosRequest({ url: "/comment/create", method: "POST", body: body });
 
         if (res && res.data) {
@@ -92,16 +89,6 @@ export default function CommentSection({ data = [], recipeId }) {
                                 </div>
                             </div>
                             <div className="comment-text">{comment.content || comment.text}</div>
-                            <div className="comment-actions">
-                                <button className={`comment-action ${comment.liked ? 'liked' : ''}`}>
-                                    <i className={`${comment.liked ? 'fas' : 'far'} fa-heart`}></i>
-                                    <span>{comment.likes || 0}</span>
-                                </button>
-                                <button className="comment-action">
-                                    <i className="far fa-comment"></i>
-                                    <span>הגב</span>
-                                </button>
-                            </div>
                         </div>
                     ))
                 ) : (

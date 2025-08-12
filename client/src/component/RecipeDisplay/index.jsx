@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './style.scss'
 import RecipeCard from '../../component/RecipeCard'
-import SearchBar from '../../component/SerchBar'
-import DropDown from '../../component/DropDown'
 import { AiOutlineFilter, AiOutlineClose } from 'react-icons/ai'
 import NavBar from '../../component/NavBar'
 import useApiRequest from '../../services/useApiRequest'
 import axiosRequest from '../../services/axiosRequest'
 import { Link } from 'react-router-dom'
-import FilterBar from '../FilterBar'
 import LoadingPage from '../../page/LoadingPage'
 
 export default function RecipesDisplay({ data = [], loading = false, isMyRecipes, addSaveBtn = true }) {

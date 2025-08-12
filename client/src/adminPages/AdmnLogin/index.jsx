@@ -12,7 +12,9 @@ export default function AdminLogin() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+
   const nav = useNavigate();
+
   const checkValidation = () => {
     const newErrors = {};
 
@@ -34,14 +36,12 @@ export default function AdminLogin() {
 
   const loginHandler = async (e) => {
     e.preventDefault();
-    setMessage('');
 
+    setMessage('');
     if (!checkValidation()) {
       return;
     }
-
     setLoading(true);
-
 
     const response = await axiosRequest({
       url: '/admin/login', body: {
@@ -49,12 +49,12 @@ export default function AdminLogin() {
         password
       }
     });
+
     if (response?.success === false) {
       setLoading(false);
       setMessage(response.message || 'התחברות נכשלה, אנא נסה שוב');
       return;
-    }
-    else {
+    } else {
       setLoading(false);
       setTimeout(() => {
         nav('/admin-panel');
@@ -62,8 +62,7 @@ export default function AdminLogin() {
       }, 2000);
     }
     console.log('Login successful:', response.data);
-    setMessage('התחברות מוצלחת! מפנה...');
-
+    setMessage('התחברות מוצלחת!');
   };
 
   const handleInputChange = (field) => (e) => {
@@ -90,8 +89,8 @@ export default function AdminLogin() {
           <p>אנא הכנס את הפרטים שלך כדי לגשת לפאנל הניהול</p>
         </div>
 
-          <div className="login-form">
-        <form onSubmit={loginHandler}>
+        <div className="login-form">
+          <form onSubmit={loginHandler}>
             <Input
               error={!!errors.email}
               label="כתובת אימייל"
@@ -124,18 +123,15 @@ export default function AdminLogin() {
               type="submit"
               className="login-button"
               disabled={loading}
-          
             >
               {loading ? 'מתחבר...' : 'התחבר'}
             </button>
-        </form>
+          </form>
 
-            <div className="user-link">
-              <Link to="/login" className="register-link-btn">התחבר כאורח</Link>
-            </div>
-
+          <div className="user-link">
+            <Link to="/login" className="register-link-btn">התחבר כאורח</Link>
           </div>
-
+        </div>
       </div>
     </div>
   );
