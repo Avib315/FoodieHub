@@ -33,7 +33,6 @@ const getAllRatings = async (recipeId) => {
 
 };
 
-
 const createRating = async (ratingInput) => {
     // בדיקת קיום האובייקט
     if (!ratingInput) {
@@ -114,9 +113,7 @@ const createRating = async (ratingInput) => {
     return newRating._id;
 };
 
-
-
-
+// not in use - didn't debug
 const deleteRating = async (ratingInput) => {
     // בדיקת קיום האובייקט וולידציות בסיסיות במשולב
     if (!ratingInput || !ratingInput.userId || !ratingInput.ratingId) {
@@ -153,11 +150,6 @@ const deleteRating = async (ratingInput) => {
         data: deletedRating
     };
 };
-
-
-
-
-
 
 // // עדכון דירוג
 // const updateRating = async (ratingInput) => {
@@ -221,6 +213,7 @@ const deleteRating = async (ratingInput) => {
 //     }
 // };
 
+// not in use - didn't debug
 const updateRating = async (ratingInput) => {
     // בדיקת קיום האובייקט וולידציות בסיסיות במשולב
     if (!ratingInput || !ratingInput.userId || !ratingInput.recipeId) {
@@ -287,8 +280,6 @@ const updateRating = async (ratingInput) => {
         data: updatedRating
     };
 };
-
-
 
 // Delete all ratings for a specific recipe
 async function deleteRatingsByRecipeId(recipeId) {

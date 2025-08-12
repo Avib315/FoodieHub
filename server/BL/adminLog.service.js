@@ -66,6 +66,7 @@ async function getAllLogs(filters = {}) {
     return logs;
 }
 
+// not in use - didn't debug
 // Get logs by target type and target ID
 async function getLogsByTarget(targetType, targetId) {
     if (targetType !== 'system') {
