@@ -29,18 +29,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/isAuthenticated', adminAuth, async (req, res) => {
-    try {
-        res.status(200).send(true);
-    } catch (error) {
-        res.status(500).send({
-            success: false,
-            message: error.message || ApiMessages.errorMessages.serverError
-        });
-    }
-});
-
-
 router.get("/getAllRecipes", adminAuth, async (req, res) => {
     try {
         const result = await service.getAllRecipes();

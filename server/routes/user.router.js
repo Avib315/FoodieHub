@@ -47,14 +47,6 @@ router.get('/getUserData',auth, async (req, res) => {
     }
 }); 
 
-router.get('/isAuthenticated', auth, async (req, res) => {
-    try {
-        res.status(200).send(true);
-    } catch (error) {
-        res.status(500).send({ isAuthenticated: false, message: error.message || ApiMessages.errorMessages.serverError });
-    }
-});
-
 router.put('/changePassword',auth, async (req, res) => {
     try {
         const userInput = {

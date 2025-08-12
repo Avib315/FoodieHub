@@ -127,9 +127,6 @@ async function getRecipeById(id, currentUserId = null) {
     };
 }
 
-
-
-
 const createRecipe = async (recipeInput) => {
     // בדיקת קיום האובייקט
     if (!recipeInput) {
@@ -263,8 +260,7 @@ const createRecipe = async (recipeInput) => {
     };
 };
 
-
-
+// not in use - didn't debug
 const updateRecipe = async (recipeId, updateData, currentUserId) => {
     // ולידציות בסיסיות במשולב
     if (!recipeId || !currentUserId || !updateData) {
@@ -423,7 +419,7 @@ const updateRecipe = async (recipeId, updateData, currentUserId) => {
     return updatedRecipe;
 };
 
-
+// not in use - didn't debug
 const deleteRecipe = async (recipeId, currentUserId) => {
     // ולידציות בסיסיות במשולב
     if (!recipeId || !currentUserId) {
@@ -510,9 +506,6 @@ const deleteRecipe = async (recipeId, currentUserId) => {
         message: ApiMessages.successMessages.dataDeleted
     };
 };
-
-
-
 
 const getRecipesByUser = async (userId, requestType) => {
     // ולידציות בסיסיות במשולב

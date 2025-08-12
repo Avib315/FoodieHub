@@ -10,14 +10,14 @@ import HeaderTitle from '../../component/HeaderTitle';
 export default function NewRecipePage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedDifficulty, setSelectedDifficulty] = useState('');
-  
-  // FIXED: Initialize ingredients as objects, not strings
+
   const [ingredients, setIngredients] = useState([{
     name: '',
     quantity: '',
     unit: '',
     notes: ''
   }]);
+
   const nav = useNavigate()
   const [instructions, setInstructions] = useState(['']);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,21 +34,21 @@ export default function NewRecipePage() {
         setErrors(prev => ({ ...prev, image: 'נא לבחור קובץ תמונה תקין (JPG, PNG, WEBP)' }));
         return;
       }
-      
+
       // Validate file size (e.g., max 5MB)
       const maxSize = 5 * 1024 * 1024; // 5MB
       if (file.size > maxSize) {
         setErrors(prev => ({ ...prev, image: 'גודל התמונה חייב להיות פחות מ-5MB' }));
         return;
       }
-      
+
       setSelectedImage(file);
-      
+
       // Clear image error if exists
       if (errors.image) {
         setErrors(prev => ({ ...prev, image: null }));
       }
-      
+
     }
   };
 
@@ -70,7 +70,6 @@ export default function NewRecipePage() {
     }
   };
 
-  // FIXED: Add ingredient as object
   const addIngredient = () => {
     setIngredients([...ingredients, {
       name: '',
@@ -86,19 +85,16 @@ export default function NewRecipePage() {
     }
   };
 
-  // FIXED: Update ingredient with field-specific updates
   const updateIngredient = (index, field, value) => {
     const newIngredients = [...ingredients];
-    
+
     // Ensure the ingredient object exists
     if (!newIngredients[index] || typeof newIngredients[index] !== 'object') {
       newIngredients[index] = { name: '', quantity: '', unit: '', notes: '' };
     }
-    
+
     newIngredients[index][field] = value;
     setIngredients(newIngredients);
-    
-
   };
 
   const addInstruction = () => {
@@ -117,7 +113,6 @@ export default function NewRecipePage() {
     setInstructions(newInstructions);
   };
 
-  // FIXED: Updated validation for new ingredient structure
   const validateForm = (formData) => {
     const newErrors = {};
 
@@ -142,24 +137,23 @@ export default function NewRecipePage() {
       newErrors.difficulty = 'יש לבחור רמת קושי';
     }
 
-    // FIXED: Check ingredients with new structure
-    const validIngredients = ingredients.filter(ing => 
+    const validIngredients = ingredients.filter(ing =>
       ing && typeof ing === 'object' &&
-      ing.name && ing.name.trim().length > 0 && 
-      ing.quantity && 
+      ing.name && ing.name.trim().length > 0 &&
+      ing.quantity &&
       !isNaN(parseFloat(ing.quantity)) &&
-      parseFloat(ing.quantity) > 0 && 
+      parseFloat(ing.quantity) > 0 &&
       ing.unit && ing.unit.trim().length > 0
     );
-    
+
     if (validIngredients.length === 0) {
       newErrors.ingredients = 'יש להוסיף לפחות רכיב אחד מלא (שם, כמות ויחידת מידה)';
     }
 
     // Check for invalid quantities in ingredients
     for (let ing of ingredients) {
-      if (ing && typeof ing === 'object' && ing.name && ing.name.trim() && 
-          ing.quantity && (isNaN(ing.quantity) || parseFloat(ing.quantity) <= 0)) {
+      if (ing && typeof ing === 'object' && ing.name && ing.name.trim() &&
+        ing.quantity && (isNaN(ing.quantity) || parseFloat(ing.quantity) <= 0)) {
         newErrors.ingredients = 'כמות הרכיב חייבת להיות מספר חיובי';
         break;
       }
@@ -186,7 +180,6 @@ export default function NewRecipePage() {
     return newErrors;
   };
 
-  // FIXED: Updated submit function with proper ingredient formatting
   const submitRecipe = async (e) => {
     e.preventDefault();
 
@@ -197,13 +190,13 @@ export default function NewRecipePage() {
     formData.append('category', selectedCategory);
     formData.append('difficultyLevel', selectedDifficulty);
 
-    // FIXED: Prepare ingredients according to your model
-    const validIngredients = ingredients.filter(ing => 
+    // prepare ingredients according to your model
+    const validIngredients = ingredients.filter(ing =>
       ing && typeof ing === 'object' &&
-      ing.name && ing.name.trim().length > 0 && 
-      ing.quantity && 
+      ing.name && ing.name.trim().length > 0 &&
+      ing.quantity &&
       !isNaN(parseFloat(ing.quantity)) &&
-      parseFloat(ing.quantity) > 0 && 
+      parseFloat(ing.quantity) > 0 &&
       ing.unit && ing.unit.trim().length > 0
     ).map(ing => ({
       name: ing.name.trim(),
@@ -223,8 +216,6 @@ export default function NewRecipePage() {
     formData.append('ingredients', JSON.stringify(validIngredients));
     formData.append('instructions', JSON.stringify(validInstructions));
 
-
-
     // Validate form before submission
     const validationErrors = validateForm(formData);
 
@@ -232,11 +223,10 @@ export default function NewRecipePage() {
       setErrors(validationErrors);
       return;
     }
-
     // Clear errors if validation passes
     setErrors({});
-    setIsSubmitting(true);
 
+    setIsSubmitting(true);
     try {
       const data = await axiosRequest({
         url: "recipe/create",
@@ -245,10 +235,10 @@ export default function NewRecipePage() {
       });
 
       setShowSuccess(true);
-      setTimeout(()=>{
+      setTimeout(() => {
         nav("/")
+      }, 2000)
 
-      },2000)
     } catch (error) {
       console.error('Error creating recipe:', error);
       // Handle specific error types
@@ -270,15 +260,12 @@ export default function NewRecipePage() {
 
   return (
     <div className="new-recipe-page">
-  
-        <Link to={-1}>
-          <button className="back-btn">
-            <i className="fas fa-arrow-right"></i>
-          </button>
-        </Link>
-        <HeaderTitle title={"הוספת מתכון חדש"}/>
-  
-
+      <Link to={-1}>
+        <button className="back-btn">
+          <i className="fas fa-arrow-right"></i>
+        </button>
+      </Link>
+      <HeaderTitle title={"הוספת מתכון חדש"} />
 
       <div className="form-container">
         <form id="recipeForm" onSubmit={submitRecipe}>
@@ -411,7 +398,7 @@ export default function NewRecipePage() {
             </div>
           </div>
 
-          {/* FIXED: Ingredients Section */}
+          {/* Ingredients Section */}
           <div className="form-section">
             <div className="section-header">
               <h3><i className="fas fa-list"></i>רכיבים *</h3>
@@ -438,7 +425,7 @@ export default function NewRecipePage() {
                           type="number"
                           placeholder="2"
                           min="0"
-                          step="0.1"
+                          step="0.01"
                           className={`ingredient-input ${errors.ingredients ? 'error' : ''}`}
                           value={ingredient.quantity || ''}
                           onChange={(e) => updateIngredient(index, 'quantity', e.target.value)}
@@ -525,25 +512,24 @@ export default function NewRecipePage() {
               </button>
             </div>
           </div>
-             <div className="submit-section">
-        <button
-          type="submit"
-          className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
-          form="recipeForm"
-          disabled={isSubmitting}
-        >
-          <span className="btn-text">
-            <i className="fas fa-paper-plane"></i>
-            פרסם מתכון
-          </span>
-          <div className="spinner"></div>
-        </button>
-      </div>
+          <div className="submit-section">
+            <button
+              type="submit"
+              className={`submit-btn ${isSubmitting ? 'loading' : ''}`}
+              form="recipeForm"
+              disabled={isSubmitting}
+            >
+              <span className="btn-text">
+                <i className="fas fa-paper-plane"></i>
+                פרסם מתכון
+              </span>
+              <div className="spinner"></div>
+            </button>
+          </div>
         </form>
-        
       </div>
 
-   
+
 
       {/* Show general errors */}
       {errors.general && (

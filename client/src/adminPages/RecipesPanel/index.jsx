@@ -16,25 +16,24 @@ const recipeColumns = [
   { title: 'פעולות', field: 'actions', typeof: 'actions' }
 ];
 
-
 export default function RecipesPanel() {
   const { data } = useAxiosRequest({ url: `/admin/getAllRecipes`, defaultValue: [], method: "GET" });
 
-  const [recipeData, setRecipeData] = useState(data);
+  const [recipesData, setRecipesData] = useState(data);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   // Get unique categories for filter
-  const categories = [...new Set(recipeData.map(recipe => recipe.category))];
+  const categories = [...new Set(recipesData.map(recipe => recipe.category))];
 
   useEffect(() => {
-    setRecipeData(data);
+    setRecipesData(data);
   }, [data]);
 
   // Filter recipes based on search and filters
-  const filteredRecipes = recipeData.filter(recipe => {
+  const filteredRecipes = recipesData.filter(recipe => {
     const matchesSearch =
       recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       recipe.category.toLowerCase().includes(searchTerm.toLowerCase());
@@ -59,7 +58,7 @@ export default function RecipesPanel() {
     }
 
     if (status === 'active') {
-      setRecipeData(prevData =>
+      setRecipesData(prevData =>
         prevData.map(recipe =>
           recipe._id === recipeId
             ? { ...recipe, status: 'rejected' }
@@ -67,7 +66,7 @@ export default function RecipesPanel() {
         )
       );
     } else {
-      setRecipeData(prevData =>
+      setRecipesData(prevData =>
         prevData.map(recipe =>
           recipe._id === recipeId
             ? { ...recipe, status: 'active' }
@@ -112,7 +111,7 @@ export default function RecipesPanel() {
   });
 
   const viewRecipe = (recipeId) => {
-    const recipe = recipeData.find(r => r._id === recipeId);
+    const recipe = recipesData.find(r => r._id === recipeId);
     setSelectedRecipe(recipe);
     console.log(`Viewing recipe with ID: ${recipeId} this ,`, recipe);
   };
@@ -129,7 +128,7 @@ export default function RecipesPanel() {
         return;
       }
 
-      setRecipeData(prevData => prevData.filter(recipe => recipe._id !== recipeId));
+      setRecipesData(prevData => prevData.filter(recipe => recipe._id !== recipeId));
       if (selectedRecipe && selectedRecipe._id === recipeId) {
         setSelectedRecipe(null);
       }
@@ -212,11 +211,11 @@ export default function RecipesPanel() {
       {/* Statistics */}
       <div className="stats-row">
         <div className="stat-card">
-          <span className="stat-number">{recipeData.length}</span>
+          <span className="stat-number">{recipesData.length}</span>
           <span className="stat-label">סה״כ מתכונים</span>
         </div>
         <div className="stat-card">
-          <span className="stat-number">{recipeData.filter(r => r.status === 'active').length}</span>
+          <span className="stat-number">{recipesData.filter(r => r.status === 'active').length}</span>
           <span className="stat-label">מתכונים פעילים</span>
         </div>
         <div className="stat-card">

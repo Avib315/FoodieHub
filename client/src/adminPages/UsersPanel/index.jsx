@@ -15,11 +15,9 @@ const userColumns = [
 ];
 
 export default function UserPanel() {
-
-  //--------------------------מה שקורל עשתה---------------------------
   const { data } = useAxiosRequest({ url: `/admin/getAllUsers`, method: "GET" });
 
-  const [userData, setUserData] = useState([]);
+  const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -27,7 +25,7 @@ export default function UserPanel() {
 
   useEffect(() => {
     if (data) {
-      setUserData(data);
+      setUsersData(data);
       setDeletedUsers(data.
         filter(user => user.status === 'inactive').
         map(user => user._id));
@@ -35,7 +33,7 @@ export default function UserPanel() {
   }, [data]);
 
   // Filter users based on search and filters
-  const filteredUsers = userData.filter(user => {
+  const filteredUsers = usersData.filter(user => {
     const matchesSearch =
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
@@ -84,12 +82,11 @@ export default function UserPanel() {
       return;
     }
 
-
     if (newStatus === 'active') {
       setDeletedUsers(prev => prev.filter(id => id !== userId));
     }
 
-    setUserData(prevData =>
+    setUsersData(prevData =>
       prevData.map(user =>
         user._id === userId
           ? { ...user, status: user.status === 'active' ? 'blocked' : 'active' }
@@ -114,7 +111,7 @@ export default function UserPanel() {
 
       setDeletedUsers(prev => [...prev, userId]);
 
-      setUserData(prevData =>
+      setUsersData(prevData =>
         prevData.map(user =>
           user._id === userId
             ? { ...user, status: 'inactive' }
@@ -190,14 +187,14 @@ export default function UserPanel() {
         <div className="stat-card total">
           <div className="stat-icon">👥</div>
           <div className="stat-content">
-            <span className="stat-number">{userData.length}</span>
+            <span className="stat-number">{usersData.length}</span>
             <span className="stat-label">סה״כ משתמשים</span>
           </div>
         </div>
         <div className="stat-card active">
           <div className="stat-icon">✅</div>
           <div className="stat-content">
-            <span className="stat-number">{userData.filter(u => u.status === 'active').length}</span>
+            <span className="stat-number">{usersData.filter(u => u.status === 'active').length}</span>
             <span className="stat-label">פעילים</span>
           </div>
         </div>

@@ -11,17 +11,14 @@ import CommentSection from '../../component/CommentSections';
 import categories from "../../data/categories"
 import RatingSection from '../../component/RatingSection';
 
-
 export default function RecipeDetailPage() {
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
-  // const [rating , setRating] = useState()
   const [userRating, setUserRating] = useState(0);
 
   const { addToSaved, removedSaved, user } = useUserStore()
   const { id } = useParams()
-  // הוספתי שמפה ניתן לשלוף גם את התגובות על מתכונים
   const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET", defaultValue: {} });
-  //מה שקורל עשתה -------------------------------
+
   async function addRating(rat) {
     const body = {
       recipeId: id,
@@ -34,7 +31,6 @@ export default function RecipeDetailPage() {
   }
   const [saved, setSaved] = useState(data.saved);
   useEffect(() => {
-    
     setSaved(data.saved)
   }, [data?._id])
 
@@ -57,8 +53,6 @@ export default function RecipeDetailPage() {
       alert("מתכון נמחק מהמועדפים")
     }
   }
-
-
 
   const getDifficultyText = (level) => {
     switch (level) {
@@ -84,38 +78,6 @@ export default function RecipeDetailPage() {
     setCheckedIngredients(newChecked);
   };
 
-  const renderStars = (rating, interactive = true, onStarClick = null) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <i
-          key={i}
-          // className={`fas fa-star ${i <= rating ? 'star' : 'star empty'} ${interactive ? 'rating-star' : ''}`}
-          className={`fas fa-star star ${i <= rating ? '' : 'empty'}`}
-          onClick={interactive ? () => onStarClick(i) : undefined}
-          data-rating={i}
-        />
-      );
-    }
-    return stars;
-  };
-
-  const setRating = (rating) => {
-    setUserRating(rating);
-  };
-
-  const submitRating = async () => {
-    if (userRating > 0) {
-      const result = await addRating(userRating);
-
-      if (result.success === false) {
-        alert('לא ניתן לשלוח דירוג');
-      }
-      else {
-        alert(`דירוג נשלח בהצלחה: ${userRating} כוכבים`);
-      }
-    }
-  };
   function getCategoryTagData(categoryData) {
     return categories.find(c => c.key == categoryData) || {}
   }
@@ -292,13 +254,20 @@ export default function RecipeDetailPage() {
         </div>
 
         {/* Rating Section */}
-        <RatingSection ratedByMe={data.ratedByMe} averageRating={data.averageRating} ratingsCount={data.ratingsCount} userName={data.userName} id={id}  />
+        <RatingSection
+          ratedByMe={data.ratedByMe}
+          averageRating={data.averageRating}
+          ratingsCount={data.ratingsCount}
+          userName={data.userName}
+          id={id}
+        />
 
-        <CommentSection recipeId={id} data={data.comments} />
+        <CommentSection
+          recipeId={id}
+          data={data.comments}
+        />
 
       </div>
-
-
     </div>
   );
 }

@@ -32,6 +32,7 @@ router.post("/create", adminAuth, async (req, res) => {
     }
 });
 
+// not in use - didn't debug
 // GET logs by target type and ID (e.g. logs for a specific recipe or user)
 router.get("/byTarget/:type/:id", adminAuth, async (req, res) => {
     try {

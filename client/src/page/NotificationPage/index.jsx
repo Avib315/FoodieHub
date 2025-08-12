@@ -4,6 +4,7 @@ import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
 import { notificationTypes } from '../../data/notificationTypes';
 import useUserStore from '../../store/userStore';
+
 export default function NotificationPage() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -61,7 +62,9 @@ export default function NotificationPage() {
         isRead: true
       }));
       setData(updatedData);
+      
       setUser({ ...user, notification: 0 })
+
       const allIds = data.map(notification => notification._id);
       await markAsRead(allIds);
 
@@ -76,25 +79,23 @@ export default function NotificationPage() {
       await markAsRead([notification._id]);
 
       setUser({ ...user, notification: user.notification - 1 })
+
       const updatedData = data.map(n =>
         n._id === notification._id ? { ...n, isRead: true } : n
       );
       setData(updatedData);
     }
-
-
   };
 
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
-    console.log('Deleting notification:', notificationId);
+
     const res = await axiosRequest({ url: `/notification/delete/${notificationId}`, method: "DELETE" })
     if (res.data.success) {
       console.log('Notification deleted');
       setData(previousData => previousData.filter(n => n._id !== notificationId));
     }
   };
-
 
   const getNotificationIcon = (type) => {
     const icons = {

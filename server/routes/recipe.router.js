@@ -90,7 +90,7 @@ router.post("/create", auth, upload.single('image'), async (req, res) => {
     }
 });
 
-
+// not in use - didn't debug
 router.put("/update/:id", auth, async (req, res) => {
     try {
         const recipeId = req.params.id;

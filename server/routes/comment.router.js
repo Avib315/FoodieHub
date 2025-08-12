@@ -4,7 +4,7 @@ const service = require('../BL/comment.service.js');
 const { auth, loginAuth } = require('../middleware/auth.js');
 const ApiMessages = require('../common/apiMessages.js');
 
-router.get("/getComments/:recipeId", auth, async (req, res) => { // do i only see comments of recipes i own? if so i need to get userId from body
+router.get("/getComments/:recipeId", auth, async (req, res) => {
     try {
         const { recipeId } = req.params;
         const result = await service.getRecipeComments(recipeId);

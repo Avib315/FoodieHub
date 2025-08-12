@@ -11,14 +11,8 @@ export default function AdminPage() {
     method: "GET",
     defaultValue: []
   });
-
-  useEffect(() => {
-    console.log('Admin logs data:');
-  }, [])
-
-  const navigate = useNavigate();
-
   const { adminLogout } = useAdminAuth()
+  const navigate = useNavigate();
 
   // Function to get Hebrew text and icon for each action
   const getLogDetails = (action) => {
@@ -94,12 +88,13 @@ export default function AdminPage() {
       url: '/user/logout',
       method: 'POST'
     });
+
     if (res.success === false) {
       alert("בעיה בהתנתקות")
     }
     else {
       adminLogout()
-      navigate('/login');
+      navigate('/admin-login');
     }
   };
 
@@ -203,18 +198,8 @@ export default function AdminPage() {
                             return (
                               <div key={`${dateKey}-${index}`} className={`log-item ${logDetails.color}`}>
                                 <div className="log-icon">{logDetails.icon}</div>
-
                                 <div className="log-content">
                                   <div className="log-action">{logDetails.text}</div>
-                                  {log.targetUser && (
-                                    <div className="log-target">משתמש: {log.targetUser}</div>
-                                  )}
-                                  {log.targetRecipe && (
-                                    <div className="log-target">מתכון: {log.targetRecipe}</div>
-                                  )}
-                                  {log.reason && (
-                                    <div className="log-reason">סיבה: {log.reason}</div>
-                                  )}
                                 </div>
 
                                 <div className="log-time">

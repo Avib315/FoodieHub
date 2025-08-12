@@ -7,50 +7,25 @@ import useUserStore from '../../store/userStore';
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('profile');
   const [isLoading, setIsLoading] = useState(false);
-
   const { user, setUser } = useUserStore()
   const data = user;
-
-
-  // מה שקורל עשתה ------------------------------------- 
-  // const { data, loading } = useAxiosRequest({ url: "/user/getUserData", defaultValue: {}, method: "GET" })
-
-  async function changeUserDetails() {
-    const body = {
-      fullName: profileForm.name,
-      newEmail: profileForm.email
-    };
-    const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body })
-    console.log(res)
-    return res;
-  }
-
-  async function changeUserPassword(body) {
- 
-    const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body })
-    console.log(res)
-    return res;
-  }
-  // מה שקורל עשתה ------------------------------------- 
-
-
-
-
   // Profile form state
   const [profileForm, setProfileForm] = useState({
     name: data.name,
     email: data.email,
     avatar: data.name?.slice(0, 1).toUpperCase() || 'U' // Default to 'U' if name is empty
   });
-
-
-
   // Password form state
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
+  // Form validation states
+  const [profileErrors, setProfileErrors] = useState({});
+  const [passwordErrors, setPasswordErrors] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
+
   useEffect(() => {
     // Set initial profile form values from user data
     if (data.name || data.email) {
@@ -61,10 +36,20 @@ export default function SettingsPage() {
       });
     }
   }, [data.name || data.email]);
-  // Form validation states
-  const [profileErrors, setProfileErrors] = useState({});
-  const [passwordErrors, setPasswordErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState('');
+
+  async function changeUserDetails() {
+    const body = {
+      fullName: profileForm.name,
+      newEmail: profileForm.email
+    };
+    const res = await axiosRequest({ url: "/user/changeDetails", method: "PUT", body: body })
+    return res;
+  }
+
+  async function changeUserPassword(body) {
+    const res = await axiosRequest({ url: "/user/changePassword", method: "PUT", body: body })
+    return res;
+  }
 
   // Handle profile form changes
   const handleProfileChange = (e) => {
@@ -154,12 +139,12 @@ export default function SettingsPage() {
     setSuccessMessage('');
 
     try {
-      // Simulate API call
       const res = await changeUserDetails();
       if (res.success === false) {
         alert('שגיאה בעדכון הפרופיל')
         return
       };
+
       // Update avatar initial if name changed
       const newAvatar = profileForm.name.trim().charAt(0).toUpperCase();
       setProfileForm(prev => ({ ...prev, avatar: newAvatar }));
@@ -169,6 +154,7 @@ export default function SettingsPage() {
         email: profileForm.email,
         avatar: newAvatar
       })
+
       setSuccessMessage('הפרופיל עודכן בהצלחה!');
       alert('הפרופיל עודכן בהצלחה!');
     } catch (error) {
@@ -188,25 +174,25 @@ export default function SettingsPage() {
     setSuccessMessage('');
 
     try {
-      // Simulate API call
-
-     const res = await changeUserPassword({
+      const res = await changeUserPassword({
         oldPass: passwordForm.currentPassword,
         newPass: passwordForm.newPassword,
         checPass: passwordForm.confirmPassword
       })
       console.log(res);
-      
+
       if (res.success === false) {
-        alert('שגיאה בשינוי הסיסמה')  
+        alert('שגיאה בשינוי הסיסמה')
         return
       }
+
       // Reset password form
       setPasswordForm({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
+
       setSuccessMessage('הסיסמה שונתה בהצלחה!');
       alert('הסיסמה שונתה בהצלחה!');
     } catch (error) {
@@ -391,12 +377,6 @@ export default function SettingsPage() {
                     <ul>
                       <li className={passwordForm.newPassword.length >= 6 ? 'valid' : ''}>
                         לפחות 6 תווים
-                      </li>
-                      <li className={/[A-Za-z]/.test(passwordForm.newPassword) ? 'valid' : ''}>
-                        לפחות אות אחת
-                      </li>
-                      <li className={/\d/.test(passwordForm.newPassword) ? 'valid' : ''}>
-                        לפחות ספרה אחת
                       </li>
                     </ul>
                   </div>
