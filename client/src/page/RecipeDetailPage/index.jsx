@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import './style.scss';
 import useAxiosRequest from '../../services/useApiRequest';
 import axiosRequest from '../../services/axiosRequest';
@@ -12,27 +13,29 @@ import categories from "../../data/categories"
 import RatingSection from '../../component/RatingSection';
 
 export default function RecipeDetailPage() {
+  const location = useLocation();
   const [checkedIngredients, setCheckedIngredients] = useState(new Set());
-  const [userRating, setUserRating] = useState(0);
-
+  const commentSectionRef = useRef(null);
   const { addToSaved, removedSaved, user } = useUserStore()
   const { id } = useParams()
-  const { data, loading } = useAxiosRequest({ url: `recipe/getById?id=${id}`, method: "GET", defaultValue: {} });
+  const { data, loading } = useAxiosRequest({ url: `recipe/getDetails?id=${id}`, method: "GET", defaultValue: {} });
 
-  async function addRating(rat) {
-    const body = {
-      recipeId: id,
-      rating: rat,
-      review: ''
-    };
-    const res = await axiosRequest({ url: "/rating/create", method: "POST", body: body })
-    console.log(res);
-    return res;
-  }
-  const [saved, setSaved] = useState(data.saved);
+  const passedData = location.state;
+
+  const recipeData = {
+    ...passedData,
+    comments: data.comments || [],
+    ratedByMe: data.ratedByMe || false,
+    saved: data.saved || false
+  };
+
+  console.log("this is recipeData in recipe detail page: ", recipeData);
+
+  const [saved, setSaved] = useState(recipeData.saved);
   useEffect(() => {
-    setSaved(data.saved)
-  }, [data?._id])
+    setSaved(recipeData.saved)
+    console.log("this is saved in recipe detail page: ", recipeData.saved);
+  }, [recipeData?._id, recipeData?.saved]);
 
 
   async function saveRecipe() {
@@ -100,7 +103,7 @@ export default function RecipeDetailPage() {
   if (loading) {
     return <LoadingPage />
   }
-  if (!data) {
+  if (!recipeData) {
     return <></>
   }
 
@@ -121,7 +124,7 @@ export default function RecipeDetailPage() {
     <div className="recipe-detail-page">
       {/* Recipe Header Image */}
       <div className="recipe-header">
-        <div className="header-overlay" style={getImageStyle(data.imageUrl)}></div>
+        <div className="header-overlay" style={getImageStyle(recipeData.imageUrl)}></div>
         <div className="header-controls">
           <Link to={-1} className="back-btn">
             <button className="control-btn">
@@ -130,19 +133,19 @@ export default function RecipeDetailPage() {
           </Link>
         </div>
         <div className="recipe-title-overlay">
-          <h1>{data?.title}</h1>
+          <h1>{recipeData?.title}</h1>
           <div className="recipe-meta-header">
             <div className="meta-item-header">
               <i className="fas fa-clock"></i>
-              <span>{formatTime(data?.prepTime)}</span>
+              <span>{formatTime(recipeData?.prepTime)}</span>
             </div>
             <div className="meta-item-header">
               <i className="fas fa-users"></i>
-              <span>{data?.servings} מנות</span>
+              <span>{recipeData?.servings} מנות</span>
             </div>
             <div className="meta-item-header">
               <i className="fas fa-signal"></i>
-              <span>{getDifficultyText(data?.difficultyLevel)}</span>
+              <span>{getDifficultyText(recipeData?.difficultyLevel)}</span>
             </div>
           </div>
         </div>
@@ -153,16 +156,16 @@ export default function RecipeDetailPage() {
         {/* User Section */}
         <div className="user-section">
           <div className="user-header">
-            <div className="user-avatar">{data.fullName?.slice(0, 1)}</div>
+            <div className="user-avatar">{recipeData.fullName?.slice(0, 1)}</div>
             <div className="user-info">
-              <h3>{data.fullName}</h3>
-              <p>{data.userName}</p>
+              <h3>{recipeData.fullName}</h3>
+              <p>{recipeData.userName}</p>
 
             </div>
 
           </div>
           <p className="recipe-description">
-            {data.description}
+            {recipeData.description}
           </p>
         </div>
 
@@ -170,9 +173,14 @@ export default function RecipeDetailPage() {
         <div className="actions-bar">
           <div className="actions-left">
 
-            <button className="action-btn">
+            <button
+              className="action-btn"
+              onClick={() =>
+                commentSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+              }
+            >
               <i className="far fa-comment"></i>
-              <span>{data.comments.length}</span>
+              <span>{recipeData.comments.length}</span>
             </button>
 
           </div>
@@ -189,22 +197,22 @@ export default function RecipeDetailPage() {
           <div className="recipe-meta">
             <div className="meta-card">
               <i className="fas fa-clock"></i>
-              <div className="meta-value">{data.prepTime}</div>
+              <div className="meta-value">{recipeData.prepTime}</div>
               <div className="meta-label">דקות</div>
             </div>
             <div className="meta-card">
               <i className="fas fa-users"></i>
-              <div className="meta-value">{data.servings}</div>
+              <div className="meta-value">{recipeData.servings}</div>
               <div className="meta-label">מנות</div>
             </div>
             <div className="meta-card">
               <i className="fas fa-signal"></i>
-              <div className="meta-value">{getDifficultyText(data.difficultyLevel)}</div>
+              <div className="meta-value">{getDifficultyText(recipeData.difficultyLevel)}</div>
               <div className="meta-label">רמת קושי</div>
             </div>
             <div className="meta-card">
-              <i className={`fas fa-${getCategoryTagData(data.category).icon}`}></i>
-              <div className="meta-value">{getCategoryTagData(data.category).text}</div>
+              <i className={`fas fa-${getCategoryTagData(recipeData.category).icon}`}></i>
+              <div className="meta-value">{getCategoryTagData(recipeData.category).text}</div>
               <div className="meta-label">קטגוריה</div>
             </div>
           </div>
@@ -217,7 +225,7 @@ export default function RecipeDetailPage() {
             רכיבים
           </h2>
           <ul className="ingredients-list">
-            {data.ingredients.map((ingredient, index) => (
+            {recipeData.ingredients.map((ingredient, index) => (
               <li
                 key={ingredient._id}
                 className={`ingredient-item ${checkedIngredients.has(index) ? 'checked' : ''}`}
@@ -242,7 +250,7 @@ export default function RecipeDetailPage() {
             הוראות הכנה
           </h2>
           <ol className="instructions-list">
-            {data.instructions.map((instruction) => (
+            {recipeData.instructions.map((instruction) => (
               <li key={instruction._id} className="instruction-item">
                 <div className="step-number">{instruction.stepNumber}</div>
                 <div className="step-content">
@@ -255,17 +263,19 @@ export default function RecipeDetailPage() {
 
         {/* Rating Section */}
         <RatingSection
-          ratedByMe={data.ratedByMe}
-          averageRating={data.averageRating}
-          ratingsCount={data.ratingsCount}
-          userName={data.userName}
+          ratedByMe={recipeData.ratedByMe}
+          averageRating={recipeData.averageRating}
+          ratingsCount={recipeData.ratingsCount}
+          userName={recipeData.userName}
           id={id}
         />
 
-        <CommentSection
-          recipeId={id}
-          data={data.comments}
-        />
+        <div ref={commentSectionRef}>
+          <CommentSection
+            recipeId={id}
+            data={recipeData.comments}
+          />
+        </div>
 
       </div>
     </div>

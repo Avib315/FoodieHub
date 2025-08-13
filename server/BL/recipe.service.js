@@ -101,7 +101,7 @@ async function getRecipeById(id, currentUserId = null) {
         const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
         isSaved = savedRecipeIdsSet.has(recipeObj._id.toString());
         if (ratingResult) {
-            // check if the current user has rated this recipe here // userId = currentUserId
+            // check if the current user has rated this recipe // rating.userId = currentUserId
             console.log(ratingResult.data.ratings);
 
             const ratedByMe = ratingResult.data.ratings.some(rating =>
@@ -126,6 +126,63 @@ async function getRecipeById(id, currentUserId = null) {
         saved: isSaved
     };
 }
+
+async function getRecipeDetails(id, currentUserId) {
+    if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        console.log("getRecipeById: Invalid or missing recipe ID");
+        throw new Error(ApiMessages.errorMessages.invalidData);
+    }
+
+    // שליפת המתכון
+    const recipe = await recipeController.readOne({ _id: id });
+    if (!recipe) {
+        console.log("getRecipeById: Recipe not found");
+        throw new Error(ApiMessages.errorMessages.notFound);
+    }
+
+    // ביצוע כל השליפות במקביל
+    const promises = [
+        // get ratings to check if the current user has rated this recipe
+        ratingService.getAllRatings(id),
+        // get comments
+        commentService.getRecipeComments(id).catch(() => []),
+        // get current user info to check saved recipes
+        userController.readOne({ _id: currentUserId })
+    ];
+
+    const results = await Promise.all(promises);
+    const [ratingResult, comments, currentUser] = results;
+
+    // המרה לאובייקט רגיל ומחיקת userId
+    const recipeObj = recipe.toObject();
+
+    // Check if CURRENT USER has saved this recipe (not the recipe creator!)
+    let isSaved = false;
+    if (currentUser && currentUser.savedRecipes) {
+        const savedRecipeIds = currentUser.savedRecipes || [];
+        const savedRecipeIdsSet = new Set(savedRecipeIds.map(recipe => recipe._id.toString()));
+        isSaved = savedRecipeIdsSet.has(recipeObj._id.toString());
+        if (ratingResult) {
+            // check if the current user has rated this recipe // rating.userId = currentUserId
+            const ratedByMe = ratingResult.data.ratings.some(rating =>
+                rating.userId.toString() === currentUserId.toString()
+            );
+
+            recipeObj.ratedByMe = ratedByMe;
+        }
+    }
+
+    recipeObj.saved = isSaved;
+    const { saved, ratedByMe, ...redundantDetails } = recipeObj;
+
+    // החזרת המתכון עם הנתונים הנוספים
+    return {
+        saved,
+        ratedByMe,
+        comments: comments,
+    };
+}
+
 
 const createRecipe = async (recipeInput) => {
     // בדיקת קיום האובייקט
@@ -575,4 +632,12 @@ const getRecipesByUser = async (userId, requestType) => {
 };
 
 
-module.exports = { getRecipeById, getAllRecipes, createRecipe, updateRecipe, deleteRecipe, getRecipesByUser };
+module.exports = {
+    getAllRecipes,
+    getRecipeById,
+    getRecipeDetails,
+    createRecipe,
+    updateRecipe,
+    deleteRecipe,
+    getRecipesByUser
+};
