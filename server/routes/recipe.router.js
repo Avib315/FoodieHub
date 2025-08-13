@@ -43,6 +43,25 @@ router.get("/getById", auth, async (req, res) => {
     }
 });
 
+// get recipe details missing for recipeDetailPage - comments, ratedByMe, saved
+router.get("/getDetails", auth, async (req, res) => {
+    try {
+        const userId = req.body.userId;
+        const { id } = req.query;
+        const result = await service.getRecipeDetails(id, userId);
+
+        res.status(200).send({
+            success: true,
+            data: result
+        });
+    } catch (error) {
+        console.error("RouteName: recipe , Path: getDetails , error message:", error.message);
+        res.status(500).send({
+            success: false,
+            message: error.message || ApiMessages.errorMessages.serverError
+        });
+    }
+});
 
 
 router.post("/create", auth, upload.single('image'), async (req, res) => {
@@ -177,6 +196,7 @@ router.get("/userRecipes/:userId", auth, async (req, res) => {
         });
     }
 });
+
 
 
 module.exports = router;

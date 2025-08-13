@@ -58,7 +58,7 @@ app.get('/', (req, res) => {
 });
 
 // Your API routes
-app.use("/", require("./routes/base.router.js"));
+// app.use("/", require("./routes/base.router.js"));
 app.use("/api/main", require("./routes/main.router.js"));
 app.use("/api/user", require("./routes/user.router.js"));
 app.use("/api/recipe", require("./routes/recipe.router.js"));

@@ -14,8 +14,12 @@ import categories from '../../data/categories'
 import { Link, useParams } from 'react-router-dom';
 import axiosRequest from '../../services/axiosRequest'
 import useUserStore from '../../store/userStore'
+import { useNavigate } from 'react-router-dom';
+
+
 export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
-  const { addToSaved, removedSaved } = useUserStore()
+  const navigate = useNavigate();
+  const { addToSaved, removedSaved, user } = useUserStore()
   const {
     fullName = 'משתמש לא ידוע',
     title = 'מתכון ללא שם',
@@ -32,8 +36,6 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     _id
   } = recipe || {}
   const [isSaved, setIsSaved] = useState(saved)
-
-
 
   // Get user's first letter for avatar
   const getUserInitial = (name) => {
@@ -138,10 +140,40 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
     }
   }
 
+  const handleRecipeClick = () => {
+    let { username, totalRatings, saved, ...sendableResipe } = recipe;
+    if (isMyRecipes) {
+      sendableResipe = {
+        ...sendableResipe,
+        userName: user.username,
+        fullName: user.name
+      }
+    } else {
+      sendableResipe = {
+        ...sendableResipe,
+        userName: recipe.username,
+      }
+    }
+    navigate(`/recipe/${_id}`, {
+      state: {
+        ...sendableResipe,
+        ratingsCount: recipe.totalRatings
+      }
+    });
+  };
 
   return (
     <div className={`recipe-card ${recipe.status}`}>
-      <Link to={`/recipe/${_id}`} className="recipe-link">
+      <div
+        className="recipe-link"
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleRecipeClick()}
+        role="link"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') handleRecipeClick();
+        }}
+      >
         <div className="card-header">
           {!isMyRecipes && <><div className="user-avatar">
             {getUserInitial(fullName)}
@@ -157,8 +189,8 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
           style={getImageStyle()}
         >
         </div>
+      </div>
 
-      </Link>
       <div className="recipe-info">
         <h2 className="recipe-title">{title}</h2>
         <p className="recipe-description">{description}</p>
