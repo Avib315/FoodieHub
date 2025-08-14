@@ -38,8 +38,8 @@ const del = async (userId, recipeId) => {
 
 // קבלת מספר המתכונים השמורים
 const count = async (userId) => {
-    const user = await userModel.findById(userId, { savedRecipes: 1 });
-    return user ? user.savedRecipes.length : 0;
+    const user = await userModel.findById(userId, { savedRecipes: 1 }).populate('savedRecipes');
+    return user ? user.savedRecipes.filter(res => res.status === 'active').length : 0;
 };
 
 module.exports = {
