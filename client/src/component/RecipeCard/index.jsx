@@ -146,19 +146,18 @@ export default function RecipeCard({ recipe, addSaveBtn = true, isMyRecipes }) {
       sendableResipe = {
         ...sendableResipe,
         userName: user.username,
-        fullName: user.name
+        fullName: user.name,
+        ratingsCount: recipe.ratingsCount
       }
     } else {
       sendableResipe = {
         ...sendableResipe,
         userName: recipe.username,
+        ratingsCount: recipe.totalRatings
       }
     }
     navigate(`/recipe/${_id}`, {
-      state: {
-        ...sendableResipe,
-        ratingsCount: recipe.totalRatings
-      }
+      state: { ...sendableResipe }
     });
   };
 
